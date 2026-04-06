@@ -49,7 +49,7 @@ const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
       </h2>
       <div className="flex w-full flex-col gap-2">
         <AnimatePresence mode="popLayout">
-          {displayedLeaderboard.map(({ id, username, points }) => (
+          {displayedLeaderboard.map(({ id, username, teamName, points }) => (
             <motion.div
               key={id}
               layout
@@ -70,9 +70,16 @@ const Leaderboard = ({ data: { oldLeaderboard, leaderboard } }: Props) => {
                   damping: 25,
                 },
               }}
-              className="bg-primary flex w-full justify-between rounded-md p-3 text-2xl font-bold text-white"
+              className="bg-primary flex w-full items-center justify-between rounded-md p-3 text-2xl font-bold text-white"
             >
-              <span className="drop-shadow-md">{username}</span>
+              <div className="flex flex-col">
+                <span className="drop-shadow-md">{username}</span>
+                {teamName && (
+                  <span className="text-sm font-medium text-white/70 drop-shadow-sm">
+                    {teamName}
+                  </span>
+                )}
+              </div>
               {isAnimating ? (
                 <AnimatedPoints
                   from={oldLeaderboard.find((u) => u.id === id)?.points || 0}

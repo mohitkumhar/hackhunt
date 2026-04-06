@@ -105,7 +105,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("player:login", ({ gameId, data }) =>
-    withGame(gameId, socket, (game) => game.join(socket, data.username)),
+    withGame(gameId, socket, (game) => game.join(socket, data.username, data.teamName)),
   )
 
   socket.on("manager:kickPlayer", ({ gameId, playerId }) =>
