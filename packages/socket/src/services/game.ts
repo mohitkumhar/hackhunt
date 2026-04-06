@@ -1,7 +1,7 @@
 import { Answer, Player, Quizz } from "@rahoot/common/types/game"
 import { Server, Socket } from "@rahoot/common/types/game/socket"
 import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
-import { usernameValidator } from "@rahoot/common/validators/auth"
+import { usernameValidator, teamNameValidator } from "@rahoot/common/validators/auth"
 import Registry from "@rahoot/socket/services/registry"
 import { createInviteCode, timeToPoint } from "@rahoot/socket/utils/game"
 import sleep from "@rahoot/socket/utils/sleep"
@@ -121,7 +121,7 @@ class Game {
     this.io.to(target).emit("game:status", statusData)
   }
 
-  join(socket: Socket, username: string) {
+  join(socket: Socket, username: string, teamName: string) {
     const isAlreadyConnected = this.players.find(
       (p) => p.clientId === socket.handshake.auth.clientId,
     )
@@ -132,10 +132,18 @@ class Game {
       return
     }
 
-    const result = usernameValidator.safeParse(username)
+    const usernameResult = usernameValidator.safeParse(username)
 
-    if (result.error) {
-      socket.emit("game:errorMessage", result.error.issues[0].message)
+    if (usernameResult.error) {
+      socket.emit("game:errorMessage", usernameResult.error.issues[0].message)
+
+      return
+    }
+
+    const teamNameResult = teamNameValidator.safeParse(teamName)
+
+    if (teamNameResult.error) {
+      socket.emit("game:errorMessage", teamNameResult.error.issues[0].message)
 
       return
     }
@@ -147,6 +155,7 @@ class Game {
       clientId: socket.handshake.auth.clientId,
       connected: true,
       username,
+      teamName,
       points: 0,
     }
 

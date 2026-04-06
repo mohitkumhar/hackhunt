@@ -3,6 +3,7 @@ export type Player = {
   clientId: string
   connected: boolean
   username: string
+  teamName: string
   points: number
 }
 

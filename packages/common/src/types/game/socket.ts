@@ -80,7 +80,7 @@ export interface ClientToServerEvents {
 
   // Player actions
   "player:join": (_inviteCode: string) => void
-  "player:login": (_message: MessageWithoutStatus<{ username: string }>) => void
+  "player:login": (_message: MessageWithoutStatus<{ username: string; teamName: string }>) => void
   "player:reconnect": (_message: { gameId: string }) => void
   "player:selectedAnswer": (
     _message: MessageWithoutStatus<{ answerKey: number }>,

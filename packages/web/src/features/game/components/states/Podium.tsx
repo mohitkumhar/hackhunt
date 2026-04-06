@@ -107,6 +107,11 @@ const Podium = ({ data: { subject, top } }: Props) => {
               >
                 {top[1].username}
               </p>
+              {top[1].teamName && (
+                <p className="text-center text-sm font-medium text-white/70 drop-shadow-sm">
+                  {top[1].teamName}
+                </p>
+              )}
               <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
                 <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-zinc-400 bg-zinc-500 text-3xl font-bold text-white drop-shadow-lg">
                   <span className="drop-shadow-md">2</span>
@@ -137,6 +142,11 @@ const Podium = ({ data: { subject, top } }: Props) => {
             >
               {top[0].username}
             </p>
+            {top[0].teamName && (
+              <p className="text-center text-sm font-medium text-white/70 drop-shadow-sm">
+                {top[0].teamName}
+              </p>
+            )}
             <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
               <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-400 bg-amber-300 text-3xl font-bold text-white drop-shadow-lg">
                 <span className="drop-shadow-md">1</span>
@@ -166,6 +176,11 @@ const Podium = ({ data: { subject, top } }: Props) => {
               >
                 {top[2].username}
               </p>
+              {top[2].teamName && (
+                <p className="text-center text-sm font-medium text-white/70 drop-shadow-sm">
+                  {top[2].teamName}
+                </p>
+              )}
               <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
                 <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-800 bg-amber-700 text-3xl font-bold text-white drop-shadow-lg">
                   <span className="drop-shadow-md">3</span>
