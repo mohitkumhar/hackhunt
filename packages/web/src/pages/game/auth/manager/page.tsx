@@ -1,6 +1,9 @@
 import type { QuizzWithId } from "@rahoot/common/types/game"
+import type { ReverseQuizzWithId } from "@rahoot/common/types/game"
+import type { GameMode } from "@rahoot/common/types/game"
 import { STATUS } from "@rahoot/common/types/game/status"
 import ManagerPassword from "@rahoot/web/features/game/components/create/ManagerPassword"
+import SelectMode from "@rahoot/web/features/game/components/create/SelectMode"
 import SelectQuizz from "@rahoot/web/features/game/components/create/SelectQuizz"
 import {
   useEvent,
@@ -16,11 +19,17 @@ const ManagerAuthPage = () => {
   const { socket } = useSocket()
 
   const [isAuth, setIsAuth] = useState(false)
+  const [mode, setMode] = useState<GameMode | null>(null)
   const [quizzList, setQuizzList] = useState<QuizzWithId[]>([])
+  const [reverseQuizzList, setReverseQuizzList] = useState<ReverseQuizzWithId[]>([])
 
   useEvent("manager:quizzList", (quizzList) => {
     setIsAuth(true)
     setQuizzList(quizzList)
+  })
+
+  useEvent("manager:reverseQuizzList", (reverseList) => {
+    setReverseQuizzList(reverseList)
   })
 
   useEvent("manager:gameCreated", ({ gameId, inviteCode }) => {
@@ -32,16 +41,42 @@ const ManagerAuthPage = () => {
   const handleAuth = (password: string) => {
     socket?.emit("manager:auth", password)
   }
-  const handleCreate = (quizzId: string) => {
-    console.log("quizzId", quizzId)
-    socket?.emit("game:create", quizzId)
+
+  const handleModeSelect = (selectedMode: GameMode) => {
+    setMode(selectedMode)
   }
 
+  const handleCreate = (quizzId: string) => {
+    if (mode === "reverse_programming") {
+      socket?.emit("game:createReverse", quizzId)
+    } else {
+      socket?.emit("game:create", quizzId)
+    }
+  }
+
+  // Step 1: Password
   if (!isAuth) {
     return <ManagerPassword onSubmit={handleAuth} />
   }
 
-  return <SelectQuizz quizzList={quizzList} onSelect={handleCreate} />
+  // Step 2: Mode selection
+  if (!mode) {
+    return <SelectMode onSelect={handleModeSelect} />
+  }
+
+  // Step 3: Quiz selection (for both modes)
+  if (mode === "quiz") {
+    return <SelectQuizz quizzList={quizzList} onSelect={handleCreate} />
+  }
+
+  // Reverse Programming mode - show reverse quizz list
+  const reverseAsQuizz: QuizzWithId[] = reverseQuizzList.map((rq) => ({
+    id: rq.id,
+    subject: rq.subject,
+    questions: [],
+  }))
+
+  return <SelectQuizz quizzList={reverseAsQuizz} onSelect={handleCreate} />
 }
 
 export default ManagerAuthPage

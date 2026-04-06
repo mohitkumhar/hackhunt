@@ -11,6 +11,8 @@ export const STATUS = {
   SHOW_LEADERBOARD: "SHOW_LEADERBOARD",
   FINISHED: "FINISHED",
   WAIT: "WAIT",
+  REVERSE_WRITE_CODE: "REVERSE_WRITE_CODE",
+  REVERSE_SHOW_RESPONSES: "REVERSE_SHOW_RESPONSES",
 } as const
 
 export type Status = (typeof STATUS)[keyof typeof STATUS]
@@ -38,6 +40,13 @@ export type CommonStatusDataMap = {
   }
   WAIT: { text: string }
   FINISHED: { subject: string; top: Player[] }
+  REVERSE_WRITE_CODE: {
+    output: string
+    language: string
+    hint?: string
+    time: number
+    totalPlayer: number
+  }
 }
 
 type ManagerExtraStatus = {
@@ -51,6 +60,14 @@ type ManagerExtraStatus = {
     video?: string
   }
   SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[] }
+  REVERSE_SHOW_RESPONSES: {
+    output: string
+    expectedCode: string
+    language: string
+    totalCorrect: number
+    totalWrong: number
+    totalPlayers: number
+  }
 }
 
 export type PlayerStatusDataMap = CommonStatusDataMap

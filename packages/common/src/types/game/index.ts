@@ -29,6 +29,24 @@ export type Quizz = {
 
 export type QuizzWithId = Quizz & { id: string }
 
+export type ReverseQuestion = {
+  output: string
+  language: string
+  expectedCode: string
+  hint?: string
+  cooldown: number
+  time: number
+}
+
+export type ReverseQuizz = {
+  subject: string
+  questions: ReverseQuestion[]
+}
+
+export type ReverseQuizzWithId = ReverseQuizz & { id: string }
+
+export type GameMode = "quiz" | "reverse_programming"
+
 export type GameUpdateQuestion = {
   current: number
   total: number

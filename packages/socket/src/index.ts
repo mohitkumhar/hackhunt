@@ -64,6 +64,7 @@ io.on("connection", (socket) => {
       }
 
       socket.emit("manager:quizzList", Config.quizz())
+      socket.emit("manager:reverseQuizzList", Config.reverseQuizz())
     } catch (error) {
       console.error("Failed to read game config:", error)
       socket.emit("manager:errorMessage", "Failed to read game config")
@@ -80,7 +81,22 @@ io.on("connection", (socket) => {
       return
     }
 
+
     const game = new Game(io, socket, quizz)
+    registry.addGame(game)
+  })
+
+  socket.on("game:createReverse", (quizzId) => {
+    const quizzList = Config.reverseQuizz()
+    const quizz = quizzList.find((q) => q.id === quizzId)
+
+    if (!quizz) {
+      socket.emit("game:errorMessage", "Reverse programming challenge not found")
+
+      return
+    }
+
+    const game = new Game(io, socket, null, quizz, "reverse_programming")
     registry.addGame(game)
   })
 
@@ -119,6 +135,12 @@ io.on("connection", (socket) => {
   socket.on("player:selectedAnswer", ({ gameId, data }) =>
     withGame(gameId, socket, (game) =>
       game.selectAnswer(socket, data.answerKey),
+    ),
+  )
+
+  socket.on("player:submitCode", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.submitCode(socket, data.code, data.output),
     ),
   )
 
