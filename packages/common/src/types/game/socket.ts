@@ -2,6 +2,7 @@ import type {
   GameUpdateQuestion,
   Player,
   QuizzWithId,
+  ReverseQuizzWithId,
 } from "@rahoot/common/types/game"
 import type { Status, StatusDataMap } from "@rahoot/common/types/game/status"
 import { Server as ServerIO, Socket as SocketIO } from "socket.io"
@@ -65,6 +66,7 @@ export interface ServerToClientEvents {
   "manager:removePlayer": (_playerId: string) => void
   "manager:errorMessage": (_message: string) => void
   "manager:playerKicked": (_playerId: string) => void
+  "manager:reverseQuizzList": (_quizzList: ReverseQuizzWithId[]) => void
 }
 
 export interface ClientToServerEvents {
@@ -85,6 +87,12 @@ export interface ClientToServerEvents {
   "player:selectedAnswer": (
     _message: MessageWithoutStatus<{ answerKey: number }>,
   ) => void
+  "player:submitCode": (
+    _message: MessageWithoutStatus<{ code: string; output: string }>,
+  ) => void
+
+  // Reverse programming
+  "game:createReverse": (_quizzId: string) => void
 
   // Common
   disconnect: () => void

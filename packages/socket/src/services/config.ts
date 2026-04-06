@@ -1,4 +1,4 @@
-import { QuizzWithId } from "@rahoot/common/types/game"
+import { QuizzWithId, ReverseQuizzWithId } from "@rahoot/common/types/game"
 import fs from "fs"
 import { resolve } from "path"
 
@@ -73,6 +73,41 @@ class Config {
         ),
       )
     }
+
+    const isReverseProgrammingExists = fs.existsSync(getPath("reverse_programming"))
+
+    if (!isReverseProgrammingExists) {
+      fs.mkdirSync(getPath("reverse_programming"))
+
+      fs.writeFileSync(
+        getPath("reverse_programming/example.json"),
+        JSON.stringify(
+          {
+            subject: "Python Basics - Reverse Programming",
+            questions: [
+              {
+                output: "Hello, World!",
+                language: "python",
+                expectedCode: "print('Hello, World!')",
+                hint: "Use the print function",
+                cooldown: 5,
+                time: 90,
+              },
+              {
+                output: "10",
+                language: "python",
+                expectedCode: "print(2 * 5)",
+                hint: "Print the result of a multiplication",
+                cooldown: 5,
+                time: 90,
+              },
+            ],
+          },
+          null,
+          2,
+        ),
+      )
+    }
   }
 
   static game() {
@@ -120,6 +155,38 @@ class Config {
       return quizz || []
     } catch (error) {
       console.error("Failed to read quizz config:", error)
+
+      return []
+    }
+  }
+
+  static reverseQuizz() {
+    const isExists = fs.existsSync(getPath("reverse_programming"))
+
+    if (!isExists) {
+      return []
+    }
+
+    try {
+      const files = fs
+        .readdirSync(getPath("reverse_programming"))
+        .filter((file) => file.endsWith(".json"))
+
+      const quizz: ReverseQuizzWithId[] = files.map((file) => {
+        const data = fs.readFileSync(getPath(`reverse_programming/${file}`), "utf-8")
+        const config = JSON.parse(data)
+
+        const id = file.replace(".json", "")
+
+        return {
+          id,
+          ...config,
+        }
+      })
+
+      return quizz || []
+    } catch (error) {
+      console.error("Failed to read reverse programming config:", error)
 
       return []
     }

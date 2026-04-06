@@ -1,4 +1,4 @@
-import { Answer, Player, Quizz } from "@rahoot/common/types/game"
+import { Answer, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
 import { Server, Socket } from "@rahoot/common/types/game/socket"
 import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
 import { usernameValidator } from "@rahoot/common/validators/auth"
@@ -44,7 +44,11 @@ class Game {
     ms: number
   }
 
-  constructor(io: Server, socket: Socket, quizz: Quizz) {
+  gameMode: GameMode
+  reverseQuizz: ReverseQuizz | null
+  codeSubmissions: { playerId: string; code: string; output: string; correct: boolean; points: number }[]
+
+  constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz") {
     if (!io) {
       throw new Error("Socket server not initialized")
     }
@@ -79,6 +83,26 @@ class Game {
       ms: 0,
     }
 
+    this.gameMode = mode
+    this.reverseQuizz = reverseQuizz || null
+    this.codeSubmissions = []
+
+    // For reverse programming mode, create a compatible quizz object
+    if (mode === "reverse_programming" && reverseQuizz) {
+      this.quizz = {
+        subject: reverseQuizz.subject,
+        questions: reverseQuizz.questions.map((q) => ({
+          question: `Output: ${q.output}`,
+          answers: [],
+          solution: 0,
+          cooldown: q.cooldown,
+          time: q.time,
+        })),
+      }
+    } else {
+      this.quizz = quizz!
+    }
+
     const roomInvite = createInviteCode()
     this.inviteCode = roomInvite
     this.manager = {
@@ -86,7 +110,6 @@ class Game {
       clientId: socket.handshake.auth.clientId,
       connected: true,
     }
-    this.quizz = quizz
 
     socket.join(this.gameId)
     socket.emit("manager:gameCreated", {
@@ -95,7 +118,7 @@ class Game {
     })
 
     console.log(
-      `New game created: ${roomInvite} subject: ${this.quizz.subject}`,
+      `New game created: ${roomInvite} subject: ${this.quizz.subject} mode: ${this.gameMode}`,
     )
   }
 
@@ -329,7 +352,11 @@ class Game {
     this.io.to(this.gameId).emit("game:startCooldown")
     await this.startCooldown(3)
 
-    this.newRound()
+    if (this.gameMode === "reverse_programming") {
+      this.newReverseRound()
+    } else {
+      this.newRound()
+    }
   }
 
   async newRound() {
@@ -389,6 +416,167 @@ class Game {
     }
 
     this.showResults(question)
+  }
+
+  async newReverseRound() {
+    if (!this.reverseQuizz) {
+      return
+    }
+
+    const question = this.reverseQuizz.questions[this.round.currentQuestion]
+
+    if (!this.started) {
+      return
+    }
+
+    this.playerStatus.clear()
+    this.codeSubmissions = []
+
+    this.io.to(this.gameId).emit("game:updateQuestion", {
+      current: this.round.currentQuestion + 1,
+      total: this.reverseQuizz.questions.length,
+    })
+
+    this.managerStatus = null
+    this.broadcastStatus(STATUS.SHOW_PREPARED, {
+      totalAnswers: 0,
+      questionNumber: this.round.currentQuestion + 1,
+    })
+
+    await sleep(2)
+
+    if (!this.started) {
+      return
+    }
+
+    this.broadcastStatus(STATUS.SHOW_QUESTION, {
+      question: `Write code that produces this output`,
+      cooldown: question.cooldown,
+    })
+
+    await sleep(question.cooldown)
+
+    if (!this.started) {
+      return
+    }
+
+    this.round.startTime = Date.now()
+
+    this.broadcastStatus(STATUS.REVERSE_WRITE_CODE, {
+      output: question.output,
+      language: question.language,
+      hint: question.hint,
+      time: question.time,
+      totalPlayer: this.players.length,
+    })
+
+    await this.startCooldown(question.time)
+
+    if (!this.started) {
+      return
+    }
+
+    this.showReverseResults(question)
+  }
+
+  submitCode(socket: Socket, code: string, output: string) {
+    const player = this.players.find((player) => player.id === socket.id)
+
+    if (!player) {
+      return
+    }
+
+    if (this.codeSubmissions.find((s) => s.playerId === socket.id)) {
+      return
+    }
+
+    if (!this.reverseQuizz) {
+      return
+    }
+
+    const question = this.reverseQuizz.questions[this.round.currentQuestion]
+    const expectedOutput = question.output.trim()
+    const playerOutput = output.trim()
+    const isCorrect = playerOutput === expectedOutput
+
+    const points = isCorrect ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
+
+    this.codeSubmissions.push({
+      playerId: player.id,
+      code,
+      output: playerOutput,
+      correct: isCorrect,
+      points,
+    })
+
+    this.sendStatus(socket.id, STATUS.WAIT, {
+      text: "Waiting for other players to submit",
+    })
+
+    socket
+      .to(this.gameId)
+      .emit("game:playerAnswer", this.codeSubmissions.length)
+
+    this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
+
+    if (this.codeSubmissions.length === this.players.length) {
+      this.abortCooldown()
+    }
+  }
+
+  showReverseResults(question: any) {
+    const oldLeaderboard =
+      this.leaderboard.length === 0
+        ? this.players.map((p) => ({ ...p }))
+        : this.leaderboard.map((p) => ({ ...p }))
+
+    const totalCorrect = this.codeSubmissions.filter((s) => s.correct).length
+    const totalWrong = this.codeSubmissions.filter((s) => !s.correct).length
+
+    const sortedPlayers = this.players
+      .map((player) => {
+        const submission = this.codeSubmissions.find(
+          (s) => s.playerId === player.id,
+        )
+
+        const isCorrect = submission ? submission.correct : false
+        const points = submission && isCorrect ? Math.round(submission.points) : 0
+
+        player.points += points
+
+        return { ...player, lastCorrect: isCorrect, lastPoints: points }
+      })
+      .sort((a, b) => b.points - a.points)
+
+    this.players = sortedPlayers
+
+    sortedPlayers.forEach((player, index) => {
+      const rank = index + 1
+      const aheadPlayer = sortedPlayers[index - 1]
+
+      this.sendStatus(player.id, STATUS.SHOW_RESULT, {
+        correct: player.lastCorrect,
+        message: player.lastCorrect ? "Correct output!" : "Wrong output",
+        points: player.lastPoints,
+        myPoints: player.points,
+        rank,
+        aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
+      })
+    })
+
+    this.sendStatus(this.manager.id, STATUS.REVERSE_SHOW_RESPONSES, {
+      output: question.output,
+      expectedCode: question.expectedCode,
+      language: question.language,
+      totalCorrect,
+      totalWrong,
+      totalPlayers: this.players.length,
+    })
+
+    this.leaderboard = sortedPlayers
+    this.tempOldLeaderboard = oldLeaderboard
+
+    this.codeSubmissions = []
   }
 
   showResults(question: any) {
@@ -496,6 +684,17 @@ class Game {
       return
     }
 
+    if (this.gameMode === "reverse_programming" && this.reverseQuizz) {
+      if (!this.reverseQuizz.questions[this.round.currentQuestion + 1]) {
+        return
+      }
+
+      this.round.currentQuestion += 1
+      this.newReverseRound()
+
+      return
+    }
+
     if (!this.quizz.questions[this.round.currentQuestion + 1]) {
       return
     }
@@ -517,8 +716,12 @@ class Game {
   }
 
   showLeaderboard() {
+    const totalQuestions = this.gameMode === "reverse_programming" && this.reverseQuizz
+      ? this.reverseQuizz.questions.length
+      : this.quizz.questions.length
+
     const isLastRound =
-      this.round.currentQuestion + 1 === this.quizz.questions.length
+      this.round.currentQuestion + 1 === totalQuestions
 
     if (isLastRound) {
       this.started = false
