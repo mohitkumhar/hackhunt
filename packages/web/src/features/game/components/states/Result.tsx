@@ -11,7 +11,7 @@ type Props = {
 }
 
 const Result = ({
-  data: { correct, message, points, myPoints, rank, aheadOfMe, hideRank },
+  data: { correct, message, points, myPoints, rank, aheadOfMe, hideRank, hidePoints },
 }: Props) => {
   const player = usePlayerStore()
 
@@ -40,7 +40,7 @@ const Result = ({
           {`You are top ${rank}${aheadOfMe ? `, behind ${aheadOfMe}` : ""}`}
         </p>
       )}
-      {correct && points > 0 && (
+      {correct && points > 0 && !hidePoints && (
         <span className="mt-2 rounded bg-black/40 px-4 py-2 text-2xl font-bold text-white drop-shadow-lg">
           +{points}
         </span>

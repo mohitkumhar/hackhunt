@@ -40,9 +40,23 @@ export type CommonStatusDataMap = {
     rank: number
     aheadOfMe: string | null
     hideRank?: boolean
+    hidePoints?: boolean
   }
   WAIT: { text: string }
-  FINISHED: { subject: string; top: Player[] }
+  FINISHED: { 
+    subject: string; 
+    top: Player[]; 
+    blindSubmissionsHistory?: { 
+      question: string; 
+      language: string; 
+      submissions: { 
+        username: string; 
+        code: string; 
+        language: string; 
+        submitted: boolean; 
+      }[] 
+    }[] 
+  }
   REVERSE_WRITE_CODE: {
     output: string
     language: string
