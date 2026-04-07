@@ -1,0 +1,45 @@
+{
+  "subject": "Python Fundamentals - Reverse Programming",
+  "questions": [
+    {
+      "output": "Hello, Python!",
+      "language": "python",
+      "expectedCode": "print('Hello, Python!')",
+      "hint": "Use the print() function",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "output": "15",
+      "language": "python",
+      "expectedCode": "print(sum(range(1, 6)))",
+      "hint": "Sum the numbers from 1 to 5",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "output": "5 4 3 2 1",
+      "language": "python",
+      "expectedCode": "print(' '.join(str(i) for i in range(5, 0, -1)))",
+      "hint": "Print numbers 5 to 1 separated by spaces",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "output": "True",
+      "language": "python",
+      "expectedCode": "print('hello'.islower())",
+      "hint": "Check if a string is all lowercase",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "output": "HELLO WORLD",
+      "language": "python",
+      "expectedCode": "print('hello world'.upper())",
+      "hint": "Convert a string to uppercase",
+      "cooldown": 5,
+      "time": 90
+    }
+  ]
+}
