@@ -66,7 +66,7 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
         ) : (
           <>
             <div className="flex w-full justify-between p-4">
-              {questionStates && (
+              {questionStates && statusName !== "FINISHED" && statusName !== "SHOW_LEADERBOARD" && (
                 <div className="shadow-inset flex items-center rounded-md bg-white p-2 px-4 text-lg font-bold text-black">
                   {`${questionStates.current} / ${questionStates.total}`}
                 </div>
