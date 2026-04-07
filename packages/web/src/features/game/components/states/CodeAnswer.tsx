@@ -8,7 +8,7 @@ import {
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
 } from "@rahoot/web/features/game/utils/constants"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, KeyboardEvent } from "react"
 import { useParams } from "react-router"
 import useSound from "use-sound"
 
@@ -85,7 +85,9 @@ const CodeAnswer = ({
 
   useEffect(() => {
     playMusic()
-    return () => {
+
+    
+return () => {
       stopMusic()
     }
   }, [playMusic])
@@ -99,12 +101,12 @@ const CodeAnswer = ({
     sfxPop()
   })
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const lang = e.target.value as SupportedLanguage
+  const handleLangSelect = (lang: SupportedLanguage) => {
     setSelectedLang(lang)
     
     // Only replace code if it's completely empty or matches a different language's boilerplate
     const isBoilerplate = Object.values(LANGUAGES).some((l) => l.boilerplate === code.trim())
+
     if (!code.trim() || isBoilerplate) {
       setCode(LANGUAGES[lang].boilerplate)
     }
@@ -144,15 +146,19 @@ const CodeAnswer = ({
       const result = await response.json()
 
       if (result.compile && result.compile.code !== 0) {
-        setRunError("Compilation Error:\\n" + result.compile.output)
+        setRunError(`Compilation Error:\\n${  result.compile.output}`)
         setIsSubmitting(false)
-        return
+
+        
+return
       }
 
       if (result.run && result.run.signal) {
-        setRunError("Runtime Error (" + result.run.signal + "):\\n" + result.run.output)
+        setRunError(`Runtime Error (${  result.run.signal  }):\\n${  result.run.output}`)
         setIsSubmitting(false)
-        return
+
+        
+return
       }
 
       playerOutput = result.run.stdout || ""
@@ -164,7 +170,9 @@ const CodeAnswer = ({
     } catch (err: any) {
       setRunError(err.message || "Execution failed")
       setIsSubmitting(false)
-      return
+
+      
+return
     }
 
     setSubmitted(true)
@@ -181,13 +189,13 @@ const CodeAnswer = ({
     setIsSubmitting(false)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Allow Tab key for indentation
     if (e.key === "Tab") {
       e.preventDefault()
       const start = e.currentTarget.selectionStart
       const end = e.currentTarget.selectionEnd
-      const newCode = code.substring(0, start) + "    " + code.substring(end)
+      const newCode = `${code.substring(0, start)  }    ${  code.substring(end)}`
       setCode(newCode)
       // Set cursor position after indent
       setTimeout(() => {
@@ -239,27 +247,31 @@ const CodeAnswer = ({
         {/* Code Editor */}
         <div className="w-full flex-1 flex flex-col min-h-[300px]">
           <div className="rounded-lg bg-gray-800 shadow-lg flex flex-col h-full overflow-hidden">
-            <div className="flex items-center justify-between bg-gray-700 px-3 py-2">
-              <span className="text-xs font-medium text-gray-300">
-                Your Code
+            <div className="flex flex-col bg-gray-700 px-3 py-3 border-b border-gray-600 gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-300">
+                Programming Language
               </span>
-              <select
-                className="bg-gray-800 text-white text-xs rounded border border-gray-600 px-2 py-1 outline-none focus:border-primary"
-                value={selectedLang}
-                onChange={handleLanguageChange}
-                disabled={isSubmitting}
-              >
+              <div className="flex flex-wrap gap-2">
                 {Object.entries(LANGUAGES).map(([key, lang]) => (
-                  <option key={key} value={key}>
+                  <button
+                    key={key}
+                    onClick={() => handleLangSelect(key as SupportedLanguage)}
+                    disabled={isSubmitting}
+                    className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all ${
+                      selectedLang === key
+                        ? "bg-primary text-white shadow-[0_0_10px_rgba(var(--color-primary),0.5)]"
+                        : "bg-gray-800 text-gray-400 hover:bg-gray-600 hover:text-white border border-gray-700"
+                    }`}
+                  >
                     {lang.name}
-                  </option>
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
             <textarea
               ref={textareaRef}
               className="w-full flex-1 resize-none bg-gray-900 p-4 font-mono text-sm text-white placeholder-gray-500 focus:outline-none md:text-base"
-              placeholder={\`Write your \${LANGUAGES[selectedLang].name} code here...\`}
+              placeholder={`Write your ${LANGUAGES[selectedLang].name} code here...`}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               onKeyDown={handleKeyDown}
