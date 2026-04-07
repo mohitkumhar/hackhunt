@@ -517,9 +517,18 @@ class Game {
     }
 
     const question = this.reverseQuizz.questions[this.round.currentQuestion]
-    const expectedOutput = question.output.trim()
-    const playerOutput = output.trim()
+
+    // Ultra-forgiving normalization: remove ALL spaces, newlines, and make lowercase
+    // This way "Sum: 15", "sum:15", "SUM  :  15\n" all match correctly!
+    const normalize = (s: string) => s.replace(/\s+/g, "").toLowerCase()
+
+    const expectedOutput = normalize(question.output)
+    const playerOutput = normalize(output)
     const isCorrect = playerOutput === expectedOutput
+
+    console.log(`[COMPARE] Expected: [${expectedOutput}]`)
+    console.log(`[COMPARE] Player:   [${playerOutput}]`)
+    console.log(`[COMPARE] Match: ${isCorrect}`)
 
     const points = isCorrect ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
 

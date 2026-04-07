@@ -36,11 +36,14 @@ const CodeResponses = ({
         <pre className="whitespace-pre-wrap font-mono text-lg text-green-400">{output}</pre>
       </div>
 
-      {/* Expected Code */}
+      {/* Reference Solution */}
       <div className="anim-show w-full rounded-xl bg-gray-800/80 p-5 shadow-xl backdrop-blur">
         <div className="mb-3 flex items-center justify-between">
           <span className="text-sm font-medium text-gray-400">
-            One Possible Solution ({language})
+            📝 Reference Solution ({language})
+          </span>
+          <span className="text-xs text-gray-500 italic">
+            Any language producing correct output is accepted
           </span>
         </div>
         <pre className="whitespace-pre-wrap font-mono text-base text-blue-300">{expectedCode}</pre>
