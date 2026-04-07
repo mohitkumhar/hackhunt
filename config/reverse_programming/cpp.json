@@ -1,0 +1,37 @@
+{
+  "subject": "C++ Basics - Reverse Programming",
+  "questions": [
+    {
+      "output": "Hello from C++",
+      "language": "c++",
+      "expectedCode": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello from C++\";\n    return 0;\n}",
+      "hint": "Include iostream and use std::cout",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "output": "100",
+      "language": "c++",
+      "expectedCode": "#include <iostream>\n\nint main() {\n    std::cout << 10 * 10;\n    return 0;\n}",
+      "hint": "Print the result of 10 multiplied by 10",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "output": "1\n2\n3\n4\n5",
+      "language": "c++",
+      "expectedCode": "#include <iostream>\n\nint main() {\n    for (int i = 1; i <= 5; i++) {\n        std::cout << i << std::endl;\n    }\n    return 0;\n}",
+      "hint": "Use a for loop to print numbers 1 through 5",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "output": "5 4 3 2 1",
+      "language": "c++",
+      "expectedCode": "#include <iostream>\n\nint main() {\n    for (int i = 5; i >= 1; i--) {\n        std::cout << i;\n        if (i > 1) std::cout << \" \";\n    }\n    return 0;\n}",
+      "hint": "Print numbers in reverse order separated by spaces",
+      "cooldown": 5,
+      "time": 120
+    }
+  ]
+}
