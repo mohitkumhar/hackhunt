@@ -74,6 +74,16 @@ class Game {
       submitted: boolean
     }[]
   }[]
+  allBlindCodeSubmissions: {
+    question: string
+    language: string
+    submissions: {
+      username: string
+      code: string
+      language: string
+      submitted: boolean
+    }[]
+  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null) {
     if (!io) {
@@ -121,6 +131,7 @@ class Game {
     this.blindCodingQuizz = blindCodingQuizz || null
     this.codeSubmissions = []
     this.blindCodeSubmissions = []
+    this.allBlindCodeSubmissions = []
     this.allBlindCodeSubmissions = []
 
     // For reverse programming mode, create a compatible quizz object
