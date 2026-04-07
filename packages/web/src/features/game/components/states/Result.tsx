@@ -38,7 +38,7 @@ const Result = ({
       <p className="mt-1 text-xl font-bold text-white drop-shadow-lg">
         {`You are top ${rank}${aheadOfMe ? `, behind ${aheadOfMe}` : ""}`}
       </p>
-      {correct && (
+      {correct && points > 0 && (
         <span className="mt-2 rounded bg-black/40 px-4 py-2 text-2xl font-bold text-white drop-shadow-lg">
           +{points}
         </span>

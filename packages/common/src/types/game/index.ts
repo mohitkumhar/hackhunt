@@ -45,7 +45,30 @@ export type ReverseQuizz = {
 
 export type ReverseQuizzWithId = ReverseQuizz & { id: string }
 
-export type GameMode = "quiz" | "reverse_programming"
+export type BlindCodingExample = {
+  input: string
+  output: string
+  explanation?: string
+}
+
+export type BlindCodingQuestion = {
+  title: string
+  description: string
+  examples: BlindCodingExample[]
+  constraints: string[]
+  language: string
+  cooldown: number
+  time: number
+}
+
+export type BlindCodingQuizz = {
+  subject: string
+  questions: BlindCodingQuestion[]
+}
+
+export type BlindCodingQuizzWithId = BlindCodingQuizz & { id: string }
+
+export type GameMode = "quiz" | "reverse_programming" | "blind_coding"
 
 export type GameUpdateQuestion = {
   current: number

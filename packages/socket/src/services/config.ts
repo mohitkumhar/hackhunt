@@ -1,4 +1,4 @@
-import { QuizzWithId, ReverseQuizzWithId } from "@rahoot/common/types/game"
+import { BlindCodingQuizzWithId, QuizzWithId, ReverseQuizzWithId } from "@rahoot/common/types/game"
 import fs from "fs"
 import { resolve } from "path"
 
@@ -108,6 +108,36 @@ class Config {
         ),
       )
     }
+
+    const isBlindCodingExists = fs.existsSync(getPath("blind_coding"))
+
+    if (!isBlindCodingExists) {
+      fs.mkdirSync(getPath("blind_coding"))
+
+      fs.writeFileSync(
+        getPath("blind_coding/example.json"),
+        JSON.stringify(
+          {
+            subject: "Blind Coding Challenge",
+            questions: [
+              {
+                title: "Sum Even Or Odd",
+                description: "Write a program to check whether the sum of two numbers is even or odd.",
+                examples: [
+                  { input: "65\n23", output: "Even", explanation: "Sum of 65+23=88 => Even" },
+                ],
+                constraints: ["-2^30 <= n <= 2^30"],
+                language: "python",
+                cooldown: 5,
+                time: 300,
+              },
+            ],
+          },
+          null,
+          2,
+        ),
+      )
+    }
   }
 
   static game() {
@@ -187,6 +217,38 @@ class Config {
       return quizz || []
     } catch (error) {
       console.error("Failed to read reverse programming config:", error)
+
+      return []
+    }
+  }
+
+  static blindCoding() {
+    const isExists = fs.existsSync(getPath("blind_coding"))
+
+    if (!isExists) {
+      return []
+    }
+
+    try {
+      const files = fs
+        .readdirSync(getPath("blind_coding"))
+        .filter((file) => file.endsWith(".json"))
+
+      const quizz: BlindCodingQuizzWithId[] = files.map((file) => {
+        const data = fs.readFileSync(getPath(`blind_coding/${file}`), "utf-8")
+        const config = JSON.parse(data)
+
+        const id = file.replace(".json", "")
+
+        return {
+          id,
+          ...config,
+        }
+      })
+
+      return quizz || []
+    } catch (error) {
+      console.error("Failed to read blind coding config:", error)
 
       return []
     }

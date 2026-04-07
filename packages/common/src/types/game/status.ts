@@ -13,6 +13,8 @@ export const STATUS = {
   WAIT: "WAIT",
   REVERSE_WRITE_CODE: "REVERSE_WRITE_CODE",
   REVERSE_SHOW_RESPONSES: "REVERSE_SHOW_RESPONSES",
+  BLIND_CODING_WRITE: "BLIND_CODING_WRITE",
+  BLIND_CODING_SHOW_RESPONSES: "BLIND_CODING_SHOW_RESPONSES",
 } as const
 
 export type Status = (typeof STATUS)[keyof typeof STATUS]
@@ -47,6 +49,15 @@ export type CommonStatusDataMap = {
     time: number
     totalPlayer: number
   }
+  BLIND_CODING_WRITE: {
+    title: string
+    description: string
+    examples: { input: string; output: string; explanation?: string }[]
+    constraints: string[]
+    language: string
+    time: number
+    totalPlayer: number
+  }
 }
 
 type ManagerExtraStatus = {
@@ -66,6 +77,19 @@ type ManagerExtraStatus = {
     language: string
     totalCorrect: number
     totalWrong: number
+    totalPlayers: number
+  }
+  BLIND_CODING_SHOW_RESPONSES: {
+    title: string
+    description: string
+    language: string
+    submissions: {
+      username: string
+      code: string
+      language: string
+      submitted: boolean
+    }[]
+    totalSubmitted: number
     totalPlayers: number
   }
 }
