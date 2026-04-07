@@ -59,6 +59,16 @@ class Game {
       submitted: boolean
     }[]
   }[]
+  allBlindCodeSubmissions: {
+    question: string
+    language: string
+    submissions: {
+      username: string
+      code: string
+      language: string
+      submitted: boolean
+    }[]
+  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null) {
     if (!io) {
@@ -100,6 +110,7 @@ class Game {
     this.blindCodingQuizz = blindCodingQuizz || null
     this.codeSubmissions = []
     this.blindCodeSubmissions = []
+    this.allBlindCodeSubmissions = []
     this.allBlindCodeSubmissions = []
 
     // For reverse programming mode, create a compatible quizz object
@@ -751,6 +762,8 @@ class Game {
         const didSubmit = submission ? submission.submitted : false
         // Award points for speed, but hide it in Result.tsx for blind coding
         const points = didSubmit ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
+        // Award points for speed, but hide it in Result.tsx for blind coding
+        const points = didSubmit ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
 
         player.points += points
 
@@ -785,6 +798,7 @@ class Game {
         rank,
         aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
         hideRank: true,
+        hidePoints: true,
 <<<<<<< HEAD
         hidePoints: true,
 =======
@@ -799,6 +813,12 @@ class Game {
       submissions,
       totalSubmitted: this.blindCodeSubmissions.length,
       totalPlayers: this.players.length,
+    })
+
+    this.allBlindCodeSubmissions.push({
+      question: question.title,
+      language: question.language,
+      submissions,
     })
 
     this.allBlindCodeSubmissions.push({
@@ -1006,6 +1026,7 @@ class Game {
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
         top: this.leaderboard.slice(0, 3),
+        blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined
         blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined
       })
 
