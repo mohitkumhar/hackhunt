@@ -1,0 +1,21 @@
+{
+  "subject": "Python Basics - Reverse Programming",
+  "questions": [
+    {
+      "output": "Hello, World!",
+      "language": "python",
+      "expectedCode": "print('Hello, World!')",
+      "hint": "Use the print function",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "output": "10",
+      "language": "python",
+      "expectedCode": "print(2 * 5)",
+      "hint": "Print the result of a multiplication",
+      "cooldown": 5,
+      "time": 90
+    }
+  ]
+}
