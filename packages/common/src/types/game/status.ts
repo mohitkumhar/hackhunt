@@ -40,10 +40,6 @@ export type CommonStatusDataMap = {
     rank: number
     aheadOfMe: string | null
     hideRank?: boolean
-<<<<<<< HEAD
-    hidePoints?: boolean
-=======
->>>>>>> 90c3ede (UPdated the next button bug)
   }
   WAIT: { text: string }
   FINISHED: { 
