@@ -1,0 +1,65 @@
+{
+  "subject": "Blind Coding Challenge",
+  "questions": [
+    {
+      "title": "Sum Even Or Odd",
+      "description": "Write a program to check whether the sum of two numbers is even or odd.",
+      "examples": [
+        {
+          "input": "65\n23",
+          "output": "Even",
+          "explanation": "Sum of 65+23=88 => Even"
+        },
+        {
+          "input": "-133\n72",
+          "output": "Odd",
+          "explanation": "Sum of -133+72=-61 => Odd"
+        }
+      ],
+      "constraints": ["-2^30 <= n <= 2^30"],
+      "language": "python",
+      "cooldown": 5,
+      "time": 300
+    },
+    {
+      "title": "Fibonacci Number",
+      "description": "Write a program to print the Nth Fibonacci number. Take input N from the user.",
+      "examples": [
+        {
+          "input": "5",
+          "output": "5",
+          "explanation": "Fibonacci sequence: 0, 1, 1, 2, 3, 5 => 5th Fibonacci number is 5"
+        },
+        {
+          "input": "10",
+          "output": "55",
+          "explanation": "10th Fibonacci number is 55"
+        }
+      ],
+      "constraints": ["1 <= N <= 30"],
+      "language": "python",
+      "cooldown": 5,
+      "time": 300
+    },
+    {
+      "title": "Reverse a String",
+      "description": "Write a program to reverse a given string. Take a string input from the user and print the reversed string.",
+      "examples": [
+        {
+          "input": "hello",
+          "output": "olleh",
+          "explanation": "'hello' reversed is 'olleh'"
+        },
+        {
+          "input": "HackHunt",
+          "output": "tnuHkcaH",
+          "explanation": "'HackHunt' reversed is 'tnuHkcaH'"
+        }
+      ],
+      "constraints": ["1 <= len(string) <= 1000"],
+      "language": "python",
+      "cooldown": 5,
+      "time": 240
+    }
+  ]
+}

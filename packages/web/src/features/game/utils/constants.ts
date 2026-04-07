@@ -1,4 +1,6 @@
 import Answers from "@rahoot/web/features/game/components/states/Answers"
+import BlindCodingAnswer from "@rahoot/web/features/game/components/states/BlindCodingAnswer"
+import BlindCodingResponses from "@rahoot/web/features/game/components/states/BlindCodingResponses"
 import CodeAnswer from "@rahoot/web/features/game/components/states/CodeAnswer"
 import CodeResponses from "@rahoot/web/features/game/components/states/CodeResponses"
 import Leaderboard from "@rahoot/web/features/game/components/states/Leaderboard"
@@ -45,6 +47,7 @@ export const GAME_STATE_COMPONENTS = {
   [STATUS.SHOW_RESULT]: Result,
   [STATUS.SHOW_PREPARED]: Prepared,
   [STATUS.REVERSE_WRITE_CODE]: CodeAnswer,
+  [STATUS.BLIND_CODING_WRITE]: BlindCodingAnswer,
 }
 
 export const GAME_STATE_COMPONENTS_MANAGER = {
@@ -54,6 +57,7 @@ export const GAME_STATE_COMPONENTS_MANAGER = {
   [STATUS.SHOW_LEADERBOARD]: Leaderboard,
   [STATUS.FINISHED]: Podium,
   [STATUS.REVERSE_SHOW_RESPONSES]: CodeResponses,
+  [STATUS.BLIND_CODING_SHOW_RESPONSES]: BlindCodingResponses,
 }
 
 export const SFX_ANSWERS_MUSIC = "/sounds/answersMusic.mp3"
@@ -73,6 +77,8 @@ export const MANAGER_SKIP_EVENTS = {
   [STATUS.SHOW_LEADERBOARD]: "manager:nextQuestion",
   [STATUS.REVERSE_WRITE_CODE]: "manager:abortQuiz",
   [STATUS.REVERSE_SHOW_RESPONSES]: "manager:showLeaderboard",
+  [STATUS.BLIND_CODING_WRITE]: "manager:abortQuiz",
+  [STATUS.BLIND_CODING_SHOW_RESPONSES]: "manager:showLeaderboard",
 } as const satisfies Partial<
   Record<keyof typeof GAME_STATE_COMPONENTS_MANAGER, string>
 >
@@ -97,4 +103,6 @@ export const MANAGER_SKIP_BTN = {
   [STATUS.WAIT]: null,
   [STATUS.REVERSE_WRITE_CODE]: "Skip",
   [STATUS.REVERSE_SHOW_RESPONSES]: "Next",
+  [STATUS.BLIND_CODING_WRITE]: "Skip",
+  [STATUS.BLIND_CODING_SHOW_RESPONSES]: "Next",
 }

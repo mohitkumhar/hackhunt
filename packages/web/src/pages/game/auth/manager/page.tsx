@@ -1,5 +1,6 @@
 import type { QuizzWithId } from "@rahoot/common/types/game"
 import type { ReverseQuizzWithId } from "@rahoot/common/types/game"
+import type { BlindCodingQuizzWithId } from "@rahoot/common/types/game"
 import type { GameMode } from "@rahoot/common/types/game"
 import { STATUS } from "@rahoot/common/types/game/status"
 import ManagerPassword from "@rahoot/web/features/game/components/create/ManagerPassword"
@@ -22,6 +23,7 @@ const ManagerAuthPage = () => {
   const [mode, setMode] = useState<GameMode | null>(null)
   const [quizzList, setQuizzList] = useState<QuizzWithId[]>([])
   const [reverseQuizzList, setReverseQuizzList] = useState<ReverseQuizzWithId[]>([])
+  const [blindCodingQuizzList, setBlindCodingQuizzList] = useState<BlindCodingQuizzWithId[]>([])
 
   useEvent("manager:quizzList", (quizzList) => {
     setIsAuth(true)
@@ -30,6 +32,10 @@ const ManagerAuthPage = () => {
 
   useEvent("manager:reverseQuizzList", (reverseList) => {
     setReverseQuizzList(reverseList)
+  })
+
+  useEvent("manager:blindCodingQuizzList", (blindList) => {
+    setBlindCodingQuizzList(blindList)
   })
 
   useEvent("manager:gameCreated", ({ gameId, inviteCode }) => {
@@ -49,6 +55,8 @@ const ManagerAuthPage = () => {
   const handleCreate = (quizzId: string) => {
     if (mode === "reverse_programming") {
       socket?.emit("game:createReverse", quizzId)
+    } else if (mode === "blind_coding") {
+      socket?.emit("game:createBlindCoding", quizzId)
     } else {
       socket?.emit("game:create", quizzId)
     }
@@ -64,9 +72,19 @@ const ManagerAuthPage = () => {
     return <SelectMode onSelect={handleModeSelect} />
   }
 
-  // Step 3: Quiz selection (for both modes)
+  // Step 3: Quiz selection (for all modes)
   if (mode === "quiz") {
     return <SelectQuizz quizzList={quizzList} onSelect={handleCreate} />
+  }
+
+  if (mode === "blind_coding") {
+    const blindAsQuizz: QuizzWithId[] = blindCodingQuizzList.map((bq) => ({
+      id: bq.id,
+      subject: bq.subject,
+      questions: [],
+    }))
+
+    return <SelectQuizz quizzList={blindAsQuizz} onSelect={handleCreate} />
   }
 
   // Reverse Programming mode - show reverse quizz list
@@ -80,3 +98,4 @@ const ManagerAuthPage = () => {
 }
 
 export default ManagerAuthPage
+

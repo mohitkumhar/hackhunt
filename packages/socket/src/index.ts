@@ -65,6 +65,7 @@ io.on("connection", (socket) => {
 
       socket.emit("manager:quizzList", Config.quizz())
       socket.emit("manager:reverseQuizzList", Config.reverseQuizz())
+      socket.emit("manager:blindCodingQuizzList", Config.blindCoding())
     } catch (error) {
       console.error("Failed to read game config:", error)
       socket.emit("manager:errorMessage", "Failed to read game config")
@@ -97,6 +98,20 @@ io.on("connection", (socket) => {
     }
 
     const game = new Game(io, socket, null, quizz, "reverse_programming")
+    registry.addGame(game)
+  })
+
+  socket.on("game:createBlindCoding", (quizzId) => {
+    const quizzList = Config.blindCoding()
+    const quizz = quizzList.find((q) => q.id === quizzId)
+
+    if (!quizz) {
+      socket.emit("game:errorMessage", "Blind coding challenge not found")
+
+      return
+    }
+
+    const game = new Game(io, socket, null, null, "blind_coding", quizz)
     registry.addGame(game)
   })
 
@@ -141,6 +156,12 @@ io.on("connection", (socket) => {
   socket.on("player:submitCode", ({ gameId, data }) =>
     withGame(gameId, socket, (game) =>
       game.submitCode(socket, data.code, data.output),
+    ),
+  )
+
+  socket.on("player:submitBlindCode", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.submitBlindCode(socket, data.code, data.language),
     ),
   )
 
