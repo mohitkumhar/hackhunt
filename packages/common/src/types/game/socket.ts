@@ -1,4 +1,5 @@
 import type {
+  BlindCodingQuizzWithId,
   GameUpdateQuestion,
   Player,
   QuizzWithId,
@@ -67,6 +68,7 @@ export interface ServerToClientEvents {
   "manager:errorMessage": (_message: string) => void
   "manager:playerKicked": (_playerId: string) => void
   "manager:reverseQuizzList": (_quizzList: ReverseQuizzWithId[]) => void
+  "manager:blindCodingQuizzList": (_quizzList: BlindCodingQuizzWithId[]) => void
 }
 
 export interface ClientToServerEvents {
@@ -93,6 +95,10 @@ export interface ClientToServerEvents {
 
   // Reverse programming
   "game:createReverse": (_quizzId: string) => void
+  "game:createBlindCoding": (_quizzId: string) => void
+  "player:submitBlindCode": (
+    _message: MessageWithoutStatus<{ code: string; language: string }>,
+  ) => void
 
   // Common
   disconnect: () => void

@@ -16,14 +16,13 @@ const Username = () => {
   const { gameId, login, setStatus } = usePlayerStore()
   const navigate = useNavigate()
   const [username, setUsername] = useState("")
-  const [teamName, setTeamName] = useState("")
 
   const handleLogin = () => {
     if (!gameId) {
       return
     }
 
-    socket?.emit("player:login", { gameId, data: { username, teamName } })
+    socket?.emit("player:login", { gameId, data: { username, teamName: "" } })
   }
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -41,11 +40,6 @@ const Username = () => {
 
   return (
     <Form>
-      <Input
-        onChange={(e) => setTeamName(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Team name"
-      />
       <Input
         onChange={(e) => setUsername(e.target.value)}
         onKeyDown={handleKeyDown}

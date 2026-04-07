@@ -6,7 +6,7 @@ import {
 } from "@rahoot/web/features/game/contexts/socketProvider"
 import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
 import { useMemo, useState } from "react"
-import QRCode from "react-qr-code"
+
 
 type Props = {
   data: ManagerStatusDataMap["SHOW_ROOM"]
@@ -102,24 +102,10 @@ const Room = ({ data: { text, inviteCode } }: Props) => {
 
   return (
     <section className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center px-2">
-      <div className="mb-10 flex flex-col-reverse items-center gap-3 md:flex-row md:items-stretch">
-        <div className="flex flex-col gap-3 md:flex-row">
-          <div className="game-pin-out flex flex-col justify-center rounded-md bg-white px-6 py-4">
-            <p className="text-2xl font-bold">Join the game at</p>
-            <p className="w-60 text-lg font-extrabold break-all">{webUrl}</p>
-          </div>
-
-          <div className="game-pin-in flex flex-col justify-center rounded-md bg-white px-6 py-4 text-center md:rounded-l-none md:text-left">
-            <p className="text-2xl font-bold">Game PIN:</p>
-            <p className="text-6xl font-extrabold">{inviteCode}</p>
-          </div>
-        </div>
-
-        <div className="flex h-40 shrink-0 rounded-md bg-white p-2">
-          <QRCode
-            className="h-auto w-auto"
-            value={`${webUrl}?pin=${inviteCode}`}
-          />
+      <div className="mb-10 flex flex-col items-center gap-3">
+        <div className="game-pin-in flex flex-col justify-center rounded-md bg-white px-8 py-4 text-center shadow-lg">
+          <p className="text-2xl font-bold text-gray-800">Game PIN:</p>
+          <p className="text-6xl font-extrabold tracking-widest text-black">{inviteCode}</p>
         </div>
       </div>
 
@@ -130,11 +116,6 @@ const Room = ({ data: { text, inviteCode } }: Props) => {
       <div className="mb-6 flex items-center justify-center rounded-full bg-black/40 px-6 py-3">
         <span className="text-2xl font-bold text-white drop-shadow-md">
           Players Joined: {totalPlayers}
-          {teamGroups.length > 0 && (
-            <span className="ml-3 text-lg font-medium opacity-80">
-              · {teamGroups.length} {teamGroups.length === 1 ? "Team" : "Teams"}
-            </span>
-          )}
         </span>
       </div>
 

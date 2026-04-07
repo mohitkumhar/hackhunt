@@ -2,7 +2,7 @@
 import { Answer, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
 import { Server, Socket } from "@rahoot/common/types/game/socket"
 import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
-import { usernameValidator, teamNameValidator } from "@rahoot/common/validators/auth"
+import { usernameValidator } from "@rahoot/common/validators/auth"
 import Registry from "@rahoot/socket/services/registry"
 import { createInviteCode, timeToPoint } from "@rahoot/socket/utils/game"
 import sleep from "@rahoot/socket/utils/sleep"
@@ -47,9 +47,11 @@ class Game {
 
   gameMode: GameMode
   reverseQuizz: ReverseQuizz | null
+  blindCodingQuizz: BlindCodingQuizz | null
   codeSubmissions: { playerId: string; code: string; output: string; correct: boolean; points: number }[]
+  blindCodeSubmissions: { playerId: string; username: string; code: string; language: string; submitted: boolean }[]
 
-  constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz") {
+  constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null) {
     if (!io) {
       throw new Error("Socket server not initialized")
     }
@@ -86,7 +88,9 @@ class Game {
 
     this.gameMode = mode
     this.reverseQuizz = reverseQuizz || null
+    this.blindCodingQuizz = blindCodingQuizz || null
     this.codeSubmissions = []
+    this.blindCodeSubmissions = []
 
     // For reverse programming mode, create a compatible quizz object
     if (mode === "reverse_programming" && reverseQuizz) {
@@ -94,6 +98,17 @@ class Game {
         subject: reverseQuizz.subject,
         questions: reverseQuizz.questions.map((q) => ({
           question: `Output: ${q.output}`,
+          answers: [],
+          solution: 0,
+          cooldown: q.cooldown,
+          time: q.time,
+        })),
+      }
+    } else if (mode === "blind_coding" && blindCodingQuizz) {
+      this.quizz = {
+        subject: blindCodingQuizz.subject,
+        questions: blindCodingQuizz.questions.map((q) => ({
+          question: q.title,
           answers: [],
           solution: 0,
           cooldown: q.cooldown,
@@ -164,13 +179,8 @@ class Game {
       return
     }
 
-    const teamNameResult = teamNameValidator.safeParse(teamName)
-
-    if (teamNameResult.error) {
-      socket.emit("game:errorMessage", teamNameResult.error.issues[0].message)
-
-      return
-    }
+    // Removed team name validation, defaulting to username if empty
+    const finalTeamName = teamName.trim() ? teamName : username
 
     socket.join(this.gameId)
 
@@ -179,7 +189,7 @@ class Game {
       clientId: socket.handshake.auth.clientId,
       connected: true,
       username,
-      teamName,
+      teamName: finalTeamName,
       points: 0,
     }
 
@@ -364,6 +374,8 @@ class Game {
 
     if (this.gameMode === "reverse_programming") {
       this.newReverseRound()
+    } else if (this.gameMode === "blind_coding") {
+      this.newBlindCodingRound()
     } else {
       this.newRound()
     }
@@ -589,6 +601,174 @@ class Game {
     this.codeSubmissions = []
   }
 
+  async newBlindCodingRound() {
+    if (!this.blindCodingQuizz) {
+      return
+    }
+
+    const question = this.blindCodingQuizz.questions[this.round.currentQuestion]
+
+    if (!this.started) {
+      return
+    }
+
+    this.playerStatus.clear()
+    this.blindCodeSubmissions = []
+
+    this.io.to(this.gameId).emit("game:updateQuestion", {
+      current: this.round.currentQuestion + 1,
+      total: this.blindCodingQuizz.questions.length,
+    })
+
+    this.managerStatus = null
+    this.broadcastStatus(STATUS.SHOW_PREPARED, {
+      totalAnswers: 0,
+      questionNumber: this.round.currentQuestion + 1,
+    })
+
+    await sleep(2)
+
+    if (!this.started) {
+      return
+    }
+
+    this.broadcastStatus(STATUS.SHOW_QUESTION, {
+      question: question.title,
+      cooldown: question.cooldown,
+    })
+
+    await sleep(question.cooldown)
+
+    if (!this.started) {
+      return
+    }
+
+    this.round.startTime = Date.now()
+
+    this.broadcastStatus(STATUS.BLIND_CODING_WRITE, {
+      title: question.title,
+      description: question.description,
+      examples: question.examples,
+      constraints: question.constraints,
+      language: question.language,
+      time: question.time,
+      totalPlayer: this.players.length,
+    })
+
+    await this.startCooldown(question.time)
+
+    if (!this.started) {
+      return
+    }
+
+    this.showBlindCodingResults(question)
+  }
+
+  submitBlindCode(socket: Socket, code: string, language: string) {
+    const player = this.players.find((player) => player.id === socket.id)
+
+    if (!player) {
+      return
+    }
+
+    if (this.blindCodeSubmissions.find((s) => s.playerId === socket.id)) {
+      return
+    }
+
+    if (!this.blindCodingQuizz) {
+      return
+    }
+
+    this.blindCodeSubmissions.push({
+      playerId: player.id,
+      username: player.username,
+      code,
+      language,
+      submitted: true,
+    })
+
+    this.sendStatus(socket.id, STATUS.WAIT, {
+      text: "Code submitted! Waiting for other players...",
+    })
+
+    socket
+      .to(this.gameId)
+      .emit("game:playerAnswer", this.blindCodeSubmissions.length)
+
+    this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
+
+    if (this.blindCodeSubmissions.length === this.players.length) {
+      this.abortCooldown()
+    }
+  }
+
+  showBlindCodingResults(question: any) {
+    const oldLeaderboard =
+      this.leaderboard.length === 0
+        ? this.players.map((p) => ({ ...p }))
+        : this.leaderboard.map((p) => ({ ...p }))
+
+    // In blind coding, everyone who submitted gets points based on time
+    const sortedPlayers = this.players
+      .map((player) => {
+        const submission = this.blindCodeSubmissions.find(
+          (s) => s.playerId === player.id,
+        )
+
+        const didSubmit = submission ? submission.submitted : false
+        // Points are decided manually later ("tell them directly"), so don't award speed points
+        const points = 0
+
+        player.points += points
+
+        return { ...player, lastCorrect: didSubmit, lastPoints: points }
+      })
+      .sort((a, b) => b.points - a.points)
+
+    this.players = sortedPlayers
+
+    // Build submission list for manager
+    const submissions = this.players.map((player) => {
+      const submission = this.blindCodeSubmissions.find(
+        (s) => s.playerId === player.id,
+      )
+      return {
+        username: player.username,
+        code: submission ? submission.code : "",
+        language: submission ? submission.language : "",
+        submitted: submission ? submission.submitted : false,
+      }
+    })
+
+    sortedPlayers.forEach((player, index) => {
+      const rank = index + 1
+      const aheadPlayer = sortedPlayers[index - 1]
+
+      this.sendStatus(player.id, STATUS.SHOW_RESULT, {
+        correct: player.lastCorrect,
+        message: player.lastCorrect ? "Code submitted!" : "Time's up!",
+        points: player.lastPoints,
+        myPoints: player.points,
+        rank,
+        aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
+      })
+    })
+
+    this.sendStatus(this.manager.id, STATUS.BLIND_CODING_SHOW_RESPONSES, {
+      title: question.title,
+      description: question.description,
+      language: question.language,
+      submissions,
+      totalSubmitted: this.blindCodeSubmissions.length,
+      totalPlayers: this.players.length,
+    })
+
+    this.leaderboard = sortedPlayers
+    this.tempOldLeaderboard = oldLeaderboard
+
+    this.blindCodeSubmissions = []
+  }
+
   showResults(question: any) {
     const oldLeaderboard =
       this.leaderboard.length === 0
@@ -705,6 +885,17 @@ class Game {
       return
     }
 
+    if (this.gameMode === "blind_coding" && this.blindCodingQuizz) {
+      if (!this.blindCodingQuizz.questions[this.round.currentQuestion + 1]) {
+        return
+      }
+
+      this.round.currentQuestion += 1
+      this.newBlindCodingRound()
+
+      return
+    }
+
     if (!this.quizz.questions[this.round.currentQuestion + 1]) {
       return
     }
@@ -728,7 +919,9 @@ class Game {
   showLeaderboard() {
     const totalQuestions = this.gameMode === "reverse_programming" && this.reverseQuizz
       ? this.reverseQuizz.questions.length
-      : this.quizz.questions.length
+      : this.gameMode === "blind_coding" && this.blindCodingQuizz
+        ? this.blindCodingQuizz.questions.length
+        : this.quizz.questions.length
 
     const isLastRound =
       this.round.currentQuestion + 1 === totalQuestions
