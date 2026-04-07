@@ -247,25 +247,34 @@ return
         {/* Code Editor */}
         <div className="w-full flex-1 flex flex-col min-h-[300px]">
           <div className="rounded-lg bg-gray-800 shadow-lg flex flex-col h-full overflow-hidden">
-            <div className="flex flex-col bg-gray-700 px-3 py-3 border-b border-gray-600 gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-gray-300">
-                Programming Language
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(LANGUAGES).map(([key, lang]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleLangSelect(key as SupportedLanguage)}
+            {/* macOS styled header */}
+            <div className="flex items-center bg-[#1e1e24] px-4 py-3 border-b border-gray-700 select-none">
+              <div className="flex gap-2 mr-6">
+                <div className="w-3.5 h-3.5 rounded-full bg-red-500"></div>
+                <div className="w-3.5 h-3.5 rounded-full bg-yellow-500"></div>
+                <div className="w-3.5 h-3.5 rounded-full bg-green-500"></div>
+              </div>
+              <div className="flex items-center text-gray-300 gap-2">
+                <span className="font-semibold tracking-wide text-[15px]">Blind Editor —</span>
+                <div className="relative">
+                  <select
+                    className="appearance-none bg-transparent text-white font-bold outline-none cursor-pointer border border-transparent hover:border-gray-600 rounded px-2 py-1 disabled:opacity-50 pr-7 text-[15px]"
+                    value={selectedLang}
+                    onChange={(e) => handleLangSelect(e.target.value as SupportedLanguage)}
                     disabled={isSubmitting}
-                    className={`px-4 py-1.5 text-sm font-bold rounded-full transition-all ${
-                      selectedLang === key
-                        ? "bg-primary text-white shadow-[0_0_10px_rgba(var(--color-primary),0.5)]"
-                        : "bg-gray-800 text-gray-400 hover:bg-gray-600 hover:text-white border border-gray-700"
-                    }`}
                   >
-                    {lang.name}
-                  </button>
-                ))}
+                    {Object.entries(LANGUAGES).map(([key, lang]) => (
+                      <option key={key} value={key} className="bg-[#2a2a35] text-white">
+                        {lang.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center px-1 text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <textarea
