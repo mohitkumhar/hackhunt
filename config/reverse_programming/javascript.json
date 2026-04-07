@@ -1,10 +1,10 @@
 {
-  "subject": "JavaScript Basics - Reverse Programming",
+  "subject": "JavaScript Reverse Programming",
   "questions": [
     {
-      "output": "Hello, JavaScript!",
+      "output": "Hello World",
       "language": "javascript",
-      "expectedCode": "console.log('Hello, JavaScript!');",
+      "expectedCode": "console.log(\"Hello World\");",
       "hint": "Use console.log() to print to the standard output",
       "cooldown": 5,
       "time": 90

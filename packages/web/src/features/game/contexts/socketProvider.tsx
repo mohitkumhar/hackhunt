@@ -36,14 +36,14 @@ const SocketContext = createContext<SocketContextValue>({
 
 const getClientId = (): string => {
   try {
-    const stored = localStorage.getItem("client_id")
+    const stored = sessionStorage.getItem("client_id")
 
     if (stored) {
       return stored
     }
 
     const newId = uuid()
-    localStorage.setItem("client_id", newId)
+    sessionStorage.setItem("client_id", newId)
 
     return newId
   } catch {

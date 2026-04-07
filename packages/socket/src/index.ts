@@ -5,10 +5,103 @@ import Game from "@rahoot/socket/services/game"
 import Registry from "@rahoot/socket/services/registry"
 import { withGame } from "@rahoot/socket/utils/game"
 import { Server as ServerIO } from "socket.io"
+import { createServer } from "http"
 
 const WS_PORT = 3001
 
-const io: Server = new ServerIO({
+const WANDBOX_API = "https://wandbox.org/api/compile.json"
+
+// Map our language names to Wandbox compiler IDs (exact names from Wandbox API)
+const COMPILER_MAP: Record<string, { compiler: string; options?: string }> = {
+  python:     { compiler: "cpython-3.12.7" },
+  javascript: { compiler: "nodejs-20.17.0" },
+  "c++":      { compiler: "gcc-13.2.0" },
+  c:          { compiler: "gcc-13.2.0-c" },
+  java:       { compiler: "openjdk-jdk-22+36" },
+  go:         { compiler: "go-1.23.2" },
+}
+
+const httpServer = createServer((req, res) => {
+  if (req.method === "POST" && req.url === "/api/execute") {
+    let body = ""
+    req.on("data", (chunk: Buffer) => { body += chunk.toString() })
+    req.on("end", async () => {
+      try {
+        // Parse the Piston-format request from the frontend
+        const pistonReq = JSON.parse(body)
+        const lang = pistonReq.language as string
+        const code = pistonReq.files?.[0]?.content || ""
+        const compilerInfo = COMPILER_MAP[lang]
+
+        if (!compilerInfo) {
+          res.writeHead(400, { "Content-Type": "application/json" })
+          res.end(JSON.stringify({ run: { stdout: "", stderr: `Unsupported language: ${lang}` }, compile: null }))
+          return
+        }
+
+        // Build the Wandbox request
+        const wandboxBody: Record<string, string> = {
+          code,
+          compiler: compilerInfo.compiler,
+        }
+        if (compilerInfo.options) {
+          wandboxBody["compiler-option-raw"] = compilerInfo.options
+        }
+
+        console.log(`Executing ${lang} code via Wandbox (${compilerInfo.compiler})...`)
+
+        const response = await fetch(WANDBOX_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(wandboxBody),
+        })
+
+        if (!response.ok) {
+          const errText = await response.text()
+          console.error(`Wandbox returned ${response.status}: ${errText}`)
+          res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" })
+          res.end(JSON.stringify({
+            compile: null,
+            run: { stdout: "", stderr: `Execution engine error (${response.status})`, signal: null, code: 1 },
+          }))
+          return
+        }
+
+        const result = await response.json() as Record<string, string>
+
+        console.log(`Wandbox raw response:`, JSON.stringify(result, null, 2))
+
+        // Translate Wandbox response → Piston response format
+        // Only treat as compile error if there's no program output AND status is non-zero
+        const hasCompileError = result.compiler_error && result.status !== "0" && !result.program_output
+        const pistonResponse = {
+          compile: hasCompileError ? { code: 1, output: result.compiler_error || "" } : null,
+          run: {
+            stdout: result.program_output || "",
+            stderr: result.program_error || "",
+            signal: result.signal || null,
+            code: parseInt(result.status || "0", 10),
+          },
+        }
+
+        console.log(`Translated stdout: [${pistonResponse.run.stdout}]`)
+
+        res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" })
+        res.end(JSON.stringify(pistonResponse))
+      } catch (err: unknown) {
+        console.error("Execution API error:", err)
+        res.writeHead(502, { "Content-Type": "application/json" })
+        res.end(JSON.stringify({ message: "Failed to reach execution engine" }))
+      }
+    })
+    return
+  }
+
+  res.writeHead(404)
+  res.end()
+})
+
+const io: Server = new ServerIO(httpServer, {
   path: "/ws",
 })
 Config.init()
@@ -16,7 +109,7 @@ Config.init()
 const registry = Registry.getInstance()
 
 console.log(`Socket server running on port ${WS_PORT}`)
-io.listen(WS_PORT)
+httpServer.listen(WS_PORT)
 
 io.on("connection", (socket) => {
   console.log(
