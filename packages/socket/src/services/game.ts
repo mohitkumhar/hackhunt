@@ -550,8 +550,20 @@ class Game {
       points,
     })
 
-    this.sendStatus(socket.id, STATUS.WAIT, {
-      text: "Waiting for other players to submit",
+    // Immediately show the result to the submitting player (speed-based competition)
+    if (isCorrect) {
+      player.points += points
+    }
+
+    this.sendStatus(socket.id, STATUS.SHOW_RESULT, {
+      correct: isCorrect,
+      message: isCorrect ? "Correct output! 🎉" : "Wrong output ❌",
+      points,
+      myPoints: player.points,
+      rank: 0,
+      aheadOfMe: null,
+      hideRank: true,
+      hidePoints: true,
     })
 
     socket
@@ -574,6 +586,8 @@ class Game {
     const totalCorrect = this.codeSubmissions.filter((s) => s.correct).length
     const totalWrong = this.codeSubmissions.filter((s) => !s.correct).length
 
+    // Points are already awarded at submission time (instant feedback),
+    // so here we only compute rankings without re-adding points.
     const sortedPlayers = this.players
       .map((player) => {
         const submission = this.codeSubmissions.find(
@@ -582,8 +596,6 @@ class Game {
 
         const isCorrect = submission ? submission.correct : false
         const points = submission && isCorrect ? Math.round(submission.points) : 0
-
-        player.points += points
 
         return { ...player, lastCorrect: isCorrect, lastPoints: points }
       })
@@ -602,6 +614,8 @@ class Game {
         myPoints: player.points,
         rank,
         aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
+        hideRank: true,
+        hidePoints: true,
       })
     })
 
@@ -1002,7 +1016,7 @@ class Game {
 
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
-        top: this.leaderboard.slice(0, 3),
+        top: this.leaderboard,
         blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined
       })
 
@@ -1014,8 +1028,8 @@ class Game {
       : this.leaderboard
 
     this.sendStatus(this.manager.id, STATUS.SHOW_LEADERBOARD, {
-      oldLeaderboard: oldLeaderboard.slice(0, 5),
-      leaderboard: this.leaderboard.slice(0, 5),
+      oldLeaderboard: oldLeaderboard,
+      leaderboard: this.leaderboard,
     })
 
     this.tempOldLeaderboard = null

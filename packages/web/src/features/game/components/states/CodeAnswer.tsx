@@ -1,3 +1,4 @@
+/* eslint-disable max-depth, no-nested-ternary */
 import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
 import {
   useEvent,
@@ -45,7 +46,7 @@ const LANGUAGES: Record<
   java: {
     name: "Java",
     version: "15.0.2",
-    boilerplate: `public class Main {\n    public static void main(String[] args) {\n        // Write your code here\n        \n    }\n}`,
+    boilerplate: `class Main {\n    public static void main(String[] args) {\n        // Write your code here\n        \n    }\n}`,
   },
   go: {
     name: "Go",
@@ -121,55 +122,35 @@ const CodeAnswer = ({
 
     let playerOutput = ""
 
-    const PISTON_ENDPOINTS = [
-      "/api/execute",
-      "https://emkc.org/api/v2/piston/execute",
-    ]
-
     const requestBody = JSON.stringify({
       language: selectedLang,
       version: LANGUAGES[selectedLang].version,
       files: [
         {
+          name: selectedLang === "java" ? "Main.java" : undefined,
           content: code,
         },
       ],
     })
 
     try {
-      let response: Response | null = null
-      let lastError = ""
+      const controller = new AbortController()
+      // Increased to 30s for Java
+      const timeout = setTimeout(() => controller.abort(), 30000) 
 
-      for (const endpoint of PISTON_ENDPOINTS) {
-        try {
-          const controller = new AbortController()
-          const timeout = setTimeout(() => controller.abort(), 30000) // Increased to 30s for Java
+      const response = await fetch("/api/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+        signal: controller.signal,
+      })
 
-          response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: requestBody,
-            signal: controller.signal,
-          })
+      clearTimeout(timeout)
 
-          clearTimeout(timeout)
-
-          if (response.ok) {
-            break
-          }
-
-          lastError = `API returned status ${response.status}`
-          response = null
-        } catch {
-          lastError = "Network error or timeout"
-          response = null
-        }
-      }
-
-      if (!response) {
-        throw new Error(`Failed to execute code: ${lastError}`)
+      if (!response.ok) {
+        throw new Error(`Execution engine error: ${response.status}`)
       }
 
       const result = await response.json()
@@ -177,20 +158,26 @@ const CodeAnswer = ({
       if (result.compile && result.compile.code !== 0) {
         setRunError(`Compilation Error:\n${result.compile.output}`)
         setIsSubmitting(false)
-        return
+
+        
+return
       }
 
       if (result.run && result.run.signal) {
         setRunError(`Runtime Error (${result.run.signal}):\n${result.run.stderr || ""}`)
         setIsSubmitting(false)
-        return
+
+        
+return
       }
 
       // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
       if (result.run && result.run.code !== 0 && !result.run.stdout) {
         setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
         setIsSubmitting(false)
-        return
+
+        
+return
       }
 
       playerOutput = result.run.stdout || ""
@@ -202,7 +189,9 @@ const CodeAnswer = ({
     } catch (err: unknown) {
       setRunError(err instanceof Error ? err.message : "Execution failed")
       setIsSubmitting(false)
-      return
+
+      
+return
     }
 
     setSubmitted(true)
@@ -244,7 +233,7 @@ const CodeAnswer = ({
         <h2 className="text-center text-2xl font-bold text-white drop-shadow-lg md:text-3xl">
           Code Submitted!
         </h2>
-        <p className="text-lg text-white/80">Waiting for other players...</p>
+        <p className="text-lg text-white/80">Your result is on the way...</p>
       </div>
     )
   }
@@ -289,7 +278,7 @@ const CodeAnswer = ({
         <div className="w-full lg:w-[68%] flex-1 flex flex-col min-h-[450px]">
           <div className="rounded-xl bg-[#0d0d12] shadow-2xl flex flex-col h-full overflow-hidden border border-gray-800">
             
-            {/* macOS styled header */}
+            {/* MacOS styled header */}
             <div className="flex items-center justify-between bg-[#1e1e24] px-4 py-3 border-b border-gray-700 select-none">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1.5 mr-4">
