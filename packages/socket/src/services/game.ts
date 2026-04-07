@@ -607,6 +607,20 @@ class Game {
     this.tempOldLeaderboard = oldLeaderboard
 
     this.codeSubmissions = []
+
+    // Auto transition
+    setTimeout(() => {
+      if (!this.started || this.gameMode !== "reverse_programming" || !this.reverseQuizz) {
+        return
+      }
+
+      if (this.reverseQuizz.questions[this.round.currentQuestion + 1]) {
+        this.round.currentQuestion += 1
+        this.newReverseRound()
+      } else {
+        this.showLeaderboard()
+      }
+    }, 4000)
   }
 
   async newBlindCodingRound() {
@@ -759,6 +773,7 @@ class Game {
         myPoints: player.points,
         rank,
         aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
+        hideRank: true,
       })
     })
 
@@ -775,6 +790,22 @@ class Game {
     this.tempOldLeaderboard = oldLeaderboard
 
     this.blindCodeSubmissions = []
+
+    // Automatically transition to the next question after a 4-second delay
+    setTimeout(() => {
+      // Re-check game state validity
+      if (!this.started || this.gameMode !== "blind_coding" || !this.blindCodingQuizz) {
+        return
+      }
+
+      if (this.blindCodingQuizz.questions[this.round.currentQuestion + 1]) {
+        this.round.currentQuestion += 1
+        this.newBlindCodingRound()
+      } else {
+        // Automatically show the leaderboard if it's the end of the test
+        this.showLeaderboard()
+      }
+    }, 4000)
   }
 
   showResults(question: any) {
@@ -839,6 +870,20 @@ class Game {
     this.tempOldLeaderboard = oldLeaderboard
 
     this.round.playersAnswers = []
+
+    // Auto transition
+    setTimeout(() => {
+      if (!this.started || this.gameMode !== "quiz" || !this.quizz) {
+        return
+      }
+
+      if (this.quizz.questions[this.round.currentQuestion + 1]) {
+        this.round.currentQuestion += 1
+        this.newRound()
+      } else {
+        this.showLeaderboard()
+      }
+    }, 4000)
   }
   selectAnswer(socket: Socket, answerId: number) {
     const player = this.players.find((player) => player.id === socket.id)

@@ -39,6 +39,7 @@ export type CommonStatusDataMap = {
     myPoints: number
     rank: number
     aheadOfMe: string | null
+    hideRank?: boolean
   }
   WAIT: { text: string }
   FINISHED: { subject: string; top: Player[] }
