@@ -1,5 +1,4 @@
-/* eslint-disable max-lines, max-params */
-import { Answer, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
+import { Answer, BlindCodingQuizz, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
 import { Server, Socket } from "@rahoot/common/types/game/socket"
 import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
 import { usernameValidator } from "@rahoot/common/validators/auth"
@@ -50,6 +49,16 @@ class Game {
   blindCodingQuizz: BlindCodingQuizz | null
   codeSubmissions: { playerId: string; code: string; output: string; correct: boolean; points: number }[]
   blindCodeSubmissions: { playerId: string; username: string; code: string; language: string; submitted: boolean }[]
+  allBlindCodeSubmissions: {
+    question: string
+    language: string
+    submissions: {
+      username: string
+      code: string
+      language: string
+      submitted: boolean
+    }[]
+  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null) {
     if (!io) {
@@ -91,6 +100,7 @@ class Game {
     this.blindCodingQuizz = blindCodingQuizz || null
     this.codeSubmissions = []
     this.blindCodeSubmissions = []
+    this.allBlindCodeSubmissions = []
 
     // For reverse programming mode, create a compatible quizz object
     if (mode === "reverse_programming" && reverseQuizz) {
@@ -608,6 +618,20 @@ class Game {
     this.tempOldLeaderboard = oldLeaderboard
 
     this.codeSubmissions = []
+
+    // Auto transition
+    setTimeout(() => {
+      if (!this.started || this.gameMode !== "reverse_programming" || !this.reverseQuizz) {
+        return
+      }
+
+      if (this.reverseQuizz.questions[this.round.currentQuestion + 1]) {
+        this.round.currentQuestion += 1
+        this.newReverseRound()
+      } else {
+        this.showLeaderboard()
+      }
+    }, 4000)
   }
 
   async newBlindCodingRound() {
@@ -725,8 +749,8 @@ class Game {
         )
 
         const didSubmit = submission ? submission.submitted : false
-        // Points are decided manually later ("tell them directly"), so don't award speed points
-        const points = 0
+        // Award points for speed, but hide it in Result.tsx for blind coding
+        const points = didSubmit ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
 
         player.points += points
 
@@ -760,6 +784,8 @@ class Game {
         myPoints: player.points,
         rank,
         aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
+        hideRank: true,
+        hidePoints: true,
       })
     })
 
@@ -772,10 +798,32 @@ class Game {
       totalPlayers: this.players.length,
     })
 
+    this.allBlindCodeSubmissions.push({
+      question: question.title,
+      language: question.language,
+      submissions,
+    })
+
     this.leaderboard = sortedPlayers
     this.tempOldLeaderboard = oldLeaderboard
 
     this.blindCodeSubmissions = []
+
+    // Automatically transition to the next question after a 4-second delay
+    setTimeout(() => {
+      // Re-check game state validity
+      if (!this.started || this.gameMode !== "blind_coding" || !this.blindCodingQuizz) {
+        return
+      }
+
+      if (this.blindCodingQuizz.questions[this.round.currentQuestion + 1]) {
+        this.round.currentQuestion += 1
+        this.newBlindCodingRound()
+      } else {
+        // Automatically show the leaderboard if it's the end of the test
+        this.showLeaderboard()
+      }
+    }, 4000)
   }
 
   showResults(question: any) {
@@ -840,6 +888,20 @@ class Game {
     this.tempOldLeaderboard = oldLeaderboard
 
     this.round.playersAnswers = []
+
+    // Auto transition
+    setTimeout(() => {
+      if (!this.started || this.gameMode !== "quiz" || !this.quizz) {
+        return
+      }
+
+      if (this.quizz.questions[this.round.currentQuestion + 1]) {
+        this.round.currentQuestion += 1
+        this.newRound()
+      } else {
+        this.showLeaderboard()
+      }
+    }, 4000)
   }
   selectAnswer(socket: Socket, answerId: number) {
     const player = this.players.find((player) => player.id === socket.id)
@@ -941,6 +1003,7 @@ class Game {
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
         top: this.leaderboard.slice(0, 3),
+        blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined
       })
 
       return

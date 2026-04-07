@@ -1,4 +1,7 @@
-import type { GameMode, QuizzWithId, ReverseQuizzWithId } from "@rahoot/common/types/game"
+import type { QuizzWithId } from "@rahoot/common/types/game"
+import type { ReverseQuizzWithId } from "@rahoot/common/types/game"
+import type { BlindCodingQuizzWithId } from "@rahoot/common/types/game"
+import type { GameMode } from "@rahoot/common/types/game"
 import { STATUS } from "@rahoot/common/types/game/status"
 import ManagerPassword from "@rahoot/web/features/game/components/create/ManagerPassword"
 import SelectMode from "@rahoot/web/features/game/components/create/SelectMode"
