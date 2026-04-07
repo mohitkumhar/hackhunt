@@ -5,3 +5,8 @@ services:
       - "3000:3000"
     volumes:
       - ./config:/app/config
+
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
