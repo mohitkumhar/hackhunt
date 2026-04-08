@@ -8,6 +8,7 @@ import { mkdtemp, rm, writeFile } from "fs/promises"
 import { tmpdir } from "os"
 import { join } from "path"
 import { Server as ServerIO } from "socket.io"
+import { app } from "./api";
 import { createServer } from "http"
 import { spawn } from "child_process"
 
