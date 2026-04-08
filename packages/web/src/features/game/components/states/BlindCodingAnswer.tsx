@@ -199,6 +199,9 @@ const BlindCodingAnswer = ({
                 <span className="rounded-full bg-red-500/20 px-3 py-0.5 text-xs font-bold text-red-400 animate-pulse">
                   👁️ BLIND MODE
                 </span>
+                <span className="rounded-full bg-white/10 px-3 py-0.5 text-xs font-bold text-white">
+                  ⏱ {String(Math.floor(cooldown / 3600)).padStart(2, "0")}:{String(Math.floor((cooldown % 3600) / 60)).padStart(2, "0")}:{String(cooldown % 60).padStart(2, "0")}
+                </span>
                 <span className="text-xs text-gray-500">
                   {charCount} chars
                 </span>
@@ -268,11 +271,7 @@ const BlindCodingAnswer = ({
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-3 flex justify-between gap-2 text-lg font-bold text-white">
-          <div className="flex flex-col items-center rounded-full bg-black/40 px-4 text-lg font-bold">
-            <span className="translate-y-1 text-sm">Time</span>
-            <span>{cooldown}</span>
-          </div>
+        <div className="mt-3 flex justify-end gap-2 text-lg font-bold text-white">
           <div className="flex flex-col items-center rounded-full bg-black/40 px-4 text-lg font-bold">
             <span className="translate-y-1 text-sm">Submitted</span>
             <span>
