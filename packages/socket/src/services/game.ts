@@ -785,7 +785,10 @@ class Game {
         rank,
         aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
         hideRank: true,
+<<<<<<< HEAD
         hidePoints: true,
+=======
+>>>>>>> 90c3ede (UPdated the next button bug)
       })
     })
 
