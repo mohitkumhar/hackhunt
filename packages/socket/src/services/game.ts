@@ -982,7 +982,7 @@ class Game {
 
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
-        top: this.leaderboard,
+        top: this.leaderboard.slice(0, 3),
         blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined,
         blindPlayerResults,
       })
