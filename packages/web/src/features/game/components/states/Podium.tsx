@@ -96,35 +96,102 @@ const Podium = ({ data: { subject, top, blindPlayerResults } }: Props) => {
           {subject}
         </h2>
 
+        <div
+          className={clsx(
+            "w-full max-w-5xl bg-[#1a140b]/90 shadow-2xl rounded-xl border border-[#ff9900]/20 overflow-hidden mb-12 flex-1 flex flex-col transition-all duration-1000",
+            apparition >= 2 ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+          )}
+        >
+          <div className="flex items-center px-4 md:px-8 py-3 sm:py-4 bg-black/60 border-b border-[#ff9900]/20 text-[10px] sm:text-xs md:text-sm font-bold text-[#ff9900] uppercase tracking-widest shrink-0">
+            <div className="w-20 sm:w-24 md:w-32 text-center text-xs md:text-sm">Rank</div>
+            <div className="flex-1 px-2 sm:px-4">Player Name</div>
+            <div className="w-20 sm:w-24 md:w-32 text-right">Total Points</div>
+          </div>
+          
+          <div className="flex flex-col flex-1 overflow-y-auto custom-scrollbar">
+            {top.map((item, index) => {
+              const rank = index + 1;
+              const isFirst = rank === 1;
+              const isSecond = rank === 2;
+              const isThird = rank === 3;
+              
+              return (
+                <div
+                  key={item.id}
+                  className={clsx(
+                    "flex items-center px-4 md:px-8 py-3 sm:py-4 border-b border-white/5 hover:bg-[#ff9900]/20 transition-colors group",
+                    isFirst && "bg-[#ff9900]/10 border-l-4 border-l-[#fde047]",
+                    isSecond && "bg-white/5 border-l-4 border-l-[#cbd5e1]",
+                    isThird && "bg-[#d97706]/10 border-l-4 border-l-[#d97706]"
+                  )}
+                >
+                  <div className="w-20 sm:w-24 md:w-32 flex flex-col items-center justify-center gap-1 group-hover:scale-110 transition-transform">
+                    <span className="text-2xl sm:text-3xl">
+                      {isFirst && "🥇"}
+                      {isSecond && "🥈"}
+                      {isThird && "🥉"}
+                    </span>
+                    {(!isFirst && !isSecond && !isThird) && (
+                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-white/50 group-hover:text-[#ff9900] transition-colors">
+                        {rank.toString().padStart(2, '0')}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 px-2 sm:px-4 flex flex-col justify-center">
+                    <span className={clsx(
+                      "text-base sm:text-lg md:text-xl font-semibold transition-colors truncate",
+                      (isFirst || isSecond || isThird) ? "text-[#ff9900] font-bold" : "text-white/90 group-hover:text-white"
+                    )}>
+                      {item.username}
+                      {isFirst && <span className="ml-3 text-xs bg-[#fde047]/20 text-[#fde047] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">Winner</span>}
+                    </span>
+                    {item.teamName && (
+                      <span className="text-[10px] sm:text-xs md:text-sm font-medium text-white/40 mt-0.5 sm:mt-1 truncate">
+                        {item.teamName}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className={clsx(
+                    "w-20 sm:w-24 md:w-32 text-right text-lg sm:text-xl md:text-2xl font-bold transition-colors font-mono",
+                    (isFirst || isSecond || isThird) ? "text-white" : "text-[#ff9900] group-hover:text-[#ff9900]/80"
+                  )}>
+                    {item.points}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
         {blindPlayerResults && blindPlayerResults.length > 0 ? (
           <div className="w-full mt-8 mb-12 shrink-0">
-            <h3 className="text-2xl font-bold text-white mb-6 text-center">Leaderboard & Submissions</h3>
-            {blindPlayerResults.map((player, idx) => {
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">Blind Coding Review</h3>
+            {blindPlayerResults.map((player: any, idx: number) => {
               const rank = idx + 1
               const medalColors = ["from-yellow-400 to-amber-500", "from-zinc-300 to-zinc-400", "from-amber-600 to-amber-700"]
               const medalBg = rank <= 3 ? medalColors[rank - 1] : "from-gray-600 to-gray-700"
 
               return (
                 <div key={idx} className="mb-6 bg-gray-900/90 rounded-xl border border-white/20 backdrop-blur overflow-hidden">
-                  {/* Player header */}
-                  <div className="flex items-center gap-4 p-4 border-b border-white/10">
+                  <div className="flex flex-wrap items-center gap-4 p-4 border-b border-white/10">
                     <div className={`flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${medalBg} text-white font-bold text-lg shadow-lg shrink-0`}>
                       {rank}
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-[200px]">
                       <span className="text-xl font-bold text-white">{player.username}</span>
                     </div>
                     <div className={`px-3 py-1 rounded-full text-sm font-medium ${player.completionTime ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"}`}>
                       {player.completionTime ? `⏱ ${formatTime(player.completionTime)}` : "⏱ Did not finish"}
                     </div>
                     <div className="px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-300">
-                      {player.answers.filter(a => a.submitted).length} / {player.answers.length} answered
+                      {player.answers.filter((a: any) => a.submitted).length} / {player.answers.length} answered
                     </div>
                   </div>
 
-                  {/* Player's answers */}
                   <div className="p-4 grid grid-cols-1 gap-3">
-                    {player.answers.map((answer, aidx) => (
+                    {player.answers.map((answer: any, aidx: number) => (
                       <div key={aidx} className={`rounded-lg overflow-hidden ${answer.submitted ? "bg-gray-800" : "bg-red-900/30"}`}>
                         <div className="flex items-center justify-between px-4 py-2 bg-white/5">
                           <span className="text-yellow-400 font-semibold text-sm">Q{aidx + 1}: {answer.question}</span>
@@ -149,103 +216,49 @@ const Podium = ({ data: { subject, top, blindPlayerResults } }: Props) => {
             })}
           </div>
         ) : (
-          /* Fallback: standard podium for non-blind-coding modes */
-          <div
-            style={{ gridTemplateColumns: `repeat(${top.length}, 1fr)` }}
-            className={`grid w-full max-w-200 flex-1 items-end justify-center justify-self-end overflow-x-visible overflow-y-hidden`}
-          >
-            {top[1] && (
-              <div
-                className={clsx(
-                  "z-20 flex h-[50%] w-full translate-y-full flex-col items-center justify-center gap-3 opacity-0 transition-all",
-                  { "translate-y-0! opacity-100": apparition >= 2 },
-                )}
-              >
-                <p
-                  className={clsx(
-                    "overflow-visible text-center text-2xl font-bold whitespace-nowrap text-white drop-shadow-lg md:text-4xl",
-                    { "anim-balanced": apparition >= 4 },
-                  )}
-                >
-                  {top[1].username}
-                </p>
-                {top[1].teamName && (
-                  <p className="text-center text-sm font-medium text-white/70 drop-shadow-sm">
-                    {top[1].teamName}
-                  </p>
-                )}
-                <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
-                  <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-zinc-400 bg-zinc-500 text-3xl font-bold text-white drop-shadow-lg">
-                    <span className="drop-shadow-md">2</span>
-                  </p>
-                  <p className="text-2xl font-bold text-white drop-shadow-lg">
-                    {top[1].points}
-                  </p>
-                </div>
-              </div>
-            )}
+          blindSubmissionsHistory && blindSubmissionsHistory.length > 0 && (
+            <div className="w-full mt-12 bg-gray-900/90 p-6 rounded-xl border border-white/20 backdrop-blur shrink-0 mb-12">
+              <h3 className="text-2xl font-bold text-white mb-6">Review Submissions</h3>
+              {blindSubmissionsHistory.map((history: any, idx: number) => {
+                const submittedCount = history.submissions.filter((s: any) => s.submitted).length
+                const totalCount = history.submissions.length
 
-            <div
-              className={clsx(
-                "z-30 flex h-[60%] w-full translate-y-full flex-col items-center gap-3 opacity-0 transition-all",
-                { "translate-y-0! opacity-100": apparition >= 3 },
-                { "md:min-w-64": top.length < 2 },
-              )}
-            >
-              <p
-                className={clsx(
-                  "overflow-visible text-center text-2xl font-bold whitespace-nowrap text-white opacity-0 drop-shadow-lg md:text-4xl",
-                  { "anim-balanced opacity-100": apparition >= 4 },
-                )}
-              >
-                {top[0].username}
-              </p>
-              {top[0].teamName && (
-                <p className="text-center text-sm font-medium text-white/70 drop-shadow-sm">
-                  {top[0].teamName}
-                </p>
-              )}
-              <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
-                <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-400 bg-amber-300 text-3xl font-bold text-white drop-shadow-lg">
-                  <span className="drop-shadow-md">1</span>
-                </p>
-                <p className="text-2xl font-bold text-white drop-shadow-lg">
-                  {top[0].points}
-                </p>
-              </div>
+                return (
+                  <div key={idx} className="mb-8 last:mb-0">
+                    <h4 className="text-xl text-yellow-400 font-bold flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
+                      <span>Q{idx + 1}: {history.question}</span>
+                      <span className="text-sm font-medium bg-white/10 text-white/80 px-2 py-0.5 rounded-full">
+                        {submittedCount} / {totalCount} submitted
+                      </span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {history.submissions.map((sub: any, sidx: number) => (
+                        <div key={sidx} className={`p-4 rounded-lg shadow ${sub.submitted ? "bg-gray-800" : "bg-red-900/30"}`}>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold text-white">{sub.username}</span>
+                            {sub.submitted && (
+                              <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                                {sub.language || history.language}
+                              </span>
+                            )}
+                          </div>
+                          <div className="bg-gray-950 p-3 rounded overflow-x-auto max-h-48 overflow-y-auto">
+                            {sub.submitted ? (
+                              <pre className="text-sm text-green-400">
+                                {sub.code}
+                              </pre>
+                            ) : (
+                              <p className="text-sm text-red-400 italic">No code was submitted</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
-
-            {top[2] && (
-              <div
-                className={clsx(
-                  "z-10 flex h-[40%] w-full translate-y-full flex-col items-center gap-3 opacity-0 transition-all",
-                  { "translate-y-0! opacity-100": apparition >= 1 },
-                )}
-              >
-                <p
-                  className={clsx(
-                    "overflow-visible text-center text-2xl font-bold whitespace-nowrap text-white drop-shadow-lg md:text-4xl",
-                    { "anim-balanced": apparition >= 4 },
-                  )}
-                >
-                  {top[2].username}
-                </p>
-                {top[2].teamName && (
-                  <p className="text-center text-sm font-medium text-white/70 drop-shadow-sm">
-                    {top[2].teamName}
-                  </p>
-                )}
-                <div className="bg-primary flex h-full w-full flex-col items-center gap-4 rounded-t-md pt-6 text-center shadow-2xl">
-                  <p className="flex aspect-square h-14 items-center justify-center rounded-full border-4 border-amber-800 bg-amber-700 text-3xl font-bold text-white drop-shadow-lg">
-                    <span className="drop-shadow-md">3</span>
-                  </p>
-                  <p className="text-2xl font-bold text-white drop-shadow-lg">
-                    {top[2].points}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+          )
         )}
       </section>
     </>
