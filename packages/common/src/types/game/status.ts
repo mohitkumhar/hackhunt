@@ -54,7 +54,17 @@ export type CommonStatusDataMap = {
         language: string; 
         submitted: boolean; 
       }[] 
-    }[] 
+    }[];
+    blindPlayerResults?: {
+      username: string;
+      completionTime: number;
+      answers: {
+        question: string;
+        code: string;
+        language: string;
+        submitted: boolean;
+      }[];
+    }[];
   }
   REVERSE_WRITE_CODE: {
     output: string
