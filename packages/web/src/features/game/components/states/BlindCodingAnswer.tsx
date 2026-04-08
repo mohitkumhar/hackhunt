@@ -8,6 +8,7 @@ import {
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
 } from "@rahoot/web/features/game/utils/constants"
+import { useQuestionStore } from "@rahoot/web/features/game/stores/question"
 import React, { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router"
 import useSound from "use-sound"
@@ -22,6 +23,7 @@ const BlindCodingAnswer = ({
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
   const { player } = usePlayerStore()
+  const { questionStates } = useQuestionStore()
 
   const [code, setCode] = useState("")
   const [codeLanguage, setCodeLanguage] = useState(language)
@@ -54,6 +56,12 @@ const BlindCodingAnswer = ({
     setTotalAnswer(count)
     sfxPop()
   })
+
+  useEffect(() => {
+    setCode("")
+    setCharCount(0)
+    setSubmitted(false)
+  }, [title, description, language])
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCode(e.target.value)
@@ -91,6 +99,17 @@ const BlindCodingAnswer = ({
         code,
         language: codeLanguage,
       },
+    })
+  }
+
+  const handleNavigate = (direction: "prev" | "next") => () => {
+    if (!player) {
+      return
+    }
+
+    socket?.emit("player:navigateBlindQuestion", {
+      gameId,
+      data: { direction },
     })
   }
 
@@ -259,15 +278,29 @@ const BlindCodingAnswer = ({
           </div>
 
           {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={!code.trim()}
-            className="btn-shadow mt-3 w-full rounded-lg bg-primary px-6 py-3 text-lg font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
-          >
-            <span>
-              {code.trim() ? "🚀 Submit Code" : "Type something first..."}
-            </span>
-          </button>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <button
+              onClick={handleNavigate("prev")}
+              disabled={!questionStates || questionStates.current <= 1}
+              className="btn-shadow rounded-lg bg-white/20 px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={!code.trim()}
+              className="btn-shadow rounded-lg bg-primary px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+            >
+              {code.trim() ? "Submit Code" : "Type first"}
+            </button>
+            <button
+              onClick={handleNavigate("next")}
+              disabled={!questionStates || questionStates.current >= questionStates.total}
+              className="btn-shadow rounded-lg bg-white/20 px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Next
+            </button>
+          </div>
         </div>
 
         {/* Bottom Bar */}

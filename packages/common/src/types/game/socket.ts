@@ -26,6 +26,12 @@ export type MessageGameId = {
   gameId?: string
 }
 
+export type MessageBlindNavigate = MessageGameId & {
+  data: {
+    direction: "prev" | "next"
+  }
+}
+
 export interface ServerToClientEvents {
   connect: () => void
 
@@ -69,6 +75,13 @@ export interface ServerToClientEvents {
   "manager:playerKicked": (_playerId: string) => void
   "manager:reverseQuizzList": (_quizzList: ReverseQuizzWithId[]) => void
   "manager:blindCodingQuizzList": (_quizzList: BlindCodingQuizzWithId[]) => void
+  "manager:playerSubmitted": (_data: {
+    playerId: string
+    username: string
+    completionTime: number | null
+    points: number
+    isCorrect: boolean
+  }) => void
 }
 
 export interface ClientToServerEvents {
@@ -92,6 +105,7 @@ export interface ClientToServerEvents {
   "player:submitCode": (
     _message: MessageWithoutStatus<{ code: string; output: string }>,
   ) => void
+  "player:navigateReverseQuestion": (_message: MessageBlindNavigate) => void
 
   // Reverse programming
   "game:createReverse": (_quizzId: string) => void
@@ -99,6 +113,7 @@ export interface ClientToServerEvents {
   "player:submitBlindCode": (
     _message: MessageWithoutStatus<{ code: string; language: string }>,
   ) => void
+  "player:navigateBlindQuestion": (_message: MessageBlindNavigate) => void
 
   // Common
   disconnect: () => void
