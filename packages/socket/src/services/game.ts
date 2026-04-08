@@ -1,3 +1,4 @@
+/* eslint-disable max-params, no-plusplus, require-unicode-regexp, logical-assignment-operators, no-unused-vars, max-lines, no-inline-comments, line-comment-position, array-callback-return, no-nested-ternary, init-declarations */
 import { Answer, BlindCodingQuizz, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
 import { Server, Socket } from "@rahoot/common/types/game/socket"
 import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
@@ -47,22 +48,22 @@ class Game {
 
   playerCurrentQuestion: Record<string, number> = {}
   playerCompletionTime: Record<string, number> = {}
+  playerMinCorrectTime: Record<string, number> = {}
+  playerQuestionOrder: Record<string, number[]> = {}
+  reverseSubmittedQuestions: Record<string, Set<number>> = {}
 
   gameMode: GameMode
   reverseQuizz: ReverseQuizz | null
   blindCodingQuizz: BlindCodingQuizz | null
-  codeSubmissions: { playerId: string; code: string; output: string; correct: boolean; points: number }[]
-  blindCodeSubmissions: { playerId: string; username: string; code: string; language: string; submitted: boolean }[]
-  allBlindCodeSubmissions: {
-    question: string
-    language: string
-    submissions: {
-      username: string
-      code: string
-      language: string
-      submitted: boolean
-    }[]
+  codeSubmissions: {
+    playerId: string
+    questionIndex: number
+    code: string
+    output: string
+    correct: boolean
+    points: number
   }[]
+  blindCodeSubmissions: { playerId: string; username: string; code: string; language: string; submitted: boolean }[]
   allBlindCodeSubmissions: {
     question: string
     language: string
@@ -111,13 +112,15 @@ class Game {
 
     this.playerCurrentQuestion = {}
     this.playerCompletionTime = {}
+    this.playerMinCorrectTime = {}
+    this.playerQuestionOrder = {}
+    this.reverseSubmittedQuestions = {}
 
     this.gameMode = mode
     this.reverseQuizz = reverseQuizz || null
     this.blindCodingQuizz = blindCodingQuizz || null
     this.codeSubmissions = []
     this.blindCodeSubmissions = []
-    this.allBlindCodeSubmissions = []
     this.allBlindCodeSubmissions = []
 
     // For reverse programming mode, create a compatible quizz object
@@ -480,8 +483,22 @@ class Game {
       return
     }
 
+    // Initialize random question orders for players if not done yet
+    if (Object.keys(this.playerQuestionOrder).length === 0) {
+      this.players.forEach(p => {
+        const indices = this.reverseQuizz!.questions.map((_, i) => i)
+        // Shuffle indices using Fisher-Yates
+        for (let i = indices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indices[i], indices[j]] = [indices[j], indices[i]]
+        }
+        this.playerQuestionOrder[p.id] = indices
+      })
+    }
+
     this.playerStatus.clear()
     this.codeSubmissions = []
+    this.reverseSubmittedQuestions = {}
 
     this.io.to(this.gameId).emit("game:updateQuestion", {
       current: this.round.currentQuestion + 1,
@@ -513,10 +530,23 @@ class Game {
 
     this.round.startTime = Date.now()
 
-    this.broadcastStatus(STATUS.REVERSE_WRITE_CODE, {
-      output: question.output,
-      language: question.language,
-      hint: question.hint,
+    this.players.forEach(p => {
+      const pIndices = this.playerQuestionOrder[p.id]
+      let qIndex = 0
+
+      if (pIndices && pIndices.length > this.round.currentQuestion) {
+        qIndex = pIndices[this.round.currentQuestion]
+      }
+
+      this.playerCurrentQuestion[p.id] = qIndex
+      this.sendPlayerReverseQuestion(p.id)
+    })
+
+    // Manager status should just be generic for the ROUND
+    this.sendStatus(this.manager.id, STATUS.REVERSE_WRITE_CODE, {
+      output: "Multi-Question Random Assignment...",
+      language: "multi",
+      hint: "",
       time: question.time,
       totalPlayer: this.players.length,
     })
@@ -530,6 +560,58 @@ class Game {
     this.showReverseResults(question)
   }
 
+  sendPlayerReverseQuestion(playerId: string) {
+    const player = this.players.find((p) => p.id === playerId)
+
+    if (!player || !this.reverseQuizz) {
+      return
+    }
+
+    const qIndex = this.playerCurrentQuestion[playerId] ?? 0
+
+    if (qIndex < 0 || qIndex >= this.reverseQuizz.questions.length) {
+      return
+    }
+
+    const question = this.reverseQuizz.questions[qIndex]
+    const remainingTime = this.cooldown.count || question.time
+
+    this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
+      output: question.output,
+      language: question.language,
+      hint: question.hint,
+      time: remainingTime,
+      totalPlayer: this.players.length,
+    })
+
+    this.io.to(playerId).emit("game:updateQuestion", {
+      current: qIndex + 1,
+      total: this.reverseQuizz.questions.length,
+    })
+  }
+
+  navigateReverseQuestion(socket: Socket, direction: "prev" | "next") {
+    const player = this.players.find((p) => p.id === socket.id)
+
+    if (!player || !this.reverseQuizz || !this.started || this.gameMode !== "reverse_programming") {
+      return
+    }
+
+    const currentIndex = this.playerCurrentQuestion[player.id] ?? 0
+    const offset = direction === "next" ? 1 : -1
+    const targetIndex = Math.min(
+      Math.max(currentIndex + offset, 0),
+      this.reverseQuizz.questions.length - 1,
+    )
+
+    if (targetIndex === currentIndex) {
+      return
+    }
+
+    this.playerCurrentQuestion[player.id] = targetIndex
+    this.sendPlayerReverseQuestion(player.id)
+  }
+
   submitCode(socket: Socket, code: string, output: string) {
     const player = this.players.find((player) => player.id === socket.id)
 
@@ -537,15 +619,21 @@ class Game {
       return
     }
 
-    if (this.codeSubmissions.find((s) => s.playerId === socket.id)) {
-      return
-    }
-
     if (!this.reverseQuizz) {
       return
     }
 
-    const question = this.reverseQuizz.questions[this.round.currentQuestion]
+    const pIndex = this.playerCurrentQuestion[player.id] !== undefined 
+      ? this.playerCurrentQuestion[player.id] 
+      : this.round.currentQuestion
+
+    const submittedForPlayer =
+      this.reverseSubmittedQuestions[player.id] ?? new Set<number>()
+    if (submittedForPlayer.has(pIndex)) {
+      return
+    }
+      
+    const question = this.reverseQuizz.questions[pIndex]
 
     // Ultra-forgiving normalization: remove ALL spaces, newlines, and make lowercase
     // This way "Sum: 15", "sum:15", "SUM  :  15\n" all match correctly!
@@ -561,29 +649,53 @@ class Game {
 
     const points = isCorrect ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
 
+    const timeTaken = Math.round((Date.now() - this.round.startTime) / 1000)
+
+    // Track minimum time taken to submit a correct solution across reverse rounds.
+    if (isCorrect) {
+      const prevMin = this.playerMinCorrectTime[player.id]
+      this.playerMinCorrectTime[player.id] = prevMin
+        ? Math.min(prevMin, timeTaken)
+        : timeTaken
+      player.completionTime = this.playerMinCorrectTime[player.id]
+    }
+
     this.codeSubmissions.push({
       playerId: player.id,
+      questionIndex: pIndex,
       code,
       output: playerOutput,
       correct: isCorrect,
       points,
     })
+    submittedForPlayer.add(pIndex)
+    this.reverseSubmittedQuestions[player.id] = submittedForPlayer
 
-    // Immediately show the result to the submitting player (speed-based competition)
+    // Immediately process points for the submitting player
     if (isCorrect) {
       player.points += points
     }
 
-    this.sendStatus(socket.id, STATUS.SHOW_RESULT, {
-      correct: isCorrect,
-      message: isCorrect ? "Correct output! 🎉" : "Wrong output ❌",
-      points,
-      myPoints: player.points,
-      rank: 0,
-      aheadOfMe: null,
-      hideRank: true,
-      hidePoints: true,
+    // Notify the manager explicitly that this specific player submitted real-time
+    this.io.to(this.manager.id).emit("manager:playerSubmitted", {
+      playerId: player.id,
+      username: player.username,
+      completionTime: player.completionTime ?? null,
+      points: player.points,
+      isCorrect,
     })
+
+    const currentIndex = this.playerCurrentQuestion[player.id] ?? pIndex
+    const hasNext = currentIndex < this.reverseQuizz.questions.length - 1
+
+    if (hasNext) {
+      this.playerCurrentQuestion[player.id] = currentIndex + 1
+      this.sendPlayerReverseQuestion(player.id)
+    } else {
+      this.sendStatus(player.id, STATUS.WAIT, {
+        text: "Submission received. Waiting for round results.",
+      })
+    }
 
     socket
       .to(this.gameId)
@@ -591,9 +703,8 @@ class Game {
 
     this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
 
-    if (this.codeSubmissions.length === this.players.length) {
-      this.abortCooldown()
-    }
+    // Keep the reverse round running until the configured timer ends.
+    // Even if all students submit early, results should only finalize at timeout.
   }
 
   showReverseResults(question: any) {
@@ -609,39 +720,40 @@ class Game {
     // so here we only compute rankings without re-adding points.
     const sortedPlayers = this.players
       .map((player) => {
-        const submission = this.codeSubmissions.find(
+        const playerSubmissions = this.codeSubmissions.filter(
           (s) => s.playerId === player.id,
         )
+        const submission = playerSubmissions[playerSubmissions.length - 1]
 
         const isCorrect = submission ? submission.correct : false
         const points = submission && isCorrect ? Math.round(submission.points) : 0
 
         return { ...player, lastCorrect: isCorrect, lastPoints: points }
       })
-      .sort((a, b) => b.points - a.points)
+      .sort((a, b) => {
+        // Primary: more points wins
+        if (b.points !== a.points) {return b.points - a.points}
+
+        // Tiebreaker: less total time wins
+        const aTime = a.completionTime || Infinity
+        const bTime = b.completionTime || Infinity
+
+        
+return aTime - bTime
+      })
 
     this.players = sortedPlayers
 
-    sortedPlayers.forEach((player, index) => {
-      const rank = index + 1
-      const aheadPlayer = sortedPlayers[index - 1]
-
-      this.sendStatus(player.id, STATUS.SHOW_RESULT, {
-        correct: player.lastCorrect,
-        message: player.lastCorrect ? "Correct output!" : "Wrong output",
-        points: player.lastPoints,
-        myPoints: player.points,
-        rank,
-        aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
-        hideRank: true,
-        hidePoints: true,
+    sortedPlayers.forEach((player) => {
+      this.sendStatus(player.id, STATUS.WAIT, {
+        text: "Wait for the result",
       })
     })
 
     this.sendStatus(this.manager.id, STATUS.REVERSE_SHOW_RESPONSES, {
-      output: question.output,
-      expectedCode: question.expectedCode,
-      language: question.language,
+      output: "Randomized questions provided to players",
+      expectedCode: "Evaluate individual submissions for codes",
+      language: "multi",
       totalCorrect,
       totalWrong,
       totalPlayers: this.players.length,
@@ -652,23 +764,18 @@ class Game {
 
     this.codeSubmissions = []
 
-    // Auto transition
+    // Auto transition to the Leaderboard showing everyone's time
     setTimeout(() => {
       if (!this.started || this.gameMode !== "reverse_programming" || !this.reverseQuizz) {
         return
       }
 
-      if (this.reverseQuizz.questions[this.round.currentQuestion + 1]) {
-        this.round.currentQuestion += 1
-        this.newReverseRound()
-      } else {
-        this.showLeaderboard()
-      }
+      this.showLeaderboard()
     }, 4000)
   }
 
   async startAsyncBlindCoding() {
-    if (!this.blindCodingQuizz) return
+    if (!this.blindCodingQuizz) {return}
 
     this.started = true
     this.playerStatus.clear()
@@ -700,14 +807,16 @@ class Game {
 
     await this.startCooldown(3600)
 
-    if (!this.started) return
+    if (!this.started) {return}
 
     // Sort players by completion time (fastest first)
     // Players who didn't finish get Infinity so they rank last
     this.players.sort((a, b) => {
       const aTime = this.playerCompletionTime[a.id] || Infinity
       const bTime = this.playerCompletionTime[b.id] || Infinity
-      return aTime - bTime
+
+      
+return aTime - bTime
     })
     this.leaderboard = this.players
 
@@ -716,13 +825,16 @@ class Game {
 
   sendPlayerNextBlindQuestion(playerId: string) {
     const player = this.players.find(p => p.id === playerId)
-    if (!player || !this.blindCodingQuizz) return
+
+    if (!player || !this.blindCodingQuizz) {return}
 
     const pIndex = this.playerCurrentQuestion[playerId]
     
     if (pIndex >= this.blindCodingQuizz.questions.length) {
       this.sendStatus(playerId, STATUS.WAIT, { text: "Test completed. Waiting for other players." })
-      return
+
+      
+return
     }
 
     const question = this.blindCodingQuizz.questions[pIndex]
@@ -744,15 +856,40 @@ class Game {
     })
   }
 
+  navigateBlindQuestion(socket: Socket, direction: "prev" | "next") {
+    const player = this.players.find((p) => p.id === socket.id)
+
+    if (!player || !this.blindCodingQuizz || !this.started || this.gameMode !== "blind_coding") {
+      return
+    }
+
+    const currentIndex = this.playerCurrentQuestion[player.id] ?? 0
+    const offset = direction === "next" ? 1 : -1
+    const targetIndex = Math.min(
+      Math.max(currentIndex + offset, 0),
+      this.blindCodingQuizz.questions.length - 1,
+    )
+
+    if (targetIndex === currentIndex) {
+      return
+    }
+
+    this.playerCurrentQuestion[player.id] = targetIndex
+    this.sendPlayerNextBlindQuestion(player.id)
+  }
+
   submitBlindCode(socket: Socket, code: string, language: string) {
     const player = this.players.find((player) => player.id === socket.id)
-    if (!player || !this.blindCodingQuizz) return
+
+    if (!player || !this.blindCodingQuizz) {return}
 
     const pIndex = this.playerCurrentQuestion[player.id]
-    if (pIndex === undefined || pIndex >= this.blindCodingQuizz.questions.length) return
+
+    if (pIndex === undefined || pIndex >= this.blindCodingQuizz.questions.length) {return}
 
     // Save submission to global history
     const historyEntry = this.allBlindCodeSubmissions[pIndex]
+
     if (!historyEntry.submissions.find(s => s.username === player.username)) {
       historyEntry.submissions.push({
         username: player.username,
@@ -762,11 +899,12 @@ class Game {
       })
     }
 
-    // Advance independent player index
+    // Move to the next question index after this submission.
     this.playerCurrentQuestion[player.id]++
 
     // Check if this player just finished ALL questions
     const justFinished = this.playerCurrentQuestion[player.id] >= this.blindCodingQuizz.questions.length
+
     if (justFinished && !this.playerCompletionTime[player.id]) {
       // Record elapsed time in seconds since test started
       this.playerCompletionTime[player.id] = Math.round((Date.now() - this.round.startTime) / 1000)
@@ -784,13 +922,14 @@ class Game {
       hidePoints: true,
     })
 
-    // Brief timeout so they read "Code submitted", then fetch next question
+    // Keep current flow: brief feedback, then continue to the next question.
     setTimeout(() => {
-      if (!this.started) return
+      if (!this.started) {return}
+
       this.sendPlayerNextBlindQuestion(player.id)
 
-      // Test if everyone collectively finished
       const allDone = this.players.every(p => (this.playerCurrentQuestion[p.id] || 0) >= this.blindCodingQuizz!.questions.length)
+
       if (allDone) {
         this.abortCooldown()
       }
@@ -918,7 +1057,10 @@ class Game {
 
     if (this.gameMode === "reverse_programming" && this.reverseQuizz) {
       if (!this.reverseQuizz.questions[this.round.currentQuestion + 1]) {
-        return
+        this.showLeaderboard()
+
+        
+return
       }
 
       this.round.currentQuestion += 1
@@ -930,7 +1072,10 @@ class Game {
 
 
     if (!this.quizz.questions[this.round.currentQuestion + 1]) {
-      return
+      this.showLeaderboard()
+
+      
+return
     }
 
     this.round.currentQuestion += 1
@@ -963,20 +1108,25 @@ class Game {
       this.started = false
 
       // For blind coding, build per-player result view
-      let blindPlayerResults: { username: string; completionTime: number; answers: { question: string; code: string; language: string; submitted: boolean }[] }[] | undefined = undefined
+      let blindPlayerResults: { username: string; completionTime: number; answers: { question: string; code: string; language: string; submitted: boolean }[] }[] | undefined
+
       if (this.gameMode === "blind_coding" && this.blindCodingQuizz) {
         blindPlayerResults = this.leaderboard.map(player => {
           const completionTime = this.playerCompletionTime[player.id] || 0
           const answers = this.allBlindCodeSubmissions.map(entry => {
             const sub = entry.submissions.find(s => s.username === player.username)
-            return {
+
+            
+return {
               question: entry.question,
               code: sub ? sub.code : "",
               language: sub ? sub.language : entry.language,
               submitted: sub ? sub.submitted : false,
             }
           })
-          return { username: player.username, completionTime, answers }
+
+          
+return { username: player.username, completionTime, answers }
         })
       }
 
@@ -995,7 +1145,7 @@ class Game {
       : this.leaderboard
 
     this.sendStatus(this.manager.id, STATUS.SHOW_LEADERBOARD, {
-      oldLeaderboard: oldLeaderboard,
+      oldLeaderboard,
       leaderboard: this.leaderboard,
     })
 

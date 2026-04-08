@@ -4,21 +4,211 @@ import Config from "@rahoot/socket/services/config"
 import Game from "@rahoot/socket/services/game"
 import Registry from "@rahoot/socket/services/registry"
 import { withGame } from "@rahoot/socket/utils/game"
+import { mkdtemp, rm, writeFile } from "fs/promises"
+import { tmpdir } from "os"
+import { join } from "path"
 import { Server as ServerIO } from "socket.io"
 import { createServer } from "http"
+import { spawn } from "child_process"
 
 const WS_PORT = 3001
 
-const WANDBOX_API = "https://wandbox.org/api/compile.json"
+const EXECUTION_TIMEOUT_MS = 30000
 
-// Map our language names to Wandbox compiler IDs (exact names from Wandbox API)
-const COMPILER_MAP: Record<string, { compiler: string; options?: string }> = {
-  python:     { compiler: "cpython-3.12.7" },
-  javascript: { compiler: "nodejs-20.17.0" },
-  "c++":      { compiler: "gcc-13.2.0" },
-  c:          { compiler: "gcc-13.2.0-c" },
-  java:       { compiler: "openjdk-jdk-22+36" },
-  go:         { compiler: "go-1.23.2" },
+type ExecutionResult = {
+  stdout: string
+  stderr: string
+  code: number
+}
+
+type LocalExecutionResponse = {
+  compile: null | { code: number; output: string }
+  run: { stdout: string; stderr: string; signal: string | null; code: number }
+}
+
+const normalizeLanguage = (lang: string) =>
+  lang === "cpp" ? "c++" : lang
+
+const runCommand = (
+  command: string,
+  args: string[],
+  cwd: string,
+  timeoutMs = EXECUTION_TIMEOUT_MS,
+) =>
+  new Promise<ExecutionResult>((resolve) => {
+    const child = spawn(command, args, { cwd, windowsHide: true })
+    let stdout = ""
+    let stderr = ""
+    let killedByTimeout = false
+
+    const timer = setTimeout(() => {
+      killedByTimeout = true
+      child.kill()
+    }, timeoutMs)
+
+    child.stdout.on("data", (chunk: Buffer) => {
+      stdout += chunk.toString()
+    })
+    child.stderr.on("data", (chunk: Buffer) => {
+      stderr += chunk.toString()
+    })
+    child.on("error", (error) => {
+      clearTimeout(timer)
+      resolve({
+        stdout: "",
+        stderr: `Failed to run ${command}: ${error.message}`,
+        code: 1,
+      })
+    })
+    child.on("close", (code) => {
+      clearTimeout(timer)
+      resolve({
+        stdout,
+        stderr: killedByTimeout
+          ? `${stderr}\nExecution timed out after ${timeoutMs / 1000}s`
+          : stderr,
+        code: killedByTimeout ? 1 : (code ?? 1),
+      })
+    })
+  })
+
+const runCommandWithFallback = async (
+  commands: Array<{ command: string; args: string[] }>,
+  cwd: string,
+  timeoutMs = EXECUTION_TIMEOUT_MS,
+) => {
+  let lastResult: ExecutionResult | null = null
+
+  for (const option of commands) {
+    const result = await runCommand(option.command, option.args, cwd, timeoutMs)
+    lastResult = result
+    if (!result.stderr.includes("Failed to run")) {
+      return result
+    }
+  }
+
+  return (
+    lastResult || {
+      stdout: "",
+      stderr: "Failed to run local command",
+      code: 1,
+    }
+  )
+}
+
+const executeLocally = async (
+  lang: string,
+  code: string,
+): Promise<LocalExecutionResponse> => {
+  const normalizedLang = normalizeLanguage(lang)
+  const tempDir = await mkdtemp(join(tmpdir(), "hackhunt-"))
+
+  try {
+    switch (normalizedLang) {
+      case "python": {
+        const filePath = join(tempDir, "main.py")
+        await writeFile(filePath, code, "utf8")
+        const run = await runCommandWithFallback(
+          [
+            { command: "python", args: [filePath] },
+            { command: "py", args: [filePath] },
+          ],
+          tempDir,
+        )
+
+        return {
+          compile: null,
+          run: { stdout: run.stdout, stderr: run.stderr, signal: null, code: run.code },
+        }
+      }
+      case "javascript": {
+        const filePath = join(tempDir, "main.js")
+        await writeFile(filePath, code, "utf8")
+        const run = await runCommand("node", [filePath], tempDir)
+
+        return {
+          compile: null,
+          run: { stdout: run.stdout, stderr: run.stderr, signal: null, code: run.code },
+        }
+      }
+      case "c": {
+        const sourcePath = join(tempDir, "main.c")
+        const outputPath = join(tempDir, process.platform === "win32" ? "main.exe" : "main")
+        await writeFile(sourcePath, code, "utf8")
+        const compile = await runCommand("gcc", [sourcePath, "-o", outputPath], tempDir)
+        if (compile.code !== 0) {
+          return {
+            compile: { code: compile.code, output: compile.stderr || compile.stdout },
+            run: { stdout: "", stderr: "", signal: null, code: 1 },
+          }
+        }
+        const run = await runCommand(outputPath, [], tempDir)
+
+        return {
+          compile: null,
+          run: { stdout: run.stdout, stderr: run.stderr, signal: null, code: run.code },
+        }
+      }
+      case "c++": {
+        const sourcePath = join(tempDir, "main.cpp")
+        const outputPath = join(tempDir, process.platform === "win32" ? "main.exe" : "main")
+        await writeFile(sourcePath, code, "utf8")
+        const compile = await runCommand("g++", [sourcePath, "-o", outputPath], tempDir)
+        if (compile.code !== 0) {
+          return {
+            compile: { code: compile.code, output: compile.stderr || compile.stdout },
+            run: { stdout: "", stderr: "", signal: null, code: 1 },
+          }
+        }
+        const run = await runCommand(outputPath, [], tempDir)
+
+        return {
+          compile: null,
+          run: { stdout: run.stdout, stderr: run.stderr, signal: null, code: run.code },
+        }
+      }
+      case "java": {
+        const sourcePath = join(tempDir, "Main.java")
+        await writeFile(sourcePath, code, "utf8")
+        const compile = await runCommand("javac", [sourcePath], tempDir)
+        if (compile.code !== 0) {
+          return {
+            compile: { code: compile.code, output: compile.stderr || compile.stdout },
+            run: { stdout: "", stderr: "", signal: null, code: 1 },
+          }
+        }
+        const run = await runCommand("java", ["-cp", tempDir, "Main"], tempDir)
+
+        return {
+          compile: null,
+          run: { stdout: run.stdout, stderr: run.stderr, signal: null, code: run.code },
+        }
+      }
+      case "go": {
+        const sourcePath = join(tempDir, "main.go")
+        await writeFile(sourcePath, code, "utf8")
+        const run = await runCommand("go", ["run", sourcePath], tempDir)
+
+        return {
+          compile: null,
+          run: { stdout: run.stdout, stderr: run.stderr, signal: null, code: run.code },
+        }
+      }
+      default: {
+        return {
+          compile: null,
+          run: {
+            stdout: "",
+            stderr: `Unsupported language: ${normalizedLang}`,
+            signal: null,
+            code: 1,
+          },
+        }
+      }
+    }
+  } finally {
+    await rm(tempDir, { recursive: true, force: true })
+  }
 }
 
 const httpServer = createServer((req, res) => {
@@ -31,60 +221,9 @@ const httpServer = createServer((req, res) => {
         const pistonReq = JSON.parse(body)
         const lang = pistonReq.language as string
         const code = pistonReq.files?.[0]?.content || ""
-        const compilerInfo = COMPILER_MAP[lang]
-
-        if (!compilerInfo) {
-          res.writeHead(400, { "Content-Type": "application/json" })
-          res.end(JSON.stringify({ run: { stdout: "", stderr: `Unsupported language: ${lang}` }, compile: null }))
-          return
-        }
-
-        // Build the Wandbox request
-        const wandboxBody: Record<string, string> = {
-          code,
-          compiler: compilerInfo.compiler,
-        }
-        if (compilerInfo.options) {
-          wandboxBody["compiler-option-raw"] = compilerInfo.options
-        }
-
-        console.log(`Executing ${lang} code via Wandbox (${compilerInfo.compiler})...`)
-
-        const response = await fetch(WANDBOX_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(wandboxBody),
-        })
-
-        if (!response.ok) {
-          const errText = await response.text()
-          console.error(`Wandbox returned ${response.status}: ${errText}`)
-          res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" })
-          res.end(JSON.stringify({
-            compile: null,
-            run: { stdout: "", stderr: `Execution engine error (${response.status})`, signal: null, code: 1 },
-          }))
-          return
-        }
-
-        const result = await response.json() as Record<string, string>
-
-        console.log(`Wandbox raw response:`, JSON.stringify(result, null, 2))
-
-        // Translate Wandbox response → Piston response format
-        // Only treat as compile error if there's no program output AND status is non-zero
-        const hasCompileError = result.compiler_error && result.status !== "0" && !result.program_output
-        const pistonResponse = {
-          compile: hasCompileError ? { code: 1, output: result.compiler_error || "" } : null,
-          run: {
-            stdout: result.program_output || "",
-            stderr: result.program_error || "",
-            signal: result.signal || null,
-            code: parseInt(result.status || "0", 10),
-          },
-        }
-
-        console.log(`Translated stdout: [${pistonResponse.run.stdout}]`)
+        const normalizedLang = normalizeLanguage(lang)
+        console.log(`Executing ${normalizedLang} code with local compiler/runtime...`)
+        const pistonResponse = await executeLocally(normalizedLang, code)
 
         res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" })
         res.end(JSON.stringify(pistonResponse))
@@ -94,7 +233,9 @@ const httpServer = createServer((req, res) => {
         res.end(JSON.stringify({ message: "Failed to reach execution engine" }))
       }
     })
-    return
+
+    
+return
   }
 
   res.writeHead(404)
@@ -252,9 +393,21 @@ io.on("connection", (socket) => {
     ),
   )
 
+  socket.on("player:navigateReverseQuestion", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.navigateReverseQuestion(socket, data.direction),
+    ),
+  )
+
   socket.on("player:submitBlindCode", ({ gameId, data }) =>
     withGame(gameId, socket, (game) =>
       game.submitBlindCode(socket, data.code, data.language),
+    ),
+  )
+
+  socket.on("player:navigateBlindQuestion", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.navigateBlindQuestion(socket, data.direction),
     ),
   )
 

@@ -12,6 +12,7 @@ import Result from "@rahoot/web/features/game/components/states/Result"
 import Room from "@rahoot/web/features/game/components/states/Room"
 import Start from "@rahoot/web/features/game/components/states/Start"
 import Wait from "@rahoot/web/features/game/components/states/Wait"
+import ReverseManagerActive from "@rahoot/web/features/game/components/states/ReverseManagerActive"
 
 import { STATUS } from "@rahoot/common/types/game/status"
 import Circle from "@rahoot/web/features/game/components/icons/Circle"
@@ -56,6 +57,7 @@ export const GAME_STATE_COMPONENTS_MANAGER = {
   [STATUS.SHOW_RESPONSES]: Responses,
   [STATUS.SHOW_LEADERBOARD]: Leaderboard,
   [STATUS.FINISHED]: Podium,
+  [STATUS.REVERSE_WRITE_CODE]: ReverseManagerActive as any,
   [STATUS.REVERSE_SHOW_RESPONSES]: CodeResponses,
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: BlindCodingResponses,
 }
@@ -73,7 +75,7 @@ export const SFX_SNEAR_ROOL = "/sounds/snearRoll.mp3"
 export const MANAGER_SKIP_EVENTS = {
   [STATUS.SHOW_ROOM]: "manager:startGame",
   [STATUS.SELECT_ANSWER]: "manager:abortQuiz",
-  [STATUS.SHOW_RESPONSES]: "manager:showLeaderboard",
+  [STATUS.SHOW_RESPONSES]: "manager:nextQuestion",
   [STATUS.SHOW_LEADERBOARD]: "manager:nextQuestion",
   [STATUS.REVERSE_WRITE_CODE]: "manager:abortQuiz",
   [STATUS.REVERSE_SHOW_RESPONSES]: "manager:showLeaderboard",
@@ -98,10 +100,10 @@ export const MANAGER_SKIP_BTN = {
   [STATUS.SELECT_ANSWER]: "Skip",
   [STATUS.SHOW_RESULT]: null,
   [STATUS.SHOW_RESPONSES]: null,
-  [STATUS.SHOW_LEADERBOARD]: "Next",
+  [STATUS.SHOW_LEADERBOARD]: null,
   [STATUS.FINISHED]: null,
   [STATUS.WAIT]: null,
-  [STATUS.REVERSE_WRITE_CODE]: "Skip",
+  [STATUS.REVERSE_WRITE_CODE]: null,
   [STATUS.REVERSE_SHOW_RESPONSES]: null,
   [STATUS.BLIND_CODING_WRITE]: "Skip",
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: null,

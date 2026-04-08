@@ -5,6 +5,7 @@ export type Player = {
   username: string
   teamName: string
   points: number
+  completionTime?: number
 }
 
 export type Answer = {

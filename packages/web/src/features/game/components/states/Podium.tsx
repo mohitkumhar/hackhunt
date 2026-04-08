@@ -61,19 +61,22 @@ const usePodiumAnimation = (topLength: number) => {
   return apparition
 }
 
-const Podium = ({ data: { subject, top, blindPlayerResults } }: Props) => {
+const Podium = ({ data: { subject, top, blindPlayerResults, blindSubmissionsHistory } }: Props) => {
   const apparition = usePodiumAnimation(top.length)
 
   const { width, height } = useScreenSize()
 
   // Format seconds into mm:ss or hh:mm:ss
   const formatTime = (seconds: number) => {
-    if (!seconds) return "Did not finish"
+    if (!seconds) {return "Did not finish"}
+
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     const s = seconds % 60
-    if (h > 0) return `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`
-    return `${m}m ${s.toString().padStart(2, "0")}s`
+
+    if (h > 0) {return `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`}
+    
+return `${m}m ${s.toString().padStart(2, "0")}s`
   }
 
   return (
