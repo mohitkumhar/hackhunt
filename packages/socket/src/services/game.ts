@@ -42,13 +42,27 @@ class Game {
   cooldown: {
     active: boolean
     ms: number
+    count?: number
   }
+
+  playerCurrentQuestion: Record<string, number> = {}
+  playerCompletionTime: Record<string, number> = {}
 
   gameMode: GameMode
   reverseQuizz: ReverseQuizz | null
   blindCodingQuizz: BlindCodingQuizz | null
   codeSubmissions: { playerId: string; code: string; output: string; correct: boolean; points: number }[]
   blindCodeSubmissions: { playerId: string; username: string; code: string; language: string; submitted: boolean }[]
+  allBlindCodeSubmissions: {
+    question: string
+    language: string
+    submissions: {
+      username: string
+      code: string
+      language: string
+      submitted: boolean
+    }[]
+  }[]
   allBlindCodeSubmissions: {
     question: string
     language: string
@@ -95,11 +109,15 @@ class Game {
       ms: 0,
     }
 
+    this.playerCurrentQuestion = {}
+    this.playerCompletionTime = {}
+
     this.gameMode = mode
     this.reverseQuizz = reverseQuizz || null
     this.blindCodingQuizz = blindCodingQuizz || null
     this.codeSubmissions = []
     this.blindCodeSubmissions = []
+    this.allBlindCodeSubmissions = []
     this.allBlindCodeSubmissions = []
 
     // For reverse programming mode, create a compatible quizz object
@@ -347,6 +365,7 @@ class Game {
 
         this.io.to(this.gameId).emit("game:cooldown", count)
         count -= 1
+        this.cooldown.count = count
       }, 1000)
     })
   }
@@ -385,7 +404,7 @@ class Game {
     if (this.gameMode === "reverse_programming") {
       this.newReverseRound()
     } else if (this.gameMode === "blind_coding") {
-      this.newBlindCodingRound()
+      this.startAsyncBlindCoding()
     } else {
       this.newRound()
     }
@@ -634,196 +653,134 @@ class Game {
     }, 4000)
   }
 
-  async newBlindCodingRound() {
-    if (!this.blindCodingQuizz) {
-      return
-    }
+  async startAsyncBlindCoding() {
+    if (!this.blindCodingQuizz) return
 
-    const question = this.blindCodingQuizz.questions[this.round.currentQuestion]
-
-    if (!this.started) {
-      return
-    }
-
+    this.started = true
     this.playerStatus.clear()
-    this.blindCodeSubmissions = []
+    
+    // Initialize history data structure for all questions
+    this.allBlindCodeSubmissions = this.blindCodingQuizz.questions.map(q => ({
+      question: q.title,
+      language: q.language,
+      submissions: []
+    }))
 
-    this.io.to(this.gameId).emit("game:updateQuestion", {
-      current: this.round.currentQuestion + 1,
-      total: this.blindCodingQuizz.questions.length,
+    // Start each player at question index 0
+    this.players.forEach(p => {
+      this.playerCurrentQuestion[p.id] = 0
+      this.playerCompletionTime[p.id] = 0 // 0 means not finished yet
     })
 
-    this.managerStatus = null
-    this.broadcastStatus(STATUS.SHOW_PREPARED, {
-      totalAnswers: 0,
-      questionNumber: this.round.currentQuestion + 1,
-    })
-
-    await sleep(2)
-
-    if (!this.started) {
-      return
-    }
-
-    this.broadcastStatus(STATUS.SHOW_QUESTION, {
-      question: question.title,
-      cooldown: question.cooldown,
-    })
-
-    await sleep(question.cooldown)
-
-    if (!this.started) {
-      return
-    }
-
+    // Start global 1 hr cooldown for the test (3600 secs)
     this.round.startTime = Date.now()
+    this.io.to(this.gameId).emit("game:updateQuestion", { current: 1, total: this.blindCodingQuizz.questions.length })
+    
+    // Notify manager that test is proceeding independently 
+    this.sendStatus(this.manager.id, STATUS.WAIT, {
+      text: "Asynchronous Test in Progress (1 Hr)... Waiting for players to complete.",
+    })
 
-    this.broadcastStatus(STATUS.BLIND_CODING_WRITE, {
+    // Dispatch questions to players
+    this.players.forEach(p => this.sendPlayerNextBlindQuestion(p.id))
+
+    await this.startCooldown(3600)
+
+    if (!this.started) return
+
+    // Sort players by completion time (fastest first)
+    // Players who didn't finish get Infinity so they rank last
+    this.players.sort((a, b) => {
+      const aTime = this.playerCompletionTime[a.id] || Infinity
+      const bTime = this.playerCompletionTime[b.id] || Infinity
+      return aTime - bTime
+    })
+    this.leaderboard = this.players
+
+    this.showLeaderboard()
+  }
+
+  sendPlayerNextBlindQuestion(playerId: string) {
+    const player = this.players.find(p => p.id === playerId)
+    if (!player || !this.blindCodingQuizz) return
+
+    const pIndex = this.playerCurrentQuestion[playerId]
+    
+    if (pIndex >= this.blindCodingQuizz.questions.length) {
+      this.sendStatus(playerId, STATUS.WAIT, { text: "Test completed. Waiting for other players." })
+      return
+    }
+
+    const question = this.blindCodingQuizz.questions[pIndex]
+    const remainingTime = this.cooldown.count || 3600
+
+    this.sendStatus(playerId, STATUS.BLIND_CODING_WRITE, {
       title: question.title,
       description: question.description,
       examples: question.examples,
       constraints: question.constraints,
       language: question.language,
-      time: question.time,
+      time: remainingTime,
       totalPlayer: this.players.length,
     })
 
-    await this.startCooldown(question.time)
-
-    if (!this.started) {
-      return
-    }
-
-    this.showBlindCodingResults(question)
+    this.io.to(playerId).emit("game:updateQuestion", {
+      current: pIndex + 1,
+      total: this.blindCodingQuizz.questions.length,
+    })
   }
 
   submitBlindCode(socket: Socket, code: string, language: string) {
     const player = this.players.find((player) => player.id === socket.id)
+    if (!player || !this.blindCodingQuizz) return
 
-    if (!player) {
-      return
-    }
+    const pIndex = this.playerCurrentQuestion[player.id]
+    if (pIndex === undefined || pIndex >= this.blindCodingQuizz.questions.length) return
 
-    if (this.blindCodeSubmissions.find((s) => s.playerId === socket.id)) {
-      return
-    }
-
-    if (!this.blindCodingQuizz) {
-      return
-    }
-
-    this.blindCodeSubmissions.push({
-      playerId: player.id,
-      username: player.username,
-      code,
-      language,
-      submitted: true,
-    })
-
-    this.sendStatus(socket.id, STATUS.WAIT, {
-      text: "Code submitted! Waiting for other players...",
-    })
-
-    socket
-      .to(this.gameId)
-      .emit("game:playerAnswer", this.blindCodeSubmissions.length)
-
-    this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
-
-    if (this.blindCodeSubmissions.length === this.players.length) {
-      this.abortCooldown()
-    }
-  }
-
-  showBlindCodingResults(question: any) {
-    const oldLeaderboard =
-      this.leaderboard.length === 0
-        ? this.players.map((p) => ({ ...p }))
-        : this.leaderboard.map((p) => ({ ...p }))
-
-    // In blind coding, everyone who submitted gets points based on time
-    const sortedPlayers = this.players
-      .map((player) => {
-        const submission = this.blindCodeSubmissions.find(
-          (s) => s.playerId === player.id,
-        )
-
-        const didSubmit = submission ? submission.submitted : false
-        // Award points for speed, but hide it in Result.tsx for blind coding
-        const points = didSubmit ? Math.round(timeToPoint(this.round.startTime, question.time)) : 0
-
-        player.points += points
-
-        return { ...player, lastCorrect: didSubmit, lastPoints: points }
-      })
-      .sort((a, b) => b.points - a.points)
-
-    this.players = sortedPlayers
-
-    // Build submission list for manager
-    const submissions = this.players.map((player) => {
-      const submission = this.blindCodeSubmissions.find(
-        (s) => s.playerId === player.id,
-      )
-      return {
+    // Save submission to global history
+    const historyEntry = this.allBlindCodeSubmissions[pIndex]
+    if (!historyEntry.submissions.find(s => s.username === player.username)) {
+      historyEntry.submissions.push({
         username: player.username,
-        code: submission ? submission.code : "",
-        language: submission ? submission.language : "",
-        submitted: submission ? submission.submitted : false,
-      }
-    })
-
-    sortedPlayers.forEach((player, index) => {
-      const rank = index + 1
-      const aheadPlayer = sortedPlayers[index - 1]
-
-      this.sendStatus(player.id, STATUS.SHOW_RESULT, {
-        correct: player.lastCorrect,
-        message: player.lastCorrect ? "Code submitted!" : "Time's up!",
-        points: player.lastPoints,
-        myPoints: player.points,
-        rank,
-        aheadOfMe: aheadPlayer ? aheadPlayer.username : null,
-        hideRank: true,
-        hidePoints: true,
+        code,
+        language,
+        submitted: true,
       })
+    }
+
+    // Advance independent player index
+    this.playerCurrentQuestion[player.id]++
+
+    // Check if this player just finished ALL questions
+    const justFinished = this.playerCurrentQuestion[player.id] >= this.blindCodingQuizz.questions.length
+    if (justFinished && !this.playerCompletionTime[player.id]) {
+      // Record elapsed time in seconds since test started
+      this.playerCompletionTime[player.id] = Math.round((Date.now() - this.round.startTime) / 1000)
+    }
+
+    // Send brief result feedback
+    this.sendStatus(player.id, STATUS.SHOW_RESULT, {
+      correct: true,
+      message: "Code submitted!",
+      points: 0,
+      myPoints: 0,
+      rank: 0,
+      aheadOfMe: null,
+      hideRank: true,
+      hidePoints: true,
     })
 
-    this.sendStatus(this.manager.id, STATUS.BLIND_CODING_SHOW_RESPONSES, {
-      title: question.title,
-      description: question.description,
-      language: question.language,
-      submissions,
-      totalSubmitted: this.blindCodeSubmissions.length,
-      totalPlayers: this.players.length,
-    })
-
-    this.allBlindCodeSubmissions.push({
-      question: question.title,
-      language: question.language,
-      submissions,
-    })
-
-    this.leaderboard = sortedPlayers
-    this.tempOldLeaderboard = oldLeaderboard
-
-    this.blindCodeSubmissions = []
-
-    // Automatically transition to the next question after a 4-second delay
+    // Brief timeout so they read "Code submitted", then fetch next question
     setTimeout(() => {
-      // Re-check game state validity
-      if (!this.started || this.gameMode !== "blind_coding" || !this.blindCodingQuizz) {
-        return
-      }
+      if (!this.started) return
+      this.sendPlayerNextBlindQuestion(player.id)
 
-      if (this.blindCodingQuizz.questions[this.round.currentQuestion + 1]) {
-        this.round.currentQuestion += 1
-        this.newBlindCodingRound()
-      } else {
-        // Automatically show the leaderboard if it's the end of the test
-        this.showLeaderboard()
+      // Test if everyone collectively finished
+      const allDone = this.players.every(p => (this.playerCurrentQuestion[p.id] || 0) >= this.blindCodingQuizz!.questions.length)
+      if (allDone) {
+        this.abortCooldown()
       }
-    }, 4000)
+    }, 2000)
   }
 
   showResults(question: any) {
@@ -956,16 +913,7 @@ class Game {
       return
     }
 
-    if (this.gameMode === "blind_coding" && this.blindCodingQuizz) {
-      if (!this.blindCodingQuizz.questions[this.round.currentQuestion + 1]) {
-        return
-      }
 
-      this.round.currentQuestion += 1
-      this.newBlindCodingRound()
-
-      return
-    }
 
     if (!this.quizz.questions[this.round.currentQuestion + 1]) {
       return
@@ -995,15 +943,34 @@ class Game {
         : this.quizz.questions.length
 
     const isLastRound =
-      this.round.currentQuestion + 1 === totalQuestions
+      this.gameMode === "blind_coding" || this.round.currentQuestion + 1 === totalQuestions
 
     if (isLastRound) {
       this.started = false
 
+      // For blind coding, build per-player result view
+      let blindPlayerResults: { username: string; completionTime: number; answers: { question: string; code: string; language: string; submitted: boolean }[] }[] | undefined = undefined
+      if (this.gameMode === "blind_coding" && this.blindCodingQuizz) {
+        blindPlayerResults = this.leaderboard.map(player => {
+          const completionTime = this.playerCompletionTime[player.id] || 0
+          const answers = this.allBlindCodeSubmissions.map(entry => {
+            const sub = entry.submissions.find(s => s.username === player.username)
+            return {
+              question: entry.question,
+              code: sub ? sub.code : "",
+              language: sub ? sub.language : entry.language,
+              submitted: sub ? sub.submitted : false,
+            }
+          })
+          return { username: player.username, completionTime, answers }
+        })
+      }
+
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
         top: this.leaderboard.slice(0, 3),
-        blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined
+        blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined,
+        blindPlayerResults,
       })
 
       return
