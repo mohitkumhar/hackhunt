@@ -8,7 +8,7 @@ import {
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
 } from "@rahoot/web/features/game/utils/constants"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router"
 import useSound from "use-sound"
 
@@ -65,7 +65,7 @@ const BlindCodingAnswer = ({
       e.preventDefault()
       const start = e.currentTarget.selectionStart
       const end = e.currentTarget.selectionEnd
-      const newCode = code.substring(0, start) + "    " + code.substring(end)
+      const newCode = `${code.substring(0, start)  }    ${  code.substring(end)}`
       setCode(newCode)
       setCharCount(newCode.length)
       setTimeout(() => {
