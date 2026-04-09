@@ -1,5 +1,5 @@
 /* eslint-disable max-params, no-plusplus, require-unicode-regexp, logical-assignment-operators, no-unused-vars, max-lines, no-inline-comments, line-comment-position, array-callback-return, no-nested-ternary, init-declarations */
-import { Answer, BlindCodingQuizz, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
+import { Answer, BlindCodingQuizz, BugHuntingQuizz, GameMode, Player, Quizz, ReverseQuizz } from "@rahoot/common/types/game"
 import { Server, Socket } from "@rahoot/common/types/game/socket"
 import { Status, STATUS, StatusDataMap } from "@rahoot/common/types/game/status"
 import { usernameValidator } from "@rahoot/common/validators/auth"
@@ -57,6 +57,7 @@ class Game {
   gameMode: GameMode
   reverseQuizz: ReverseQuizz | null
   blindCodingQuizz: BlindCodingQuizz | null
+  bugHuntingQuizz: BugHuntingQuizz | null
   codeSubmissions: {
     playerId: string
     questionIndex: number
@@ -87,7 +88,7 @@ class Game {
     }[]
   }[]
 
-  constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null) {
+  constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null, bugHuntingQuizz?: BugHuntingQuizz | null) {
     if (!io) {
       throw new Error("Socket server not initialized")
     }
@@ -131,6 +132,7 @@ class Game {
     this.gameMode = mode
     this.reverseQuizz = reverseQuizz || null
     this.blindCodingQuizz = blindCodingQuizz || null
+    this.bugHuntingQuizz = bugHuntingQuizz || null
     this.codeSubmissions = []
     this.blindCodeSubmissions = []
     this.allBlindCodeSubmissions = []
@@ -160,7 +162,18 @@ class Game {
           cooldown: q.cooldown,
           time: q.time,
         })),
-      } as Quizz
+      }
+    } else if (mode === "bug_hunting" && bugHuntingQuizz) {
+      this.quizz = {
+        subject: bugHuntingQuizz.subject,
+        questions: bugHuntingQuizz.questions.map((q) => ({
+          question: q.title,
+          answers: [],
+          solution: 0,
+          cooldown: q.cooldown,
+          time: q.time,
+        })),
+      }
     } else {
       this.quizz = quizz!
     }
@@ -446,6 +459,8 @@ class Game {
       this.newReverseRound()
     } else if (this.gameMode === "blind_coding") {
       this.startAsyncBlindCoding()
+    } else if (this.gameMode === "bug_hunting") {
+      this.newBugHuntingRound()
     } else {
       this.startAsyncQuizz()
     }
@@ -997,6 +1012,239 @@ return aTime - bTime
     }, 4000)
   }
 
+  async newBugHuntingRound() {
+    if (!this.bugHuntingQuizz) {
+      return
+    }
+
+    const question = this.bugHuntingQuizz.questions[this.round.currentQuestion]
+
+    if (!this.started) {
+      return
+    }
+
+    this.playerStatus.clear()
+    this.codeSubmissions = []
+    this.reverseSubmittedQuestions = {}
+
+    this.io.to(this.gameId).emit("game:updateQuestion", {
+      current: this.round.currentQuestion + 1,
+      total: this.bugHuntingQuizz.questions.length,
+    })
+
+    this.managerStatus = null
+    this.broadcastStatus(STATUS.SHOW_PREPARED, {
+      totalAnswers: 0,
+      questionNumber: this.round.currentQuestion + 1,
+    })
+
+    await sleep(2)
+
+    if (!this.started) {
+      return
+    }
+
+    this.broadcastStatus(STATUS.SHOW_QUESTION, {
+      question: `Fix the code to produce the given output`,
+      cooldown: question.cooldown,
+    })
+
+    await sleep(question.cooldown)
+
+    if (!this.started) {
+      return
+    }
+
+    this.round.startTime = Date.now()
+
+    // Start all players at question 0 (no randomization for Bug Hunting)
+    this.players.forEach(p => {
+      this.playerCurrentQuestion[p.id] = 0
+      this.sendPlayerBugHuntingQuestion(p.id)
+    })
+
+    this.sendStatus(this.manager.id, STATUS.BUG_HUNTING_WRITE, {
+      title: "Multi-Question Random Assignment...",
+      description: "",
+      buggyCode: "",
+      expectedOutput: "",
+      language: "multi",
+      time: question.time,
+      totalPlayer: this.players.length,
+    })
+
+    await this.startCooldown(question.time)
+
+    if (!this.started) {
+      return
+    }
+
+    this.showBugHuntingResults(question)
+  }
+
+  sendPlayerBugHuntingQuestion(playerId: string) {
+    const player = this.players.find((p) => p.id === playerId)
+
+    if (!player || !this.bugHuntingQuizz) {
+      return
+    }
+
+    const qIndex = this.playerCurrentQuestion[playerId] ?? 0
+
+    if (qIndex < 0 || qIndex >= this.bugHuntingQuizz.questions.length) {
+      return
+    }
+
+    const question = this.bugHuntingQuizz.questions[qIndex]
+    const remainingTime = this.cooldown.count || question.time
+
+    this.sendStatus(playerId, STATUS.BUG_HUNTING_WRITE, {
+      title: question.title,
+      description: question.description,
+      buggyCode: question.buggyCode,
+      language: question.language,
+      expectedOutput: question.expectedOutput,
+      time: remainingTime,
+      totalPlayer: this.players.length,
+    })
+
+    this.io.to(playerId).emit("game:updateQuestion", {
+      current: qIndex + 1,
+      total: this.bugHuntingQuizz.questions.length,
+    })
+  }
+
+  navigateBugHuntingQuestion(socket: Socket, direction: "prev" | "next") {
+    const player = this.players.find((p) => p.id === socket.id)
+
+    if (!player || !this.bugHuntingQuizz || !this.started || this.gameMode !== "bug_hunting") {
+      return
+    }
+
+    const currentIndex = this.playerCurrentQuestion[player.id] ?? 0
+    const offset = direction === "next" ? 1 : -1
+    const targetIndex = Math.min(
+      Math.max(currentIndex + offset, 0),
+      this.bugHuntingQuizz.questions.length - 1,
+    )
+
+    if (targetIndex === currentIndex) {
+      return
+    }
+
+    this.playerCurrentQuestion[player.id] = targetIndex
+    this.sendPlayerBugHuntingQuestion(player.id)
+  }
+
+  submitAllBugHuntingCodes(socket: Socket, submissions: Record<number, { code: string; language: string }>) {
+    const player = this.players.find((player) => player.id === socket.id)
+
+    if (!player || !this.bugHuntingQuizz) {return}
+
+    // Store all submitted codes
+    for (const [indexStr, sub] of Object.entries(submissions)) {
+      const pIndex = parseInt(indexStr) - 1 // questionStates.current is 1-indexed
+
+      if (isNaN(pIndex) || pIndex < 0 || pIndex >= this.bugHuntingQuizz.questions.length) {
+        continue
+      }
+
+      this.codeSubmissions.push({
+        playerId: player.id,
+        questionIndex: pIndex,
+        code: sub.code,
+        output: "",
+        correct: false,
+        points: 0,
+      })
+    }
+
+    // Mark player as completely done
+    this.playerCurrentQuestion[player.id] = this.bugHuntingQuizz.questions.length
+    
+    if (!this.playerCompletionTime[player.id]) {
+      this.playerCompletionTime[player.id] = Math.round((Date.now() - this.round.startTime) / 1000)
+      player.completionTime = this.playerCompletionTime[player.id]
+    }
+
+    this.sendStatus(player.id, STATUS.WAIT, {
+      text: "All answers submitted! Waiting for round results.",
+    })
+
+    this.io.to(this.manager.id).emit("manager:playerSubmitted", {
+      playerId: player.id,
+      username: player.username,
+      completionTime: player.completionTime ?? null,
+      points: player.points,
+      isCorrect: true,
+    })
+
+    socket
+      .to(this.gameId)
+      .emit("game:playerAnswer", this.codeSubmissions.length)
+
+    this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
+  }
+
+  showBugHuntingResults(question: any) {
+    const oldLeaderboard =
+      this.leaderboard.length === 0
+        ? this.players.map((p) => ({ ...p }))
+        : this.leaderboard.map((p) => ({ ...p }))
+
+    const totalCorrect = this.codeSubmissions.filter((s) => s.correct).length
+    const totalWrong = this.codeSubmissions.filter((s) => !s.correct).length
+
+    const sortedPlayers = this.players
+      .map((player) => {
+        const playerSubmissions = this.codeSubmissions.filter(
+          (s) => s.playerId === player.id,
+        )
+        const submission = playerSubmissions[playerSubmissions.length - 1]
+
+        const isCorrect = submission ? submission.correct : false
+        const points = submission && isCorrect ? Math.round(submission.points) : 0
+
+        return { ...player, lastCorrect: isCorrect, lastPoints: points }
+      })
+      .sort((a, b) => {
+        if (b.points !== a.points) {return b.points - a.points}
+        const aTime = a.completionTime || Infinity
+        const bTime = b.completionTime || Infinity
+        return aTime - bTime
+      })
+
+    this.players = sortedPlayers
+
+    sortedPlayers.forEach((player) => {
+      this.sendStatus(player.id, STATUS.WAIT, {
+        text: "Wait for the result",
+      })
+    })
+
+    this.sendStatus(this.manager.id, STATUS.BUG_HUNTING_SHOW_RESPONSES, {
+      title: "Randomized questions provided to players",
+      expectedOutput: "Evaluate individual submissions for codes",
+      language: "multi",
+      totalCorrect,
+      totalWrong,
+      totalPlayers: this.players.length,
+    })
+
+    this.leaderboard = sortedPlayers
+    this.tempOldLeaderboard = oldLeaderboard
+
+    this.codeSubmissions = []
+
+    setTimeout(() => {
+      if (!this.started || this.gameMode !== "bug_hunting" || !this.bugHuntingQuizz) {
+        return
+      }
+
+      this.showLeaderboard()
+    }, 4000)
+  }
+
   async startAsyncBlindCoding() {
     if (!this.blindCodingQuizz) {return}
 
@@ -1425,6 +1673,19 @@ return
       return
     }
 
+    if (this.gameMode === "bug_hunting" && this.bugHuntingQuizz) {
+      if (!this.bugHuntingQuizz.questions[this.round.currentQuestion + 1]) {
+        this.showLeaderboard()
+
+        return
+      }
+
+      this.round.currentQuestion += 1
+      this.newBugHuntingRound()
+
+      return
+    }
+
 
 
     if (!this.quizz.questions[this.round.currentQuestion + 1]) {
@@ -1455,7 +1716,9 @@ return
       ? this.reverseQuizz.questions.length
       : this.gameMode === "blind_coding" && this.blindCodingQuizz
         ? this.blindCodingQuizz.questions.length
-        : this.quizz.questions.length
+        : this.gameMode === "bug_hunting" && this.bugHuntingQuizz
+          ? this.bugHuntingQuizz.questions.length
+          : this.quizz.questions.length
 
     const isLastRound =
       this.gameMode === "blind_coding" || this.round.currentQuestion + 1 === totalQuestions

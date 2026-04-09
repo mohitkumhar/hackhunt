@@ -74,7 +74,24 @@ export type BlindCodingQuizz = {
 
 export type BlindCodingQuizzWithId = BlindCodingQuizz & { id: string }
 
-export type GameMode = "quiz" | "reverse_programming" | "blind_coding"
+export type BugHuntingQuestion = {
+  title: string
+  description: string
+  buggyCode: string
+  language: string
+  expectedOutput: string
+  cooldown: number
+  time: number
+}
+
+export type BugHuntingQuizz = {
+  subject: string
+  questions: BugHuntingQuestion[]
+}
+
+export type BugHuntingQuizzWithId = BugHuntingQuizz & { id: string }
+
+export type GameMode = "quiz" | "reverse_programming" | "blind_coding" | "bug_hunting"
 
 export type GameUpdateQuestion = {
   current: number

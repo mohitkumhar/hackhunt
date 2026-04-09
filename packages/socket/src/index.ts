@@ -272,6 +272,7 @@ io.on("connection", (socket) => {
       socket.emit("manager:quizzList", Config.quizz())
       socket.emit("manager:reverseQuizzList", Config.reverseQuizz())
       socket.emit("manager:blindCodingQuizzList", Config.blindCoding())
+      socket.emit("manager:bugHuntingQuizzList", Config.bugHunting())
     } catch (error) {
       console.error("Failed to read game config:", error)
       socket.emit("manager:errorMessage", "Failed to read game config")
@@ -318,6 +319,20 @@ io.on("connection", (socket) => {
     }
 
     const game = new Game(io, socket, null, null, "blind_coding", quizz)
+    registry.addGame(game)
+  })
+
+  socket.on("game:createBugHunting", (quizzId) => {
+    const quizzList = Config.bugHunting()
+    const quizz = quizzList.find((q) => q.id === quizzId)
+
+    if (!quizz) {
+      socket.emit("game:errorMessage", "Bug hunting challenge not found")
+
+      return
+    }
+
+    const game = new Game(io, socket, null, null, "bug_hunting", null, quizz)
     registry.addGame(game)
   })
 
@@ -396,6 +411,18 @@ io.on("connection", (socket) => {
   socket.on("player:navigateBlindQuestion", ({ gameId, data }) =>
     withGame(gameId, socket, (game) =>
       game.navigateBlindQuestion(socket, data.direction),
+    ),
+  )
+
+  socket.on("player:submitAllBugHuntingCodes", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.submitAllBugHuntingCodes(socket, data.submissions),
+    ),
+  )
+
+  socket.on("player:navigateBugHuntingQuestion", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.navigateBugHuntingQuestion(socket, data.direction),
     ),
   )
 

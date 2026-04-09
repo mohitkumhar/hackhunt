@@ -1,0 +1,32 @@
+{
+  "subject": "1st Year - Bug Hunting",
+  "questions": [
+    {
+      "title": "Fix the Hello World",
+      "description": "This C program should print 'Hello World!' but it has bugs. Fix the code.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    print(\"Hello World!\");\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "Hello World!",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Fix the Sum",
+      "description": "This C program should calculate and print 'Sum: 30' but has bugs. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a = 10, b = 20;\n    printf(\"Sum: %d\\n\", a * b);\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "Sum: 30",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Fix the Loop",
+      "description": "This C program should print even numbers from 2 to 10, each on a new line. Fix the bugs.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    for (int i = 1; i <= 10; i++) {\n        printf(\"%d\\n\", i);\n    }\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "2\n4\n6\n8\n10",
+      "cooldown": 5,
+      "time": 120
+    }
+  ]
+}
