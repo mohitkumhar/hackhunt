@@ -25,6 +25,7 @@ const submissionSchema = new mongoose.Schema({
   questionId: { type: String },
   question: { type: String },
   answer: { type: String },
+  language: { type: String },
   timeTaken: { type: Number },
   score: { type: Number, default: null },
   isCorrect: { type: Boolean, default: null },
@@ -47,6 +48,16 @@ const participantSchema = new mongoose.Schema({
   year: { type: Number, default: null },
   startTime: { type: Number, required: true },
   durationMinutes: { type: Number, default: 40 },
+  totalQuestionsSubmitted: { type: Number, default: 0 },
+  totalTimeTaken: { type: Number, default: 0 },
+  totalScore: { type: Number, default: 0 },
+  questionDetails: [{
+    questionId: String,
+    timeTaken: Number,
+    isCorrect: Boolean,
+    score: Number,
+    language: String
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -16,10 +16,13 @@
           "explanation": "Sum of -133+72=-61 => Odd"
         }
       ],
-      "constraints": ["-2^30 <= n <= 2^30"],
+      "constraints": [
+        "-2^30 <= n <= 2^30"
+      ],
       "language": "python",
       "cooldown": 5,
-      "time": 300
+      "time": 300,
+      "id": "q_blind_coding_example_0"
     },
     {
       "title": "Fibonacci Number",
@@ -36,10 +39,13 @@
           "explanation": "10th Fibonacci number is 55"
         }
       ],
-      "constraints": ["1 <= N <= 30"],
+      "constraints": [
+        "1 <= N <= 30"
+      ],
       "language": "python",
       "cooldown": 5,
-      "time": 300
+      "time": 300,
+      "id": "q_blind_coding_example_1"
     },
     {
       "title": "Reverse a String",
@@ -56,10 +62,13 @@
           "explanation": "'HackHunt' reversed is 'tnuHkcaH'"
         }
       ],
-      "constraints": ["1 <= len(string) <= 1000"],
+      "constraints": [
+        "1 <= len(string) <= 1000"
+      ],
       "language": "python",
       "cooldown": 5,
-      "time": 240
+      "time": 240,
+      "id": "q_blind_coding_example_2"
     }
   ]
 }

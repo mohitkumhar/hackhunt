@@ -175,6 +175,22 @@ app.post("/api/submit-answer", async (req: Request, res: Response): Promise<any>
       { upsert: true, new: true }
     );
 
+    // Update aggregate participant metrics
+    const qIndex = participant.questionDetails.findIndex((q: any) => q.questionId === questionId);
+    if (qIndex >= 0) {
+      participant.totalTimeTaken -= (participant.questionDetails[qIndex].timeTaken || 0);
+      participant.totalScore -= (participant.questionDetails[qIndex].score || 0);
+      participant.questionDetails[qIndex].timeTaken = timeTaken;
+      participant.questionDetails[qIndex].isCorrect = isCorrect;
+      participant.questionDetails[qIndex].score = isCorrect ? score : 0;
+    } else {
+      participant.totalQuestionsSubmitted = (participant.totalQuestionsSubmitted || 0) + 1;
+      participant.questionDetails.push({ questionId, timeTaken, isCorrect, score: isCorrect ? score : 0 });
+    }
+    participant.totalTimeTaken = (participant.totalTimeTaken || 0) + timeTaken;
+    participant.totalScore = (participant.totalScore || 0) + (isCorrect ? score : 0);
+    await participant.save();
+
     res.status(200).json({ success: true, isCorrect, score });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -214,16 +230,24 @@ app.get("/api/leaderboard", async (req: Request, res: Response): Promise<any> =>
   try {
     const { eventType, year } = req.query;
     
-    const matchStage: any = {};
-    if (eventType) matchStage.eventType = eventType;
-    if (year) matchStage.year = Number(year);
+    const filter: any = {};
+    if (eventType) filter.eventType = eventType;
+    if (year) filter.year = Number(year);
 
-    const leaderboard = await Submission.aggregate([
-      { $match: matchStage },
-      { $group: { _id: "$participantId", username: { $first: "$username" }, totalScore: { $sum: "$score" } } },
-      { $sort: { totalScore: -1 } },
-      { $project: { _id: 0, participantId: "$_id", username: 1, totalScore: 1 } }
-    ]);
+    const leaderboardRaw = await Participant.find(filter)
+      .sort({ totalScore: -1, totalTimeTaken: 1 }) // Highest score first, then least time taken
+      .select('participantId username eventType totalQuestionsSubmitted totalTimeTaken totalScore questionDetails');
+
+    // Format the response for the frontend
+    const leaderboard = leaderboardRaw.map(p => ({
+      participantId: p.participantId,
+      username: p.username,
+      eventType: p.eventType,
+      totalScore: p.totalScore,
+      totalQuestionsSubmitted: p.totalQuestionsSubmitted,
+      totalTimeTaken: p.totalTimeTaken,
+      questionDetails: p.questionDetails
+    }));
 
     res.status(200).json(leaderboard);
   } catch (error: any) {

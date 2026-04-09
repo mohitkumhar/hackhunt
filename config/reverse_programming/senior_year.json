@@ -7,7 +7,8 @@
       "expectedCode": "print([x**2 for x in range(1, 6)])",
       "hint": "Use Python list comprehension",
       "cooldown": 5,
-      "time": 120
+      "time": 120,
+      "id": "q_reverse_programming_senior_year_0"
     },
     {
       "output": "Object Created\nHello from OOP!",
@@ -15,7 +16,8 @@
       "expectedCode": "#include <iostream>\n\nclass Sample {\npublic:\n    Sample() { std::cout << \"Object Created\\n\"; }\n    void greet() { std::cout << \"Hello from OOP!\\n\"; }\n};\n\nint main() {\n    Sample obj;\n    obj.greet();\n    return 0;\n}",
       "hint": "Create a C++ class with a constructor and member function",
       "cooldown": 5,
-      "time": 240
+      "time": 240,
+      "id": "q_reverse_programming_senior_year_1"
     },
     {
       "output": "Reversed: avaJ",
@@ -23,7 +25,8 @@
       "expectedCode": "public class Main {\n    public static void main(String[] args) {\n        String s = \"Java\";\n        String rev = new StringBuilder(s).reverse().toString();\n        System.out.println(\"Reversed: \" + rev);\n    }\n}",
       "hint": "Use StringBuilder in Java to reverse the string",
       "cooldown": 5,
-      "time": 180
+      "time": 180,
+      "id": "q_reverse_programming_senior_year_2"
     }
   ]
 }

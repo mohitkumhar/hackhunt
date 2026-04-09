@@ -249,9 +249,9 @@ return `${m}m ${s.toString().padStart(2, "0")}s`
               </div>
             )}
           </div>
-        ) : (
-          blindSubmissionsHistory && blindSubmissionsHistory.length > 0 && (
-            <div className="w-full mt-12 bg-gray-900/90 p-6 rounded-xl border border-white/20 backdrop-blur shrink-0 mb-12">
+        )}
+        {blindSubmissionsHistory && blindSubmissionsHistory.length > 0 && (
+          <div className="w-full mt-12 bg-gray-900/90 p-6 rounded-xl border border-white/20 backdrop-blur shrink-0 mb-12">
               <h3 className="text-2xl font-bold text-white mb-6">Review Submissions</h3>
               {blindSubmissionsHistory.map((history: any, idx: number) => {
                 const submittedCount = history.submissions.filter((s: any) => s.submitted).length
@@ -292,8 +292,7 @@ return `${m}m ${s.toString().padStart(2, "0")}s`
                 )
               })}
             </div>
-          )
-        )}
+          )}
       </section>
     </>
   )
