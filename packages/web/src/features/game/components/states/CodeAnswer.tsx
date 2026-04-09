@@ -480,7 +480,7 @@ return
                     : isSubmitting
                       ? "Running..."
                       : code.trim()
-                        ? "Run & Submit"
+                        ? "Submit"
                         : "Type something first..."}
                 </button>
                 {!isManager ? (

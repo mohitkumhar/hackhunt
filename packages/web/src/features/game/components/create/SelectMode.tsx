@@ -1,6 +1,6 @@
 import Button from "@rahoot/web/features/game/components/Button"
-import { useState } from "react"
 import clsx from "clsx"
+import { useState } from "react"
 
 type Props = {
   onSelect: (_mode: "quiz" | "reverse_programming" | "blind_coding" | "bug_hunting") => void
@@ -27,7 +27,7 @@ const SelectMode = ({ onSelect }: Props) => {
     {
       id: "reverse_programming" as const,
       icon: "💻",
-      title: "Reverse Programming",
+      title: "Output Based Coding",
       description: "See the output, write the code — powered by Pyodide",
     },
     {
