@@ -1,5 +1,5 @@
 {
-  "subject": "Round-1: Quizz",
+  "subject": "1st year: Round 1",
   "questions": [
     {
       "question": "In a website address, what does “.com” mainly indicate?",
@@ -29,12 +29,7 @@
     },
     {
       "question": "An email asks you to verify your account using a suspicious link. What is this called?",
-      "answers": [
-        "Backup",
-        "Phishing",
-        "Verification",
-        "Uploading"
-      ],
+      "answers": ["Backup", "Phishing", "Verification", "Uploading"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -42,12 +37,7 @@
     },
     {
       "question": "If A = 1, B = 2, C = 3, what is the result of C + A * B?",
-      "answers": [
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
+      "answers": ["4", "5", "6", "7"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -55,12 +45,7 @@
     },
     {
       "question": "A man walks 3 km north and 4 km east. How far is he from the start?",
-      "answers": [
-        "5 km",
-        "6 km",
-        "7 km",
-        "1 km"
-      ],
+      "answers": ["5 km", "6 km", "7 km", "1 km"],
       "solution": 0,
       "cooldown": 5,
       "time": 60,
@@ -68,12 +53,7 @@
     },
     {
       "question": "If 5 machines make 5 parts in 5 minutes, how long will 1 machine take to make 1 part?",
-      "answers": [
-        "1 minute",
-        "5 minutes",
-        "10 minutes",
-        "25 minutes"
-      ],
+      "answers": ["1 minute", "5 minutes", "10 minutes", "25 minutes"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -81,12 +61,7 @@
     },
     {
       "question": "What will be the output? int x = 5; x++; x = x + 2; System.out.println(x--);",
-      "answers": [
-        "5",
-        "6",
-        "7",
-        "8"
-      ],
+      "answers": ["5", "6", "7", "8"],
       "solution": 3,
       "cooldown": 5,
       "time": 60,
@@ -94,12 +69,7 @@
     },
     {
       "question": "What will be the output? int x = 5; printf(\"%d %d\", x, x++);",
-      "answers": [
-        "5 5",
-        "5 6",
-        "6 6",
-        "Undefined behavior"
-      ],
+      "answers": ["5 5", "5 6", "6 6", "Undefined behavior"],
       "solution": 3,
       "cooldown": 5,
       "time": 60,
@@ -107,12 +77,7 @@
     },
     {
       "question": "Output of: int i = 1; while(i++ <= 3) printf(\"%d \", i);",
-      "answers": [
-        "1 2 3",
-        "2 3 4",
-        "2 3",
-        "1 2 3 4"
-      ],
+      "answers": ["1 2 3", "2 3 4", "2 3", "1 2 3 4"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -120,12 +85,7 @@
     },
     {
       "question": "Output: int x = 0; if (x = 5) printf(\"True\"); else printf(\"False\");",
-      "answers": [
-        "True",
-        "False",
-        "Error",
-        "0"
-      ],
+      "answers": ["True", "False", "Error", "0"],
       "solution": 0,
       "cooldown": 5,
       "time": 60,
@@ -133,12 +93,7 @@
     },
     {
       "question": "Output: int a=5,b=10; int c=a>b?a:b; printf(\"%d\",c);",
-      "answers": [
-        "5",
-        "10",
-        "0",
-        "Error"
-      ],
+      "answers": ["5", "10", "0", "Error"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -146,12 +101,7 @@
     },
     {
       "question": "Output: int a=2; a*=3+2;",
-      "answers": [
-        "10",
-        "8",
-        "6",
-        "12"
-      ],
+      "answers": ["10", "8", "6", "12"],
       "solution": 0,
       "cooldown": 5,
       "time": 60,
@@ -159,12 +109,7 @@
     },
     {
       "question": "Output: char ch='A'; printf(\"%d\",ch);",
-      "answers": [
-        "A",
-        "65",
-        "97",
-        "Error"
-      ],
+      "answers": ["A", "65", "97", "Error"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -172,12 +117,7 @@
     },
     {
       "question": "Output: for(i=0;i<5;i++){if(i==3)break; printf(\"%d \",i);}",
-      "answers": [
-        "0 1 2 3 4",
-        "0 1 2",
-        "0 1 2 4",
-        "0 1 2 3"
-      ],
+      "answers": ["0 1 2 3 4", "0 1 2", "0 1 2 4", "0 1 2 3"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -185,12 +125,7 @@
     },
     {
       "question": "Output: int i=1; while(i<=3){printf(\"%d \",i); i*=2;}",
-      "answers": [
-        "1 2 3",
-        "1 2",
-        "1 2 4",
-        "2 4"
-      ],
+      "answers": ["1 2 3", "1 2", "1 2 4", "2 4"],
       "solution": 2,
       "cooldown": 5,
       "time": 60,
@@ -211,12 +146,7 @@
     },
     {
       "question": "Output: int x=10; if(x=0) printf(\"Zero\"); else printf(\"Non-Zero\");",
-      "answers": [
-        "Zero",
-        "Non-Zero",
-        "Error",
-        "Garbage value"
-      ],
+      "answers": ["Zero", "Non-Zero", "Error", "Garbage value"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -224,12 +154,7 @@
     },
     {
       "question": "Output: int i=0; while(i++<5){printf(\"%d \",i);}",
-      "answers": [
-        "1 2 3 4 5",
-        "0 1 2 3 4",
-        "1 2 3 4",
-        "Infinite loop"
-      ],
+      "answers": ["1 2 3 4 5", "0 1 2 3 4", "1 2 3 4", "Infinite loop"],
       "solution": 0,
       "cooldown": 5,
       "time": 60,
@@ -237,12 +162,7 @@
     },
     {
       "question": "Output: int i=5; while(i--){printf(\"%d \",i);}",
-      "answers": [
-        "5 4 3 2 1",
-        "4 3 2 1 0",
-        "5 4 3 2 1 0",
-        "4 3 2 1"
-      ],
+      "answers": ["5 4 3 2 1", "4 3 2 1 0", "5 4 3 2 1 0", "4 3 2 1"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -250,12 +170,7 @@
     },
     {
       "question": "Which assignment is valid?",
-      "answers": [
-        "8=x=y=z",
-        "x=8=y=z",
-        "x=y=z=8",
-        "None"
-      ],
+      "answers": ["8=x=y=z", "x=8=y=z", "x=y=z=8", "None"],
       "solution": 2,
       "cooldown": 5,
       "time": 60,
@@ -276,12 +191,7 @@
     },
     {
       "question": "Output: char s[]=\"Coding\"; printf(\"%s\", s+2);",
-      "answers": [
-        "Coding",
-        "ding",
-        "ing",
-        "oding"
-      ],
+      "answers": ["Coding", "ding", "ing", "oding"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -289,12 +199,7 @@
     },
     {
       "question": "Output: int a=2,b=3; printf(\"%d\",a+++b);",
-      "answers": [
-        "5",
-        "6",
-        "4",
-        "Error"
-      ],
+      "answers": ["5", "6", "4", "Error"],
       "solution": 0,
       "cooldown": 5,
       "time": 60,
@@ -302,12 +207,7 @@
     },
     {
       "question": "Output: char s[]=\"NPTEL\"; char *p=s; printf(\"%c\",*(p+3));",
-      "answers": [
-        "T",
-        "P",
-        "E",
-        "L"
-      ],
+      "answers": ["T", "P", "E", "L"],
       "solution": 2,
       "cooldown": 5,
       "time": 60,
@@ -315,12 +215,7 @@
     },
     {
       "question": "Output with multiple increments in printf?",
-      "answers": [
-        "2 6 4",
-        "2 7 4",
-        "Undefined behavior",
-        "2 5 3"
-      ],
+      "answers": ["2 6 4", "2 7 4", "Undefined behavior", "2 5 3"],
       "solution": 2,
       "cooldown": 5,
       "time": 60,
@@ -328,12 +223,7 @@
     },
     {
       "question": "Output: for(;i++<5;printf(\"%d \",i));",
-      "answers": [
-        "1 2 3 4 5",
-        "0 1 2 3 4",
-        "1 2 3 4",
-        "Error"
-      ],
+      "answers": ["1 2 3 4 5", "0 1 2 3 4", "1 2 3 4", "Error"],
       "solution": 0,
       "cooldown": 5,
       "time": 60,
@@ -341,12 +231,7 @@
     },
     {
       "question": "Output: if(printf(\"Hello\") && x) printf(\"World\");",
-      "answers": [
-        "Hello",
-        "World",
-        "HelloWorld",
-        "Error"
-      ],
+      "answers": ["Hello", "World", "HelloWorld", "Error"],
       "solution": 2,
       "cooldown": 5,
       "time": 60,
@@ -354,12 +239,7 @@
     },
     {
       "question": "Output: int arr[]={1,2,3,4}; int *p=arr; printf(\"%d\",*(p++ + 2));",
-      "answers": [
-        "2",
-        "3",
-        "4",
-        "1"
-      ],
+      "answers": ["2", "3", "4", "1"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -367,12 +247,7 @@
     },
     {
       "question": "Output: char *s=\"ABCDE\"; printf(\"%c\",*(s+3)-1);",
-      "answers": [
-        "D",
-        "C",
-        "E",
-        "B"
-      ],
+      "answers": ["D", "C", "E", "B"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
@@ -380,12 +255,7 @@
     },
     {
       "question": "Output: int a=5; int b=(a++,a+2);",
-      "answers": [
-        "5 7",
-        "6 8",
-        "6 7",
-        "7 8"
-      ],
+      "answers": ["5 7", "6 8", "6 7", "7 8"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
