@@ -7,6 +7,7 @@ import {
 } from "@rahoot/web/features/game/utils/constants"
 import useScreenSize from "@rahoot/web/hooks/useScreenSize"
 import clsx from "clsx"
+import { motion, AnimatePresence } from "motion/react"
 import { useEffect, useState } from "react"
 import ReactConfetti from "react-confetti"
 import useSound from "use-sound"
@@ -63,6 +64,33 @@ const usePodiumAnimation = (topLength: number) => {
 
 const Podium = ({ data: { subject, top, blindPlayerResults, blindSubmissionsHistory } }: Props) => {
   const apparition = usePodiumAnimation(top.length)
+  const [expandedPlayers, setExpandedPlayers] = useState<Set<string>>(new Set())
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set())
+
+  const togglePlayer = (username: string) => {
+    setExpandedPlayers((prev) => {
+      const next = new Set(prev)
+      if (next.has(username)) {
+        next.delete(username)
+      } else {
+        next.add(username)
+      }
+      return next
+    })
+  }
+
+  const toggleQuestion = (playerUsername: string, questionIdx: number) => {
+    const key = `${playerUsername}-${questionIdx}`
+    setExpandedQuestions((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) {
+        next.delete(key)
+      } else {
+        next.add(key)
+      }
+      return next
+    })
+  }
 
   const { width, height } = useScreenSize()
 
@@ -106,47 +134,93 @@ return `${m}m ${s.toString().padStart(2, "0")}s`
               const rank = idx + 1
               const medalColors = ["from-yellow-400 to-amber-500", "from-zinc-300 to-zinc-400", "from-amber-600 to-amber-700"]
               const medalBg = rank <= 3 ? medalColors[rank - 1] : "from-gray-600 to-gray-700"
+              const isExpanded = expandedPlayers.has(player.username)
 
               return (
-                <div key={idx} className="mb-6 bg-gray-900/90 rounded-xl border border-white/20 backdrop-blur overflow-hidden">
+                <div key={idx} className="mb-6 bg-gray-900/90 rounded-xl border border-white/20 backdrop-blur overflow-hidden transition-all duration-300">
                   {/* Player header */}
-                  <div className="flex items-center gap-4 p-4 border-b border-white/10">
+                  <button 
+                    onClick={() => togglePlayer(player.username)}
+                    className="w-full flex items-center gap-4 p-4 border-b border-white/10 hover:bg-white/5 transition-colors text-left"
+                  >
                     <div className={`flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br ${medalBg} text-white font-bold text-lg shadow-lg shrink-0`}>
                       {rank}
                     </div>
                     <div className="flex-1">
                       <span className="text-xl font-bold text-white">{player.username}</span>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-sm font-medium ${player.completionTime ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"}`}>
-                      {player.completionTime ? `⏱ ${formatTime(player.completionTime)}` : "⏱ Did not finish"}
+                    <div className="flex items-center gap-3">
+                      <div className={`px-3 py-1 rounded-full text-sm font-medium ${player.completionTime ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"}`}>
+                        {player.completionTime ? `⏱ ${formatTime(player.completionTime)}` : "⏱ Did not finish"}
+                      </div>
+                      <div className="hidden sm:block px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-300">
+                        {player.answers.filter(a => a.submitted).length} / {player.answers.length} answered
+                      </div>
+                      <motion.span 
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        className="text-white/60 ml-2"
+                      >
+                        ▼
+                      </motion.span>
                     </div>
-                    <div className="px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-300">
-                      {player.answers.filter(a => a.submitted).length} / {player.answers.length} answered
-                    </div>
-                  </div>
+                  </button>
 
                   {/* Player's answers */}
-                  <div className="p-4 grid grid-cols-1 gap-3">
-                    {player.answers.map((answer, aidx) => (
-                      <div key={aidx} className={`rounded-lg overflow-hidden ${answer.submitted ? "bg-gray-800" : "bg-red-900/30"}`}>
-                        <div className="flex items-center justify-between px-4 py-2 bg-white/5">
-                          <span className="text-yellow-400 font-semibold text-sm">Q{aidx + 1}: {answer.question}</span>
-                          {answer.submitted && (
-                            <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded">
-                              {answer.language}
-                            </span>
-                          )}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="p-4 grid grid-cols-1 gap-3">
+                          {player.answers.map((answer, aidx) => {
+                            const isQuestionExpanded = !expandedQuestions.has(`${player.username}-${aidx}`) // Default to expanded
+                            return (
+                              <div key={aidx} className={`rounded-lg overflow-hidden border border-white/5 ${answer.submitted ? "bg-gray-800" : "bg-red-900/30"}`}>
+                                <button 
+                                  onClick={() => toggleQuestion(player.username, aidx)}
+                                  className="w-full flex items-center justify-between px-4 py-2 bg-white/5 hover:bg-white/10 transition-colors text-left"
+                                >
+                                  <span className="text-yellow-400 font-semibold text-sm">Q{aidx + 1}: {answer.question}</span>
+                                  <div className="flex items-center gap-2">
+                                    {answer.submitted && (
+                                      <span className="text-[10px] px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded uppercase font-bold tracking-wider">
+                                        {answer.language}
+                                      </span>
+                                    )}
+                                    <span className="text-white/40 text-xs">
+                                      {isQuestionExpanded ? "—" : "+"}
+                                    </span>
+                                  </div>
+                                </button>
+                                <AnimatePresence>
+                                  {isQuestionExpanded && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      className="overflow-hidden"
+                                    >
+                                      <div className="px-4 py-3 bg-gray-950/50 max-h-60 overflow-y-auto overflow-x-auto custom-scrollbar">
+                                        {answer.submitted ? (
+                                          <pre className="text-sm text-green-400 font-mono leading-relaxed">{answer.code}</pre>
+                                        ) : (
+                                          <p className="text-sm text-red-400 italic">No code was submitted</p>
+                                        )}
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            )
+                          })}
                         </div>
-                        <div className="px-4 py-3 bg-gray-950/50 max-h-48 overflow-y-auto overflow-x-auto">
-                          {answer.submitted ? (
-                            <pre className="text-sm text-green-400 whitespace-pre-wrap">{answer.code}</pre>
-                          ) : (
-                            <p className="text-sm text-red-400 italic">No code was submitted</p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )
             })}
