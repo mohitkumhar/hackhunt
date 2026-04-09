@@ -936,6 +936,61 @@ return
     }, 2000)
   }
 
+  submitAllBlindCodes(socket: Socket, submissions: Record<number, { code: string; language: string }>) {
+    const player = this.players.find((player) => player.id === socket.id)
+
+    if (!player || !this.blindCodingQuizz) {return}
+
+    // Process all submissions
+    for (const [indexStr, sub] of Object.entries(submissions)) {
+      const pIndex = parseInt(indexStr) - 1; // questionStates.current is 1-indexed
+
+      if (isNaN(pIndex) || pIndex < 0 || pIndex >= this.blindCodingQuizz.questions.length) {
+        continue;
+      }
+
+      const historyEntry = this.allBlindCodeSubmissions[pIndex];
+      let existingSub = historyEntry.submissions.find(s => s.username === player.username);
+
+      if (!existingSub) {
+        historyEntry.submissions.push({
+          username: player.username,
+          code: sub.code,
+          language: sub.language,
+          submitted: true,
+        });
+      } else {
+        existingSub.code = sub.code;
+        existingSub.language = sub.language;
+        existingSub.submitted = true;
+      }
+    }
+
+    // Mark player as completely done
+    this.playerCurrentQuestion[player.id] = this.blindCodingQuizz.questions.length;
+    
+    if (!this.playerCompletionTime[player.id]) {
+      this.playerCompletionTime[player.id] = Math.round((Date.now() - this.round.startTime) / 1000);
+    }
+
+    this.sendStatus(player.id, STATUS.SHOW_RESULT, {
+      correct: true,
+      message: "All answers submitted successfully!",
+      points: 0,
+      myPoints: 0,
+      rank: 0,
+      aheadOfMe: null,
+      hideRank: true,
+      hidePoints: true,
+    });
+
+    const allDone = this.players.every(p => (this.playerCurrentQuestion[p.id] || 0) >= this.blindCodingQuizz!.questions.length);
+
+    if (allDone) {
+      this.abortCooldown();
+    }
+  }
+
   showResults(question: any) {
     const oldLeaderboard =
       this.leaderboard.length === 0

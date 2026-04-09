@@ -113,6 +113,9 @@ export interface ClientToServerEvents {
   "player:submitBlindCode": (
     _message: MessageWithoutStatus<{ code: string; language: string }>,
   ) => void
+  "player:submitAllBlindCodes": (
+    _message: MessageWithoutStatus<{ submissions: Record<number, { code: string; language: string }> }>,
+  ) => void
   "player:navigateBlindQuestion": (_message: MessageBlindNavigate) => void
 
   // Common

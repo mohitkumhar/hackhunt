@@ -405,6 +405,12 @@ io.on("connection", (socket) => {
     ),
   )
 
+  socket.on("player:submitAllBlindCodes", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.submitAllBlindCodes(socket, data.submissions),
+    ),
+  )
+
   socket.on("player:navigateBlindQuestion", ({ gameId, data }) =>
     withGame(gameId, socket, (game) =>
       game.navigateBlindQuestion(socket, data.direction),

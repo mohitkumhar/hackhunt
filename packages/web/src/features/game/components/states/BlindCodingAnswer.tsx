@@ -45,6 +45,7 @@ const BlindCodingAnswer = ({
 
   const [code, setCode] = useState("");
   const [codeLanguage, setCodeLanguage] = useState(language);
+  const [savedCodes, setSavedCodes] = useState<Record<number, { code: string; language: string }>>({});
   const [cooldown, setCooldown] = useState(time);
   const [totalAnswer, setTotalAnswer] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -76,14 +77,30 @@ const BlindCodingAnswer = ({
   });
 
   useEffect(() => {
-    setCode("");
-    setCharCount(0);
+    const qIndex = questionStates?.current || 1;
+    const existing = savedCodes[qIndex];
+    if (existing) {
+      setCode(existing.code);
+      setCodeLanguage(existing.language);
+      setCharCount(existing.code.length);
+    } else {
+      setCode("");
+      setCodeLanguage(language);
+      setCharCount(0);
+    }
     setSubmitted(false);
-  }, [title, description, language]);
+  }, [title, description, language, questionStates]);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCode(e.target.value);
-    setCharCount(e.target.value.length);
+    const newCode = e.target.value;
+    setCode(newCode);
+    setCharCount(newCode.length);
+    
+    const qIndex = questionStates?.current || 1;
+    setSavedCodes((prev) => ({
+      ...prev,
+      [qIndex]: { code: newCode, language: codeLanguage },
+    }));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -94,6 +111,12 @@ const BlindCodingAnswer = ({
       const newCode = `${code.substring(0, start)}    ${code.substring(end)}`;
       setCode(newCode);
       setCharCount(newCode.length);
+      
+      const qIndex = questionStates?.current || 1;
+      setSavedCodes((prev) => ({
+        ...prev,
+        [qIndex]: { code: newCode, language: codeLanguage },
+      }));
       setTimeout(() => {
         if (textareaRef.current) {
           textareaRef.current.selectionStart = start + 4;
@@ -104,19 +127,37 @@ const BlindCodingAnswer = ({
   };
 
   const handleSubmit = () => {
-    if (!player || !code.trim() || submitted) {
+    if (!player || submitted) {
+      return;
+    }
+
+    const confirmSubmit = window.confirm(
+      "Are you sure you want to submit all questions? You cannot change your answers after this."
+    );
+    
+    if (!confirmSubmit) {
       return;
     }
 
     setSubmitted(true);
     sfxPop();
 
-    socket?.emit("player:submitBlindCode", {
+    socket?.emit("player:submitAllBlindCodes", {
       gameId,
       data: {
-        code,
-        language: codeLanguage,
+        submissions: savedCodes,
       },
+    });
+  };
+
+  const handleNavigate = (direction: "prev" | "next") => () => {
+    if (!player) {
+      return;
+    }
+
+    socket?.emit("player:navigateBlindQuestion", {
+      gameId,
+      data: { direction },
     });
   };
 
@@ -221,7 +262,15 @@ const BlindCodingAnswer = ({
                   Blind Editor —
                   <select
                     value={codeLanguage}
-                    onChange={(e) => setCodeLanguage(e.target.value)}
+                    onChange={(e) => {
+                      const newLang = e.target.value;
+                      setCodeLanguage(newLang);
+                      const qIndex = questionStates?.current || 1;
+                      setSavedCodes((prev) => ({
+                        ...prev,
+                        [qIndex]: { code, language: newLang },
+                      }));
+                    }}
                     className="ml-2 rounded border border-gray-600 bg-gray-700 px-2 py-0.5 text-xs font-semibold text-white outline-none focus:border-primary"
                   >
                     <option value="python">Python</option>
@@ -294,13 +343,31 @@ const BlindCodingAnswer = ({
           </div>
 
           {/* Submit Button */}
-          <div className="mt-3 flex w-full">
+          <div className="mt-3 grid grid-cols-3 gap-2">
             <button
-              onClick={handleSubmit}
-              disabled={!code.trim() || submitted}
-              className="btn-shadow w-full rounded-lg bg-primary px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+              onClick={handleNavigate("prev")}
+              disabled={!questionStates || questionStates.current <= 1}
+              className="btn-shadow rounded-lg bg-white/20 px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
             >
-              {submitted ? "Submitting..." : code.trim() ? "Submit Code" : "Type first"}
+              Previous
+            </button>
+            {questionStates && questionStates.current === questionStates.total ? (
+              <button
+                onClick={handleSubmit}
+                disabled={submitted}
+                className="btn-shadow rounded-lg bg-primary px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+              >
+                {submitted ? "Submitting..." : "Submit All"}
+              </button>
+            ) : (
+              <div />
+            )}
+            <button
+              onClick={handleNavigate("next")}
+              disabled={!questionStates || questionStates.current >= questionStates.total}
+              className="btn-shadow rounded-lg bg-white/20 px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Next
             </button>
           </div>
         </div>
