@@ -1,8 +1,13 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 
-const uri = "mongodb+srv://hackhunt:hackhunt%40madhav@cluster0.my6eqmb.mongodb.net/hackhunt?retryWrites=true&w=majority&appName=Cluster0";
-
 async function checkConnection() {
+  const uri = process.env.MONGO_URI;
+  if (!uri) {
+    console.error("FAIL! MONGO_URI is not defined in the environment variables.");
+    process.exit(1);
+  }
+
   console.log("Attempting to connect to MongoDB from Windows Host...");
   try {
     await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });

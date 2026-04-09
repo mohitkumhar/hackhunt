@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = "mongodb+srv://hackhunt:hackhunt%40madhav@cluster0.my6eqmb.mongodb.net/hackhunt?retryWrites=true&w=majority&appName=Cluster0";
-
 export const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || MONGO_URI, {
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI is not defined in the environment variables");
+    }
+    await mongoose.connect(process.env.MONGO_URI, {
       serverSelectionTimeoutMS: 5000
     });
     console.log("Connected to MongoDB -> hackhunt");
