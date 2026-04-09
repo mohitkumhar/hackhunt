@@ -66,7 +66,7 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
         ) : (
           <>
             <div className="flex w-full justify-between p-4">
-              {questionStates && (
+              {questionStates && statusName !== "FINISHED" && statusName !== "SHOW_LEADERBOARD" && (
                 <div className="shadow-inset flex items-center rounded-md bg-white p-2 px-4 text-lg font-bold text-black">
                   {`${questionStates.current} / ${questionStates.total}`}
                 </div>
@@ -86,7 +86,7 @@ const GameWrapper = ({ children, statusName, onNext, manager }: Props) => {
 
             {children}
 
-            {!manager && (
+            {!manager && statusName !== "BLIND_CODING_WRITE" && (
               <div className="z-50 flex items-center justify-between bg-white px-4 py-2 text-lg font-bold text-white">
                 <p className="text-gray-800">{player?.username}</p>
                 <div className="rounded-sm bg-gray-800 px-3 py-1 text-lg">

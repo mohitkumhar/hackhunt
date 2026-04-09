@@ -1,5 +1,5 @@
 # ---- BASE ----
-FROM node:24-alpine AS base
+FROM node:22-bookworm-slim AS base
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # ---- BUILDER ----
@@ -18,11 +18,11 @@ COPY . .
 RUN pnpm build
 
 # ---- RUNNER ----
-FROM alpine:3.21 AS runner
+FROM node:22-bookworm-slim AS runner
 
-RUN apk add --no-cache nginx nodejs supervisor
+RUN apt-get update && apt-get install -y nginx supervisor && rm -rf /var/lib/apt/lists/*
 
-COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 
 COPY --from=builder /app/packages/web/dist /app/web

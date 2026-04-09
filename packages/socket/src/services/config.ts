@@ -138,6 +138,34 @@ class Config {
         ),
       )
     }
+
+    const isBugHuntingExists = fs.existsSync(getPath("bug_hunting"))
+
+    if (!isBugHuntingExists) {
+      fs.mkdirSync(getPath("bug_hunting"))
+
+      fs.writeFileSync(
+        getPath("bug_hunting/example.json"),
+        JSON.stringify(
+          {
+            subject: "1st Year - Bug Hunting",
+            questions: [
+              {
+                title: "Fix the Hello World",
+                description: "This C program should print 'Hello World!' but it has bugs. Fix the code.",
+                buggyCode: "#include <stdio.h>\n\nint main() {\n    print(\"Hello World!\");\n    return 0;\n}",
+                language: "c",
+                expectedOutput: "Hello World!",
+                cooldown: 5,
+                time: 90,
+              },
+            ],
+          },
+          null,
+          2,
+        ),
+      )
+    }
   }
 
   static game() {
@@ -249,6 +277,38 @@ class Config {
       return quizz || []
     } catch (error) {
       console.error("Failed to read blind coding config:", error)
+
+      return []
+    }
+  }
+
+  static bugHunting() {
+    const isExists = fs.existsSync(getPath("bug_hunting"))
+
+    if (!isExists) {
+      return []
+    }
+
+    try {
+      const files = fs
+        .readdirSync(getPath("bug_hunting"))
+        .filter((file) => file.endsWith(".json"))
+
+      const quizz: any[] = files.map((file) => {
+        const data = fs.readFileSync(getPath(`bug_hunting/${file}`), "utf-8")
+        const config = JSON.parse(data)
+
+        const id = file.replace(".json", "")
+
+        return {
+          id,
+          ...config,
+        }
+      })
+
+      return quizz || []
+    } catch (error) {
+      console.error("Failed to read bug hunting config:", error)
 
       return []
     }

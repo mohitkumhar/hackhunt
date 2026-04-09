@@ -41,7 +41,6 @@ const TEAM_BORDER_COLORS = [
 const Room = ({ data: { text, inviteCode } }: Props) => {
   const { gameId } = useManagerStore()
   const { socket } = useSocket()
-  const webUrl = window.location.origin
   const { players } = useManagerStore()
   const [playerList, setPlayerList] = useState<Player[]>(players)
   const [totalPlayers, setTotalPlayers] = useState(0)
@@ -78,14 +77,15 @@ const Room = ({ data: { text, inviteCode } }: Props) => {
     const groups: Record<string, Player[]> = {}
     playerList.forEach((player) => {
       const team = player.teamName || "No Team"
-      if (!groups[team]) {
-        groups[team] = []
-      }
+
+      groups[team] ||= []
       groups[team].push(player)
     })
     // Sort teams alphabetically
     const sortedTeams = Object.keys(groups).sort()
-    return sortedTeams.map((teamName) => ({
+
+    
+return sortedTeams.map((teamName) => ({
       teamName,
       players: groups[teamName],
     }))
@@ -94,10 +94,13 @@ const Room = ({ data: { text, inviteCode } }: Props) => {
   // Get a consistent color index for a team
   const getTeamColorIndex = (teamName: string) => {
     let hash = 0
-    for (let i = 0; i < teamName.length; i++) {
+    for (let i = 0; i < teamName.length; i += 1) {
+      // eslint-disable-next-line no-bitwise
       hash = teamName.charCodeAt(i) + ((hash << 5) - hash)
     }
-    return Math.abs(hash) % TEAM_COLORS.length
+
+    
+return Math.abs(hash) % TEAM_COLORS.length
   }
 
   return (
@@ -123,7 +126,9 @@ const Room = ({ data: { text, inviteCode } }: Props) => {
       <div className="flex w-full flex-col gap-5">
         {teamGroups.map(({ teamName, players: teamPlayers }) => {
           const colorIdx = getTeamColorIndex(teamName)
-          return (
+
+          
+return (
             <div
               key={teamName}
               className={`rounded-xl border-2 ${TEAM_BORDER_COLORS[colorIdx]} bg-black/30 backdrop-blur-sm overflow-hidden`}

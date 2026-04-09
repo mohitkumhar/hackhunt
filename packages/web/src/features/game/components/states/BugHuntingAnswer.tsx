@@ -15,7 +15,7 @@ import { useParams } from "react-router"
 import useSound from "use-sound"
 
 type Props = {
-  data: CommonStatusDataMap["REVERSE_WRITE_CODE"]
+  data: CommonStatusDataMap["BUG_HUNTING_WRITE"]
 }
 
 type SupportedLanguage = "python" | "javascript" | "c++" | "c" | "java" | "go"
@@ -56,8 +56,8 @@ const LANGUAGES: Record<
   },
 }
 
-const CodeAnswer = ({
-  data: { output, language: expectedLanguage, hint },
+const BugHuntingAnswer = ({
+  data: { title, description, buggyCode, language: expectedLanguage, expectedOutput },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
@@ -67,28 +67,9 @@ const CodeAnswer = ({
   
   const isManager = Boolean(managerGameId)
 
-  const handleManagerRefresh = () => {
-    if (gameId) {
-      localStorage.removeItem(`competitionStartTime_${gameId}`)
-    }
-
-    window.location.reload()
-  }
-
-  // Default to python or the expected language if supported
-  const initialLang =
-    expectedLanguage && expectedLanguage.toLowerCase() in LANGUAGES
-      ? (expectedLanguage.toLowerCase() as SupportedLanguage)
-      : "python"
-
-  const [selectedLang, setSelectedLang] = useState<SupportedLanguage>(initialLang)
-  const [code, setCode] = useState(LANGUAGES[initialLang].boilerplate)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [runError, setRunError] = useState<string | null>(null)
-  const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(
-    () => new Set<number>(),
-  )
+  // Persist code per question: { [1-indexed question number]: { code, language } }
+  const [savedCodes, setSavedCodes] = useState<Record<number, { code: string; language: string }>>({})
+  const [showConfirm, setShowConfirm] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const [sfxPop] = useSound(SFX_ANSWERS_SOUND, { volume: 0.1 })
@@ -98,7 +79,7 @@ const CodeAnswer = ({
     loop: true,
   })
 
-  // Global competition timer state (60 mins = 3600 seconds)
+  // Global competition timer
   const [timeLeft, setTimeLeft] = useState(3600)
 
   useEffect(() => {
@@ -115,7 +96,6 @@ const CodeAnswer = ({
       startTimeValue = parseInt(storedStartTime, 10)
     }
 
-    // Run once immediately so it doesn't wait 1s to hide the "Time's Up" initially
     const initialElapsed = Math.floor((Date.now() - startTimeValue) / 1000)
     setTimeLeft(Math.max(0, 3600 - initialElapsed))
 
@@ -130,171 +110,59 @@ const CodeAnswer = ({
 
   useEffect(() => {
     playMusic()
-
-    return () => {
-      stopMusic()
-    }
+    return () => { stopMusic() }
   }, [playMusic])
 
-  useEffect(() => {
-    const nextLang =
-      expectedLanguage && expectedLanguage.toLowerCase() in LANGUAGES
-        ? (expectedLanguage.toLowerCase() as SupportedLanguage)
-        : "python"
+  // Derive current language and code from saved state or buggyCode
+  const currentQ = questionStates?.current ?? 1
+  const totalQ = questionStates?.total ?? 1
 
-    setSelectedLang(nextLang)
-    setCode(LANGUAGES[nextLang].boilerplate)
-    setSubmitted(false)
-    setIsSubmitting(false)
-    setRunError(null)
-  }, [output, expectedLanguage, hint])
+  const currentLang: SupportedLanguage =
+    savedCodes[currentQ]?.language as SupportedLanguage
+    || (expectedLanguage && expectedLanguage.toLowerCase() in LANGUAGES
+      ? (expectedLanguage.toLowerCase() as SupportedLanguage)
+      : "c")
+
+  const currentCode = savedCodes[currentQ]?.code ?? buggyCode ?? ""
+
+  // Auto-save buggyCode as initial value when navigating to a new question
+  useEffect(() => {
+    if (!savedCodes[currentQ] && buggyCode) {
+      setSavedCodes(prev => ({
+        ...prev,
+        [currentQ]: { code: buggyCode, language: currentLang },
+      }))
+    }
+  }, [currentQ, buggyCode])
+
+  const setCode = (newCode: string) => {
+    setSavedCodes(prev => ({
+      ...prev,
+      [currentQ]: { code: newCode, language: currentLang },
+    }))
+  }
+
+  const handleLangSelect = (lang: SupportedLanguage) => {
+    // When switching language, replace code with the boilerplate for that language
+    setSavedCodes(prev => ({
+      ...prev,
+      [currentQ]: { code: LANGUAGES[lang].boilerplate, language: lang },
+    }))
+  }
 
   const formatTimeStr = (totalSeconds: number) => {
     const m = Math.floor(totalSeconds / 60)
     const s = totalSeconds % 60
-
-    
-return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
-  }
-
-  const handleLangSelect = (lang: SupportedLanguage) => {
-    setSelectedLang(lang)
-    
-    // Only replace code if it's completely empty or matches a different language's boilerplate
-    const isBoilerplate = Object.values(LANGUAGES).some((l) => l.boilerplate === code.trim())
-
-    if (!code.trim() || isBoilerplate) {
-      setCode(LANGUAGES[lang].boilerplate)
-    }
-  }
-
-  const handleSubmit = async () => {
-    if (!player || !code.trim() || submitted || timeLeft <= 0) {
-      return
-    }
-
-    const currentQuestionIndex = (questionStates?.current ?? 1) - 1
-    if (submittedQuestions.has(currentQuestionIndex)) {
-      return
-    }
-
-    setIsSubmitting(true)
-    setRunError(null)
-
-    let playerOutput = ""
-
-    const requestBody = JSON.stringify({
-      language: selectedLang,
-      version: LANGUAGES[selectedLang].version,
-      files: [
-        {
-          name: selectedLang === "java" ? "Main.java" : undefined,
-          content: code,
-        },
-      ],
-    })
-
-    try {
-      const controller = new AbortController()
-      // Increased to 30s for Java
-      const timeout = setTimeout(() => controller.abort(), 30000) 
-
-      const response = await fetch("/api/execute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: requestBody,
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeout)
-
-      if (!response.ok) {
-        throw new Error(`Execution engine error: ${response.status}`)
-      }
-
-      const result = await response.json()
-
-      if (result.compile && result.compile.code !== 0) {
-        setRunError(`Compilation Error:\n${result.compile.output}`)
-        setIsSubmitting(false)
-        return
-      }
-
-      if (result.run && result.run.signal) {
-        setRunError(`Runtime Error (${result.run.signal}):\n${result.run.stderr || ""}`)
-        setIsSubmitting(false)
-
-        
-return
-      }
-
-      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
-      if (result.run && result.run.code !== 0 && !result.run.stdout) {
-        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
-        setIsSubmitting(false)
-
-        
-return
-      }
-
-      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
-      if (result.run && result.run.code !== 0 && !result.run.stdout) {
-        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
-        setIsSubmitting(false)
-        return
-      }
-
-      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
-      if (result.run && result.run.code !== 0 && !result.run.stdout) {
-        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
-        setIsSubmitting(false)
-        return
-      }
-
-      playerOutput = result.run.stdout || ""
-
-      // Clean up newline at the end if it exists
-      if (playerOutput.endsWith("\n")) {
-        playerOutput = playerOutput.slice(0, -1)
-      }
-    } catch (err: unknown) {
-      setRunError(err instanceof Error ? err.message : "Execution failed")
-      setIsSubmitting(false)
-      return
-    }
-
-    setSubmitted(true)
-    sfxPop()
-
-    socket?.emit("player:submitCode", {
-      gameId,
-      data: {
-        code,
-        output: playerOutput,
-      },
-    })
-
-    setSubmittedQuestions((prev) => {
-      const next = new Set(prev)
-      next.add(currentQuestionIndex)
-
-      return next
-    })
-
-    setIsSubmitting(false)
+    return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Allow Tab key for indentation
     if (e.key === "Tab") {
       e.preventDefault()
       const start = e.currentTarget.selectionStart
       const end = e.currentTarget.selectionEnd
-      const newCode = `${code.substring(0, start)}    ${code.substring(end)}`
+      const newCode = `${currentCode.substring(0, start)}    ${currentCode.substring(end)}`
       setCode(newCode)
-      // Set cursor position after indent
       setTimeout(() => {
         if (textareaRef.current) {
           textareaRef.current.selectionStart = start + 4
@@ -309,53 +177,105 @@ return
       return
     }
 
-    socket?.emit("player:navigateReverseQuestion", {
+    socket?.emit("player:navigateBugHuntingQuestion", {
       gameId,
       data: { direction },
     })
   }
 
-  const currentQuestionIndex = (questionStates?.current ?? 1) - 1
-  const alreadySubmittedCurrent = submittedQuestions.has(currentQuestionIndex)
+  const handleSubmitAll = () => {
+    if (!player || timeLeft <= 0) {
+      return
+    }
 
+    sfxPop()
+
+    socket?.emit("player:submitAllBugHuntingCodes", {
+      gameId,
+      data: {
+        submissions: savedCodes,
+      },
+    })
+
+    setShowConfirm(false)
+  }
+
+  const isLastQuestion = currentQ >= totalQ
+
+  if (timeLeft === 0) {
+    return (
+      <div className="flex h-full flex-1 flex-col items-center justify-center gap-4">
+        <div className="anim-show text-6xl">⏰</div>
+        <h2 className="text-center text-3xl font-bold text-red-500 drop-shadow-lg md:text-4xl">
+          Time's Up!
+        </h2>
+        <p className="text-lg text-white/80">The competition has concluded. No more submissions accepted.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex h-full flex-1 flex-col justify-between">
+      {/* Confirmation Dialog */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="rounded-2xl bg-[#1e1e24] border border-white/20 p-8 shadow-2xl max-w-md w-full mx-4">
+            <h3 className="text-xl font-bold text-white mb-3">🐛 Submit All Answers?</h3>
+            <p className="text-white/70 text-sm mb-6">
+              You are about to submit all {totalQ} answers. This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-white/20"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitAll}
+                className="flex-1 rounded-lg bg-green-600 hover:bg-green-500 px-4 py-3 text-sm font-bold uppercase tracking-widest text-white shadow-lg transition-all border border-green-400/50"
+              >
+                Confirm Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col lg:flex-row gap-6 px-6 overflow-y-auto pt-6 pb-24">
         
-        {/* Left Column: Glassmorphic Question/Output Panel */}
+        {/* Left Column: Bug Description & Expected Output Panel */}
         <div className="w-full lg:w-[32%] shrink-0 flex flex-col gap-4">
           <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-5 shadow-2xl flex flex-col gap-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span>📝</span> Expected Output Challenge
+              <span>🐛</span> Bug Hunting
             </h2>
+            <h3 className="text-lg font-semibold text-orange-300">{title}</h3>
             <p className="text-sm text-white/80 leading-relaxed">
-              Write a program that precisely produces the exact output provided below.
+              {description}
             </p>
 
             <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
               <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
-                Target Output
+                Expected Output
               </div>
               <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
-                {output}
+                {expectedOutput}
               </pre>
             </div>
 
-            {hint && (
-              <div className="mt-2 rounded-lg bg-yellow-500/20 px-4 py-3 border border-yellow-500/30">
-                <div className="text-xs font-bold text-yellow-500 uppercase tracking-wider mb-1">
-                  💡 Hint
-                </div>
-                <div className="text-sm text-yellow-200">
-                  {hint}
-                </div>
+            <div className="mt-2 rounded-lg bg-red-500/20 px-4 py-3 border border-red-500/30">
+              <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">
+                🐞 Original Buggy Code
               </div>
-            )}
+              <pre className="text-xs text-red-200 font-mono whitespace-pre-wrap overflow-x-auto max-h-40 overflow-y-auto">
+                {buggyCode}
+              </pre>
+            </div>
           </div>
         </div>
 
-        {/* Right Column: Blind Editor Panel */}
+        {/* Right Column: Code Editor Panel */}
         <div className="w-full lg:w-[68%] flex-1 flex flex-col min-h-[450px]">
           <div className="rounded-xl bg-[#0d0d12] shadow-2xl flex flex-col h-full overflow-hidden border border-gray-800">
             
@@ -368,13 +288,12 @@ return
                   <div className="w-3.5 h-3.5 rounded-full bg-green-500"></div>
                 </div>
                 <div className="flex items-center text-gray-300 gap-2">
-                  <span className="font-semibold tracking-wide text-sm hidden sm:inline-block">Blind Editor —</span>
+                  <span className="font-semibold tracking-wide text-sm hidden sm:inline-block">Bug Fixer —</span>
                   <div className="relative">
                     <select
-                      className="appearance-none bg-transparent text-white font-bold outline-none cursor-pointer hover:bg-white/5 rounded px-2 py-1 disabled:opacity-50 pr-6 text-sm"
-                      value={selectedLang}
+                      className="appearance-none bg-transparent text-white font-bold outline-none cursor-pointer hover:bg-white/5 rounded px-2 py-1 pr-6 text-sm"
+                      value={currentLang}
                       onChange={(e) => handleLangSelect(e.target.value as SupportedLanguage)}
-                      disabled={isSubmitting}
                     >
                       {Object.entries(LANGUAGES).map(([key, lang]) => (
                         <option key={key} value={key} className="bg-[#2a2a35] text-white">
@@ -393,7 +312,7 @@ return
               <div className="flex items-center gap-3">
                 {isManager && (
                   <button
-                    onClick={handleManagerRefresh}
+                    onClick={() => window.location.reload()}
                     className="flex shadow-inner items-center bg-blue-500/20 px-3 py-1 rounded-full border border-blue-500/50 hover:bg-blue-500/40 transition-colors"
                   >
                     <span className="text-xs font-bold text-blue-400 tracking-wider">
@@ -401,31 +320,24 @@ return
                     </span>
                   </button>
                 )}
-                <div className="flex items-center bg-green-500/20 px-3 py-1 rounded-full border border-green-500/50 hidden sm:flex">
-                  <span className="text-xs font-bold text-green-400 tracking-wider">
-                    ● Engine Ready
-                  </span>
-                </div>
                 <div className="flex items-center bg-[#2a2a35] px-3 py-1 rounded-full">
                   <span className="text-xs font-mono font-bold text-gray-200 tracking-widest">
                     ⏱️ {formatTimeStr(timeLeft)}
                   </span>
                 </div>
                 <span className="text-xs text-gray-500 hidden sm:inline-block">
-                  {code.length} chars
+                  Q {currentQ}/{totalQ}
                 </span>
               </div>
             </div>
-
-
 
             {/* Text Area */}
             <div className="relative flex-1 flex flex-col group bg-[#0d0d12]">
               <textarea
                 ref={textareaRef}
                 className="absolute inset-0 w-full h-full resize-none bg-transparent p-5 font-mono text-sm text-white caret-white selection:bg-blue-500/30 focus:outline-none md:text-base z-10"
-                placeholder={""}
-                value={code}
+                placeholder=""
+                value={currentCode}
                 onChange={(e) => setCode(e.target.value)}
                 onKeyDown={handleKeyDown}
                 onPaste={(e) => e.preventDefault()}
@@ -437,30 +349,23 @@ return
                 autoComplete="off"
               />
               
-              {/* Background visual elements when empty */}
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                {!code.trim() && (
+                {!currentCode.trim() && (
                   <div className="flex flex-col items-center opacity-30">
-                    <span className="text-4xl mb-2">⌨️</span>
-                    <span className="text-white font-mono text-sm">Start typing...</span>
+                    <span className="text-4xl mb-2">🐛</span>
+                    <span className="text-white font-mono text-sm">Fix the buggy code...</span>
                   </div>
                 )}
               </div>
             </div>
-            
-            {runError && (
-              <div className="shrink-0 bg-red-900/50 px-4 py-3 border-t border-red-500/30 overflow-x-auto">
-                <pre className="text-xs text-red-200 font-mono whitespace-pre-wrap">❌ {runError}</pre>
-              </div>
-            )}
 
-            {/* Bottom Submit Bar inside editor container */}
+            {/* Bottom Navigation Bar */}
             <div className="bg-gradient-to-t from-orange-500/20 to-transparent p-4 border-t border-gray-800 mt-auto shrink-0">
               <div className="flex items-center justify-between gap-2">
                 {!isManager ? (
                   <button
                     onClick={handleNavigate("prev")}
-                    disabled={!questionStates || questionStates.current <= 1 || isSubmitting}
+                    disabled={!questionStates || questionStates.current <= 1}
                     className="rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm font-bold uppercase tracking-widest text-white transition-all disabled:pointer-events-none disabled:opacity-40"
                   >
                     Previous
@@ -468,25 +373,21 @@ return
                 ) : (
                   <div />
                 )}
-                <button
-                  onClick={handleSubmit}
-                  disabled={!code.trim() || isSubmitting || alreadySubmittedCurrent || timeLeft <= 0}
-                  className="rounded-lg bg-orange-600/80 hover:bg-orange-500 px-6 py-3 text-sm font-bold tracking-widest uppercase text-white shadow-lg transition-all disabled:opacity-40 disabled:pointer-events-none border border-orange-400/50"
-                >
-                  {timeLeft <= 0
-                    ? "Time's Up!"
-                    : alreadySubmittedCurrent
-                    ? "Submitted"
-                    : isSubmitting
-                      ? "Running..."
-                      : code.trim()
-                        ? "Run & Submit"
-                        : "Type something first..."}
-                </button>
+
+                {/* Show Submit All only on last question */}
+                {!isManager && isLastQuestion ? (
+                  <button
+                    onClick={() => setShowConfirm(true)}
+                    className="rounded-lg bg-green-600/80 hover:bg-green-500 px-6 py-3 text-sm font-bold tracking-widest uppercase text-white shadow-lg transition-all border border-green-400/50"
+                  >
+                    Submit All
+                  </button>
+                ) : null}
+
                 {!isManager ? (
                   <button
                     onClick={handleNavigate("next")}
-                    disabled={!questionStates || questionStates.current >= questionStates.total || isSubmitting}
+                    disabled={!questionStates || questionStates.current >= questionStates.total}
                     className="rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm font-bold uppercase tracking-widest text-white transition-all disabled:pointer-events-none disabled:opacity-40"
                   >
                     Next
@@ -504,4 +405,4 @@ return
   )
 }
 
-export default CodeAnswer
+export default BugHuntingAnswer

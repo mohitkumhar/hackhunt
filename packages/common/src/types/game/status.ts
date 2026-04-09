@@ -15,6 +15,8 @@ export const STATUS = {
   REVERSE_SHOW_RESPONSES: "REVERSE_SHOW_RESPONSES",
   BLIND_CODING_WRITE: "BLIND_CODING_WRITE",
   BLIND_CODING_SHOW_RESPONSES: "BLIND_CODING_SHOW_RESPONSES",
+  BUG_HUNTING_WRITE: "BUG_HUNTING_WRITE",
+  BUG_HUNTING_SHOW_RESPONSES: "BUG_HUNTING_SHOW_RESPONSES",
 } as const
 
 export type Status = (typeof STATUS)[keyof typeof STATUS]
@@ -31,6 +33,7 @@ export type CommonStatusDataMap = {
     audio?: string
     time: number
     totalPlayer: number
+    selectedAnswer?: number
   }
   SHOW_RESULT: {
     correct: boolean
@@ -39,9 +42,43 @@ export type CommonStatusDataMap = {
     myPoints: number
     rank: number
     aheadOfMe: string | null
+    hideRank?: boolean
   }
   WAIT: { text: string }
-  FINISHED: { subject: string; top: Player[] }
+  FINISHED: { 
+    subject: string; 
+    top: Player[]; 
+    blindSubmissionsHistory?: { 
+      question: string; 
+      language: string; 
+      submissions: { 
+        username: string; 
+        code: string; 
+        language: string; 
+        submitted: boolean; 
+      }[] 
+    }[];
+    blindPlayerResults?: {
+      username: string;
+      completionTime: number;
+      answers: {
+        question: string;
+        code: string;
+        language: string;
+        submitted: boolean;
+      }[];
+    }[];
+    quizzResults?: {
+      rank: number;
+      username: string;
+      teamName?: string;
+      correctAnswers: number;
+      totalQuestions: number;
+      totalPoints: number;
+      timeTaken: string;
+      timeTakenSeconds: number;
+    }[];
+  }
   REVERSE_WRITE_CODE: {
     output: string
     language: string
@@ -58,6 +95,15 @@ export type CommonStatusDataMap = {
     time: number
     totalPlayer: number
   }
+  BUG_HUNTING_WRITE: {
+    title: string
+    description: string
+    buggyCode: string
+    language: string
+    expectedOutput: string
+    time: number
+    totalPlayer: number
+  }
 }
 
 type ManagerExtraStatus = {
@@ -70,7 +116,7 @@ type ManagerExtraStatus = {
     image?: string
     video?: string
   }
-  SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[] }
+  SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[]; isQuizz?: boolean }
   REVERSE_SHOW_RESPONSES: {
     output: string
     expectedCode: string
@@ -90,6 +136,14 @@ type ManagerExtraStatus = {
       submitted: boolean
     }[]
     totalSubmitted: number
+    totalPlayers: number
+  }
+  BUG_HUNTING_SHOW_RESPONSES: {
+    title: string
+    expectedOutput: string
+    language: string
+    totalCorrect: number
+    totalWrong: number
     totalPlayers: number
   }
 }

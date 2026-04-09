@@ -1,116 +1,190 @@
-import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
+import type { CommonStatusDataMap } from "@rahoot/common/types/game/status";
 import {
   useEvent,
   useSocket,
-} from "@rahoot/web/features/game/contexts/socketProvider"
-import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
+} from "@rahoot/web/features/game/contexts/socketProvider";
+import { usePlayerStore } from "@rahoot/web/features/game/stores/player";
+import { useQuestionStore } from "@rahoot/web/features/game/stores/question";
 import {
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
-} from "@rahoot/web/features/game/utils/constants"
-import { useEffect, useRef, useState } from "react"
-import { useParams } from "react-router"
-import useSound from "use-sound"
+} from "@rahoot/web/features/game/utils/constants";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router";
+import useSound from "use-sound";
 
 type Props = {
-  data: CommonStatusDataMap["BLIND_CODING_WRITE"]
-}
+  data: CommonStatusDataMap["BLIND_CODING_WRITE"];
+};
+
+const formatTime = (totalSeconds: number) => {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+};
 
 const BlindCodingAnswer = ({
-  data: { title, description, examples, constraints, language, time, totalPlayer },
+  data: {
+    title,
+    description,
+    examples,
+    constraints,
+    language,
+    time,
+    totalPlayer,
+  },
 }: Props) => {
-  const { gameId }: { gameId?: string } = useParams()
-  const { socket } = useSocket()
-  const { player } = usePlayerStore()
+  const { gameId }: { gameId?: string } = useParams();
+  const { socket } = useSocket();
+  const { player } = usePlayerStore();
+  const { questionStates } = useQuestionStore();
 
-  const [code, setCode] = useState("")
-  const [codeLanguage, setCodeLanguage] = useState(language)
-  const [cooldown, setCooldown] = useState(time)
-  const [totalAnswer, setTotalAnswer] = useState(0)
-  const [submitted, setSubmitted] = useState(false)
-  const [charCount, setCharCount] = useState(0)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [code, setCode] = useState("");
+  const [codeLanguage, setCodeLanguage] = useState(language);
+  const [savedCodes, setSavedCodes] = useState<Record<number, { code: string; language: string }>>({});
+  const [cooldown, setCooldown] = useState(time);
+  const [totalAnswer, setTotalAnswer] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [sfxPop] = useSound(SFX_ANSWERS_SOUND, { volume: 0.1 })
+  const [sfxPop] = useSound(SFX_ANSWERS_SOUND, { volume: 0.1 });
   const [playMusic, { stop: stopMusic }] = useSound(SFX_ANSWERS_MUSIC, {
     volume: 0.2,
     interrupt: true,
     loop: true,
-  })
+  });
 
   useEffect(() => {
-    playMusic()
+    playMusic();
 
     return () => {
-      stopMusic()
-    }
-  }, [playMusic])
+      stopMusic();
+    };
+  }, [playMusic]);
 
   useEvent("game:cooldown", (sec) => {
-    setCooldown(sec)
-  })
+    setCooldown(sec);
+  });
 
   useEvent("game:playerAnswer", (count) => {
-    setTotalAnswer(count)
-    sfxPop()
-  })
+    setTotalAnswer(count);
+    sfxPop();
+  });
+
+  useEffect(() => {
+    const qIndex = questionStates?.current || 1;
+    const existing = savedCodes[qIndex];
+    if (existing) {
+      setCode(existing.code);
+      setCodeLanguage(existing.language);
+      setCharCount(existing.code.length);
+    } else {
+      setCode("");
+      setCodeLanguage(language);
+      setCharCount(0);
+    }
+    setSubmitted(false);
+  }, [title, description, language, questionStates]);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCode(e.target.value)
-    setCharCount(e.target.value.length)
-  }
+    const newCode = e.target.value;
+    setCode(newCode);
+    setCharCount(newCode.length);
+    
+    const qIndex = questionStates?.current || 1;
+    setSavedCodes((prev) => ({
+      ...prev,
+      [qIndex]: { code: newCode, language: codeLanguage },
+    }));
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Tab") {
-      e.preventDefault()
-      const start = e.currentTarget.selectionStart
-      const end = e.currentTarget.selectionEnd
-      const newCode = code.substring(0, start) + "    " + code.substring(end)
-      setCode(newCode)
-      setCharCount(newCode.length)
+      e.preventDefault();
+      const start = e.currentTarget.selectionStart;
+      const end = e.currentTarget.selectionEnd;
+      const newCode = `${code.substring(0, start)}    ${code.substring(end)}`;
+      setCode(newCode);
+      setCharCount(newCode.length);
+      
+      const qIndex = questionStates?.current || 1;
+      setSavedCodes((prev) => ({
+        ...prev,
+        [qIndex]: { code: newCode, language: codeLanguage },
+      }));
       setTimeout(() => {
         if (textareaRef.current) {
-          textareaRef.current.selectionStart = start + 4
-          textareaRef.current.selectionEnd = start + 4
+          textareaRef.current.selectionStart = start + 4;
+          textareaRef.current.selectionEnd = start + 4;
         }
-      }, 0)
+      }, 0);
     }
-  }
+  };
 
   const handleSubmit = () => {
-    if (!player || !code.trim() || submitted) {
-      return
+    if (!player || submitted) {
+      return;
     }
 
-    setSubmitted(true)
-    sfxPop()
+    const confirmSubmit = window.confirm(
+      "Are you sure you want to submit all questions? You cannot change your answers after this."
+    );
+    
+    if (!confirmSubmit) {
+      return;
+    }
 
-    socket?.emit("player:submitBlindCode", {
+    setSubmitted(true);
+    sfxPop();
+
+    socket?.emit("player:submitAllBlindCodes", {
       gameId,
       data: {
-        code,
-        language: codeLanguage,
+        submissions: savedCodes,
       },
-    })
-  }
+    });
+  };
 
-  if (submitted) {
-    return (
-      <div className="flex h-full flex-1 flex-col items-center justify-center gap-4">
-        <div className="anim-show text-6xl">✅</div>
-        <h2 className="text-center text-2xl font-bold text-white drop-shadow-lg md:text-3xl">
-          Code Submitted!
-        </h2>
-        <p className="text-lg text-white/80">Waiting for other players...</p>
-        <div className="mt-4 rounded-xl bg-white/10 p-4 backdrop-blur">
-          <p className="text-sm text-white/60">Characters typed: <span className="font-bold text-white">{charCount}</span></p>
-        </div>
-      </div>
-    )
-  }
+  const handleNavigate = (direction: "prev" | "next") => () => {
+    if (!player) {
+      return;
+    }
+
+    socket?.emit("player:navigateBlindQuestion", {
+      gameId,
+      data: { direction },
+    });
+  };
 
   return (
     <div className="flex h-full flex-1 gap-0 md:gap-4">
+      {/* Top Right Stats */}
+      <div className="fixed top-4 right-4 z-50 flex gap-3">
+        <div className="flex items-center justify-center rounded-lg bg-white px-4 py-2 text-center font-bold text-black shadow-lg">
+          <div className="flex flex-col">
+            <span className="mb-1 text-[10px] leading-none tracking-wider text-gray-500 uppercase">
+              Time
+            </span>
+            <span className="text-lg leading-none font-mono tracking-tighter">{formatTime(cooldown)}</span>
+          </div>
+        </div>
+        <div className="flex items-center justify-center rounded-lg bg-white px-4 py-2 text-center font-bold text-black shadow-lg">
+          <div className="flex flex-col">
+            <span className="mb-1 text-[10px] leading-none tracking-wider text-gray-500 uppercase">
+              Submitted
+            </span>
+            <span className="text-lg leading-none">
+              {questionStates ? questionStates.current - (submitted ? 0 : 1) : 0} / {questionStates ? questionStates.total : "?"}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Left: Problem Statement */}
       <div className="hidden md:flex flex-col flex-1 max-w-md overflow-y-auto px-4 py-2">
         <div className="rounded-xl bg-white/10 p-5 backdrop-blur shadow-xl">
@@ -127,13 +201,17 @@ const BlindCodingAnswer = ({
                 Example {idx + 1}
               </h4>
               <div className="mb-1">
-                <span className="text-xs font-medium text-gray-400">Input:</span>
+                <span className="text-xs font-medium text-gray-400">
+                  Input:
+                </span>
                 <pre className="mt-0.5 whitespace-pre-wrap font-mono text-xs text-green-400">
                   {example.input}
                 </pre>
               </div>
               <div className="mb-1">
-                <span className="text-xs font-medium text-gray-400">Output:</span>
+                <span className="text-xs font-medium text-gray-400">
+                  Output:
+                </span>
                 <pre className="mt-0.5 whitespace-pre-wrap font-mono text-xs text-green-400">
                   {example.output}
                 </pre>
@@ -181,10 +259,18 @@ const BlindCodingAnswer = ({
                 <span className="inline-block h-3 w-3 rounded-full bg-yellow-500" />
                 <span className="inline-block h-3 w-3 rounded-full bg-green-500" />
                 <span className="ml-3 text-sm font-medium text-gray-300">
-                  Blind Editor — 
+                  Blind Editor —
                   <select
                     value={codeLanguage}
-                    onChange={(e) => setCodeLanguage(e.target.value)}
+                    onChange={(e) => {
+                      const newLang = e.target.value;
+                      setCodeLanguage(newLang);
+                      const qIndex = questionStates?.current || 1;
+                      setSavedCodes((prev) => ({
+                        ...prev,
+                        [qIndex]: { code, language: newLang },
+                      }));
+                    }}
                     className="ml-2 rounded border border-gray-600 bg-gray-700 px-2 py-0.5 text-xs font-semibold text-white outline-none focus:border-primary"
                   >
                     <option value="python">Python</option>
@@ -199,16 +285,15 @@ const BlindCodingAnswer = ({
                 <span className="rounded-full bg-red-500/20 px-3 py-0.5 text-xs font-bold text-red-400 animate-pulse">
                   👁️ BLIND MODE
                 </span>
-                <span className="text-xs text-gray-500">
-                  {charCount} chars
-                </span>
+                <span className="text-xs text-gray-500">{charCount} chars</span>
               </div>
             </div>
 
             {/* Warning Banner */}
             <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 px-4 py-1.5 border-b border-amber-500/30">
               <p className="text-xs text-amber-300 text-center font-medium">
-                ⚠️ You cannot see what you type! Write carefully and trust your instincts.
+                ⚠️ You cannot see what you type! Write carefully and trust your
+                instincts.
               </p>
             </div>
 
@@ -248,7 +333,9 @@ const BlindCodingAnswer = ({
                 <div className="pointer-events-none absolute bottom-3 right-3">
                   <div className="flex items-center gap-2 rounded-full bg-green-500/20 px-3 py-1">
                     <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-xs text-green-400 font-mono">{charCount} chars typed</span>
+                    <span className="text-xs text-green-400 font-mono">
+                      {charCount} chars typed
+                    </span>
                   </div>
                 </div>
               )}
@@ -256,33 +343,37 @@ const BlindCodingAnswer = ({
           </div>
 
           {/* Submit Button */}
-          <button
-            onClick={handleSubmit}
-            disabled={!code.trim()}
-            className="btn-shadow mt-3 w-full rounded-lg bg-primary px-6 py-3 text-lg font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
-          >
-            <span>
-              {code.trim() ? "🚀 Submit Code" : "Type something first..."}
-            </span>
-          </button>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-3 flex justify-between gap-2 text-lg font-bold text-white">
-          <div className="flex flex-col items-center rounded-full bg-black/40 px-4 text-lg font-bold">
-            <span className="translate-y-1 text-sm">Time</span>
-            <span>{cooldown}</span>
-          </div>
-          <div className="flex flex-col items-center rounded-full bg-black/40 px-4 text-lg font-bold">
-            <span className="translate-y-1 text-sm">Submitted</span>
-            <span>
-              {totalAnswer}/{totalPlayer}
-            </span>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <button
+              onClick={handleNavigate("prev")}
+              disabled={!questionStates || questionStates.current <= 1}
+              className="btn-shadow rounded-lg bg-white/20 px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Previous
+            </button>
+            {questionStates && questionStates.current === questionStates.total ? (
+              <button
+                onClick={handleSubmit}
+                disabled={submitted}
+                className="btn-shadow rounded-lg bg-primary px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+              >
+                {submitted ? "Submitting..." : "Submit All"}
+              </button>
+            ) : (
+              <div />
+            )}
+            <button
+              onClick={handleNavigate("next")}
+              disabled={!questionStates || questionStates.current >= questionStates.total}
+              className="btn-shadow rounded-lg bg-white/20 px-4 py-3 text-base font-bold text-white transition-all disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BlindCodingAnswer
+export default BlindCodingAnswer;

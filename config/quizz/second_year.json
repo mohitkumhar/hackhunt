@@ -1,0 +1,283 @@
+{
+  "subject": "2nd year quizz round",
+  "questions": [
+    {
+      "question": "OSI lowest layer?",
+      "answers": ["Physical", "Data link", "Network", "Transport"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "SMTP is used for?",
+      "answers": ["Receiving mail", "Sending mail", "Sending and Receiving mail", "File transfer"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Recursion always requires?",
+      "answers": ["Stack", "Loop", "Array", "Pointer"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Find next: 2, 6, 12, 20, ?",
+      "answers": ["28", "30", "32", "36"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "OSI top layer?",
+      "answers": ["Session", "Application", "Transport", "Network"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which of the following is used for comments in C++?",
+      "answers": ["/* comment */", "// comment */", "// comment", "both // comment or /* comment */"],
+      "solution": 3,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "IP address version widely used?",
+      "answers": ["IPv3", "IPv4", "IPv5", "IPv6"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "HTTP uses port?",
+      "answers": ["21", "25", "80", "110"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which is NOT stable sorting?",
+      "answers": ["Merge Sort", "Bubble Sort", "Quick Sort", "Insertion Sort"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Find next: 2, 3, 6, 11, 18, ?",
+      "answers": ["27", "28", "29", "30"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "find Probability when 2 dice are tossed, and sum = 7",
+      "answers": ["1/6", "1/12", "1/36", "6/36"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "If x:y = 2:3 and y:z = 4:5 → x:z?",
+      "answers": ["2:5", "8:15", "4:5", "3:5"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which layer ensures error detection?",
+      "answers": ["Physical", "Data Link", "Session", "Application"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which protocol uses 3-way handshake?",
+      "answers": ["UDP", "TCP", "ICMP", "HTTP"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which memory is non-volatile?",
+      "answers": ["RAM", "Cache", "ROM", "Register"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which is more effective while calling the C++ functions?",
+      "answers": ["call by object", "call by pointer", "call by value", "call by reference"],
+      "solution": 3,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which DS is used in BFS?",
+      "answers": ["Stack", "Queue", "Heap", "Tree"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which of the following is used to terminate the function declaration in C++?",
+      "answers": [";", "}", ")", ":"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which traversal gives sorted output in BST?",
+      "answers": ["Preorder", "Postorder", "Inorder", "Level order"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Find next: 2, 5, 11, 23, ?",
+      "answers": ["45", "46", "47", "48"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "If today is Monday, after 100 days?",
+      "answers": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Find next: Z, X, U, Q, ?",
+      "answers": ["L", "M", "N", "O"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which keyword is used to define the macros in c++?",
+      "answers": ["#macro", "#define", "macro", "define"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Default port of HTTPS?",
+      "answers": ["80", "21", "443", "25"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "DNS Full Form?",
+      "answers": ["Domain name Service", "Domain name Server", "Domain name System", "none of these"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Output?\nint i = 0;\nfor(i=0; i<5; i++);\nprintf(\"%d\", i);",
+      "answers": ["4", "5", "0", "Error"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Time complexity?\nfor(i=1;i<n;i*=2)\n for(j=0;j<n;j++)",
+      "answers": ["O(n)", "O(log n)", "O(n log n)", "O(n²)"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "try block is used for:",
+      "answers": ["Declaring variables", "Handling exceptions", "try code syntax", "Executing loops"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Time complexity of binary search?",
+      "answers": ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Context switching happens in?",
+      "answers": ["Compile time", "Run time", "Boot time", "Shutdown"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which sorting is fastest on average?",
+      "answers": ["Bubble Sort", "Merge Sort", "Quick Sort", "Selection Sort"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Pick the incorrect statement about inline functions in C++?",
+      "answers": [
+        "Saves overhead of a return call from a function",
+        "They are generally very large and complicated function",
+        "These functions are inserted/substituted at the point of call",
+        "They reduce function call overheads"
+      ],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Cache memory is?",
+      "answers": ["Slow", "Medium", "Fast", "External"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which is full-duplex?",
+      "answers": ["Walkie-talkie", "Telephone", "Radio", "TV"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which concept allows you to reuse the written code in C++?",
+      "answers": ["Inheritance", "Polymorphism", "Abstraction", "Encapsulation"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Probability: picking red from 3 red, 2 blue?",
+      "answers": ["1/5", "3/5", "2/5", "1/3"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "IPv6 size?",
+      "answers": ["32-bit", "64-bit", "128-bit", "256-bit"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which of the following is not a type of inheritance?",
+      "answers": ["Multiple", "Multilevel", "Hierarchical", "Distributive"],
+      "solution": 3,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Missing: 6, 15, 35, 77, ?",
+      "answers": ["143", "155", "163", "175"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
+    }
+  ]
+}

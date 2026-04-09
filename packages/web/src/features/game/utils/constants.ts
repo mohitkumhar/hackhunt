@@ -1,6 +1,7 @@
 import Answers from "@rahoot/web/features/game/components/states/Answers"
 import BlindCodingAnswer from "@rahoot/web/features/game/components/states/BlindCodingAnswer"
 import BlindCodingResponses from "@rahoot/web/features/game/components/states/BlindCodingResponses"
+import BugHuntingAnswer from "@rahoot/web/features/game/components/states/BugHuntingAnswer"
 import CodeAnswer from "@rahoot/web/features/game/components/states/CodeAnswer"
 import CodeResponses from "@rahoot/web/features/game/components/states/CodeResponses"
 import Leaderboard from "@rahoot/web/features/game/components/states/Leaderboard"
@@ -12,6 +13,7 @@ import Result from "@rahoot/web/features/game/components/states/Result"
 import Room from "@rahoot/web/features/game/components/states/Room"
 import Start from "@rahoot/web/features/game/components/states/Start"
 import Wait from "@rahoot/web/features/game/components/states/Wait"
+import ReverseManagerActive from "@rahoot/web/features/game/components/states/ReverseManagerActive"
 
 import { STATUS } from "@rahoot/common/types/game/status"
 import Circle from "@rahoot/web/features/game/components/icons/Circle"
@@ -48,6 +50,7 @@ export const GAME_STATE_COMPONENTS = {
   [STATUS.SHOW_PREPARED]: Prepared,
   [STATUS.REVERSE_WRITE_CODE]: CodeAnswer,
   [STATUS.BLIND_CODING_WRITE]: BlindCodingAnswer,
+  [STATUS.BUG_HUNTING_WRITE]: BugHuntingAnswer,
 }
 
 export const GAME_STATE_COMPONENTS_MANAGER = {
@@ -56,8 +59,11 @@ export const GAME_STATE_COMPONENTS_MANAGER = {
   [STATUS.SHOW_RESPONSES]: Responses,
   [STATUS.SHOW_LEADERBOARD]: Leaderboard,
   [STATUS.FINISHED]: Podium,
+  [STATUS.REVERSE_WRITE_CODE]: ReverseManagerActive as any,
   [STATUS.REVERSE_SHOW_RESPONSES]: CodeResponses,
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: BlindCodingResponses,
+  [STATUS.BUG_HUNTING_WRITE]: ReverseManagerActive as any,
+  [STATUS.BUG_HUNTING_SHOW_RESPONSES]: CodeResponses,
 }
 
 export const SFX_ANSWERS_MUSIC = "/sounds/answersMusic.mp3"
@@ -73,12 +79,14 @@ export const SFX_SNEAR_ROOL = "/sounds/snearRoll.mp3"
 export const MANAGER_SKIP_EVENTS = {
   [STATUS.SHOW_ROOM]: "manager:startGame",
   [STATUS.SELECT_ANSWER]: "manager:abortQuiz",
-  [STATUS.SHOW_RESPONSES]: "manager:showLeaderboard",
+  [STATUS.SHOW_RESPONSES]: "manager:nextQuestion",
   [STATUS.SHOW_LEADERBOARD]: "manager:nextQuestion",
   [STATUS.REVERSE_WRITE_CODE]: "manager:abortQuiz",
   [STATUS.REVERSE_SHOW_RESPONSES]: "manager:showLeaderboard",
   [STATUS.BLIND_CODING_WRITE]: "manager:abortQuiz",
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: "manager:showLeaderboard",
+  [STATUS.BUG_HUNTING_WRITE]: "manager:abortQuiz",
+  [STATUS.BUG_HUNTING_SHOW_RESPONSES]: "manager:showLeaderboard",
 } as const satisfies Partial<
   Record<keyof typeof GAME_STATE_COMPONENTS_MANAGER, string>
 >
@@ -97,12 +105,14 @@ export const MANAGER_SKIP_BTN = {
   [STATUS.SHOW_QUESTION]: null,
   [STATUS.SELECT_ANSWER]: "Skip",
   [STATUS.SHOW_RESULT]: null,
-  [STATUS.SHOW_RESPONSES]: "Next",
-  [STATUS.SHOW_LEADERBOARD]: "Next",
+  [STATUS.SHOW_RESPONSES]: null,
+  [STATUS.SHOW_LEADERBOARD]: null,
   [STATUS.FINISHED]: null,
   [STATUS.WAIT]: null,
-  [STATUS.REVERSE_WRITE_CODE]: "Skip",
-  [STATUS.REVERSE_SHOW_RESPONSES]: "Next",
+  [STATUS.REVERSE_WRITE_CODE]: null,
+  [STATUS.REVERSE_SHOW_RESPONSES]: null,
   [STATUS.BLIND_CODING_WRITE]: "Skip",
-  [STATUS.BLIND_CODING_SHOW_RESPONSES]: "Next",
+  [STATUS.BLIND_CODING_SHOW_RESPONSES]: null,
+  [STATUS.BUG_HUNTING_WRITE]: null,
+  [STATUS.BUG_HUNTING_SHOW_RESPONSES]: null,
 }

@@ -4,6 +4,7 @@ import type {
   Player,
   QuizzWithId,
   ReverseQuizzWithId,
+  BugHuntingQuizzWithId,
 } from "@rahoot/common/types/game"
 import type { Status, StatusDataMap } from "@rahoot/common/types/game/status"
 import { Server as ServerIO, Socket as SocketIO } from "socket.io"
@@ -24,6 +25,12 @@ export type MessageWithoutStatus<T = any> = {
 
 export type MessageGameId = {
   gameId?: string
+}
+
+export type MessageBlindNavigate = MessageGameId & {
+  data: {
+    direction: "prev" | "next"
+  }
 }
 
 export interface ServerToClientEvents {
@@ -69,6 +76,14 @@ export interface ServerToClientEvents {
   "manager:playerKicked": (_playerId: string) => void
   "manager:reverseQuizzList": (_quizzList: ReverseQuizzWithId[]) => void
   "manager:blindCodingQuizzList": (_quizzList: BlindCodingQuizzWithId[]) => void
+  "manager:bugHuntingQuizzList": (_quizzList: BugHuntingQuizzWithId[]) => void
+  "manager:playerSubmitted": (_data: {
+    playerId: string
+    username: string
+    completionTime: number | null
+    points: number
+    isCorrect: boolean
+  }) => void
 }
 
 export interface ClientToServerEvents {
@@ -92,6 +107,9 @@ export interface ClientToServerEvents {
   "player:submitCode": (
     _message: MessageWithoutStatus<{ code: string; output: string }>,
   ) => void
+  "player:navigateReverseQuestion": (_message: MessageBlindNavigate) => void
+  "player:navigateQuizzQuestion": (_message: MessageBlindNavigate) => void
+  "player:finishQuizz": (_message: MessageGameId & { data: { answers: Record<string, number> } }) => void
 
   // Reverse programming
   "game:createReverse": (_quizzId: string) => void
@@ -99,6 +117,17 @@ export interface ClientToServerEvents {
   "player:submitBlindCode": (
     _message: MessageWithoutStatus<{ code: string; language: string }>,
   ) => void
+  "player:submitAllBlindCodes": (
+    _message: MessageWithoutStatus<{ submissions: Record<number, { code: string; language: string }> }>,
+  ) => void
+  "player:navigateBlindQuestion": (_message: MessageBlindNavigate) => void
+
+  // Bug Hunting
+  "game:createBugHunting": (_quizzId: string) => void
+  "player:submitAllBugHuntingCodes": (
+    _message: MessageWithoutStatus<{ submissions: Record<number, { code: string; language: string }> }>,
+  ) => void
+  "player:navigateBugHuntingQuestion": (_message: MessageBlindNavigate) => void
 
   // Common
   disconnect: () => void
