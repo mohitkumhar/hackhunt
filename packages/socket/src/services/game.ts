@@ -1289,7 +1289,7 @@ return { username: player.username, completionTime, answers }
 
       this.broadcastStatus(STATUS.FINISHED, {
         subject: this.quizz.subject,
-        top: this.leaderboard.slice(0, 3),
+        top: this.leaderboard,
         blindSubmissionsHistory: this.gameMode === "blind_coding" ? this.allBlindCodeSubmissions : undefined,
         blindPlayerResults,
       })
