@@ -317,17 +317,6 @@ return
   const currentQuestionIndex = (questionStates?.current ?? 1) - 1
   const alreadySubmittedCurrent = submittedQuestions.has(currentQuestionIndex)
 
-  if (timeLeft === 0) {
-    return (
-      <div className="flex h-full flex-1 flex-col items-center justify-center gap-4">
-        <div className="anim-show text-6xl">⏰</div>
-        <h2 className="text-center text-3xl font-bold text-red-500 drop-shadow-lg md:text-4xl">
-          Time's Up!
-        </h2>
-        <p className="text-lg text-white/80">The 60-minute competition has concluded. No more submissions accepted.</p>
-      </div>
-    )
-  }
 
   return (
     <div className="flex h-full flex-1 flex-col justify-between">
@@ -480,10 +469,12 @@ return
                 )}
                 <button
                   onClick={handleSubmit}
-                  disabled={!code.trim() || isSubmitting || alreadySubmittedCurrent}
+                  disabled={!code.trim() || isSubmitting || alreadySubmittedCurrent || timeLeft <= 0}
                   className="rounded-lg bg-orange-600/80 hover:bg-orange-500 px-6 py-3 text-sm font-bold tracking-widest uppercase text-white shadow-lg transition-all disabled:opacity-40 disabled:pointer-events-none border border-orange-400/50"
                 >
-                  {alreadySubmittedCurrent
+                  {timeLeft <= 0
+                    ? "Time's Up!"
+                    : alreadySubmittedCurrent
                     ? "Submitted"
                     : isSubmitting
                       ? "Running..."

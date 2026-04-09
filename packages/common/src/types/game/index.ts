@@ -13,6 +13,7 @@ export type Answer = {
   playerId: string
   answerId: number
   points: number
+  questionIndex?: number
 }
 
 export type Quizz = {

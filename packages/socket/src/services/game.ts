@@ -52,6 +52,7 @@ class Game {
   playerMinCorrectTime: Record<string, number> = {}
   playerQuestionOrder: Record<string, number[]> = {}
   reverseSubmittedQuestions: Record<string, Set<number>> = {}
+  quizzFinishedPlayers = new Set<string>()
 
   gameMode: GameMode
   reverseQuizz: ReverseQuizz | null
@@ -446,68 +447,212 @@ class Game {
     } else if (this.gameMode === "blind_coding") {
       this.startAsyncBlindCoding()
     } else {
-      this.newRound()
+      this.startAsyncQuizz()
     }
   }
 
-  async newRound() {
-    const question = this.quizz.questions[this.round.currentQuestion]
+  async startAsyncQuizz() {
+    if (!this.quizz) { return }
 
-    if (!this.started) {
-      return
-    }
+    if (!this.started) { return }
 
     this.playerStatus.clear()
+    this.round.playersAnswers = []
+    this.quizzFinishedPlayers = new Set<string>()
+
+    this.players.forEach(p => {
+      this.playerCurrentQuestion[p.id] = 0
+    })
 
     this.io.to(this.gameId).emit("game:updateQuestion", {
-      current: this.round.currentQuestion + 1,
+      current: 1,
       total: this.quizz.questions.length,
     })
 
     this.managerStatus = null
     this.broadcastStatus(STATUS.SHOW_PREPARED, {
-      totalAnswers: question.answers.length,
-      questionNumber: this.round.currentQuestion + 1,
+      totalAnswers: 0,
+      questionNumber: 1,
     })
 
     await sleep(2)
 
-    if (!this.started) {
-      return
-    }
+    if (!this.started) { return }
 
     this.broadcastStatus(STATUS.SHOW_QUESTION, {
-      question: question.question,
-      image: question.image,
-      cooldown: question.cooldown,
+      question: "Async Quizz Challenge...",
+      cooldown: 3,
     })
 
-    await sleep(question.cooldown)
+    await sleep(3)
 
-    if (!this.started) {
-      return
-    }
+    if (!this.started) { return }
 
     this.round.startTime = Date.now()
 
-    this.broadcastStatus(STATUS.SELECT_ANSWER, {
+    this.players.forEach(p => {
+      this.sendPlayerQuizzQuestion(p.id)
+    })
+
+    this.sendManagerQuizzLeaderboard()
+
+    await this.startCooldown(2400)
+
+    if (!this.started) { return }
+
+    this.showQuizzLeaderboard()
+  }
+
+  sendManagerQuizzLeaderboard() {
+    const currentLeaderboard = this.leaderboard
+    this.sendStatus(this.manager.id, STATUS.SHOW_LEADERBOARD, {
+      oldLeaderboard: currentLeaderboard,
+      leaderboard: currentLeaderboard,
+      isQuizz: true,
+    })
+  }
+
+  showQuizzLeaderboard() {
+    const totalQuestions = this.quizz.questions.length
+
+    const sortedPlayers = this.players.map(p => {
+      const playerAnswers = this.round.playersAnswers.filter(a => a.playerId === p.id)
+      const points = playerAnswers.reduce((acc, curr) => acc + curr.points, 0)
+      const correctAnswers = playerAnswers.filter(a => a.points > 0).length
+      const timeTakenSeconds = this.playerCompletionTime[p.id] || 2400
+      return { ...p, points, correctAnswers, timeTakenSeconds }
+    }).sort((a, b) => {
+      // Sort by points descending, then by time ascending (minimum time first)
+      if (b.points !== a.points) return b.points - a.points
+      return a.timeTakenSeconds - b.timeTakenSeconds
+    })
+
+    this.leaderboard = sortedPlayers
+    this.players = sortedPlayers
+
+    const formatTime = (seconds: number) => {
+      const h = Math.floor(seconds / 3600)
+      const m = Math.floor((seconds % 3600) / 60)
+      const s = seconds % 60
+      if (h > 0) return `${h}h ${m.toString().padStart(2, "0")}m ${s.toString().padStart(2, "0")}s`
+      return `${m}m ${s.toString().padStart(2, "0")}s`
+    }
+
+    const quizzResults = sortedPlayers.map((p, idx) => ({
+      rank: idx + 1,
+      username: p.username,
+      teamName: p.teamName,
+      correctAnswers: (p as any).correctAnswers,
+      totalQuestions,
+      totalPoints: p.points,
+      timeTaken: formatTime((p as any).timeTakenSeconds),
+      timeTakenSeconds: (p as any).timeTakenSeconds,
+    }))
+
+    this.started = false
+    this.broadcastStatus(STATUS.FINISHED, {
+      subject: this.quizz.subject,
+      top: this.leaderboard.slice(0, 3),
+      quizzResults,
+    })
+  }
+
+  sendPlayerQuizzQuestion(playerId: string) {
+    const player = this.players.find((p) => p.id === playerId)
+    if (!player || !this.quizz) { return }
+
+    const qIndex = this.playerCurrentQuestion[playerId] ?? 0
+    if (qIndex < 0 || qIndex >= this.quizz.questions.length) { return }
+
+    const question = this.quizz.questions[qIndex]
+    const remainingTime = this.cooldown.count || 2400
+
+    const playerAnswers = this.round.playersAnswers.filter(a => a.playerId === playerId && a.questionIndex === qIndex)
+    const prevAnswer = playerAnswers.length > 0 ? playerAnswers[playerAnswers.length - 1].answerId : undefined
+
+    this.sendStatus(playerId, STATUS.SELECT_ANSWER, {
       question: question.question,
       answers: question.answers,
       image: question.image,
       video: question.video,
       audio: question.audio,
-      time: question.time,
+      time: remainingTime,
       totalPlayer: this.players.length,
+      selectedAnswer: prevAnswer,
     })
 
-    await this.startCooldown(question.time)
+    this.io.to(playerId).emit("game:updateQuestion", {
+      current: qIndex + 1,
+      total: this.quizz.questions.length,
+    })
+  }
 
-    if (!this.started) {
-      return
+  navigateQuizzQuestion(socket: Socket, direction: "prev" | "next") {
+    const player = this.players.find((p) => p.id === socket.id)
+    if (!player || !this.quizz || !this.started || this.gameMode !== "quiz") { return }
+
+    const currentIndex = this.playerCurrentQuestion[player.id] ?? 0
+    const offset = direction === "next" ? 1 : -1
+    const targetIndex = Math.min(
+      Math.max(currentIndex + offset, 0),
+      this.quizz.questions.length - 1,
+    )
+
+    if (targetIndex === currentIndex) { return }
+
+    this.playerCurrentQuestion[player.id] = targetIndex
+    this.sendPlayerQuizzQuestion(player.id)
+  }
+
+  finishQuizz(socket: Socket, answers: Record<string, number>) {
+    const player = this.players.find((p) => p.id === socket.id)
+    if (!player || !this.started || this.gameMode !== "quiz") { return }
+
+    // Process all answers submitted in bulk
+    for (const [qIndexStr, answerId] of Object.entries(answers)) {
+      const qIndex = parseInt(qIndexStr)
+      const question = this.quizz.questions[qIndex]
+      if (!question) continue
+
+      // Remove any previous answer for this question by this player
+      this.round.playersAnswers = this.round.playersAnswers.filter(
+        (a) => !(a.playerId === player.id && a.questionIndex === qIndex)
+      )
+
+      const isCorrect = question.solution === answerId
+      this.round.playersAnswers.push({
+        playerId: player.id,
+        answerId,
+        points: isCorrect ? 500 : 0,
+        questionIndex: qIndex,
+      })
     }
 
-    this.showResults(question)
+    // Recalculate total points for this player
+    player.points = this.round.playersAnswers
+      .filter((a) => a.playerId === player.id)
+      .reduce((acc, curr) => acc + curr.points, 0)
+
+    this.quizzFinishedPlayers.add(player.id)
+
+    // Record completion time (seconds since round started)
+    if (!this.playerCompletionTime[player.id]) {
+      this.playerCompletionTime[player.id] = Math.round((Date.now() - this.round.startTime) / 1000)
+    }
+
+    // Update the manager's live leaderboard
+    this.sendManagerQuizzLeaderboard()
+
+    this.sendStatus(socket.id, STATUS.WAIT, {
+      text: "wait for the result",
+    })
+
+    if (this.quizzFinishedPlayers.size === this.players.length) {
+      this.abortCooldown()
+    }
   }
+
+  async newRound() {}
 
   async newReverseRound() {
     if (!this.reverseQuizz) {
@@ -584,11 +729,11 @@ class Game {
       output: "Multi-Question Random Assignment...",
       language: "multi",
       hint: "",
-      time: question.time,
+      time: 3600,
       totalPlayer: this.players.length,
     })
 
-    await this.startCooldown(question.time)
+    await this.startCooldown(3600)
 
     if (!this.started) {
       return
@@ -611,7 +756,7 @@ class Game {
     }
 
     const question = this.reverseQuizz.questions[qIndex]
-    const remainingTime = this.cooldown.count || question.time
+    const remainingTime = this.cooldown.count || 3600
 
     this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
       output: question.output,
@@ -1186,15 +1331,15 @@ return
   }
   selectAnswer(socket: Socket, answerId: number) {
     const player = this.players.find((player) => player.id === socket.id)
-    const question = this.quizz.questions[this.round.currentQuestion]
+    if (!player) { return }
 
-    if (!player) {
-      return
-    }
+    const qIndex = this.playerCurrentQuestion[player.id] ?? 0
+    const question = this.quizz.questions[qIndex]
 
-    if (this.round.playersAnswers.find((p) => p.playerId === socket.id)) {
-      return
-    }
+    // Remove previous answer for this specific question by this player
+    this.round.playersAnswers = this.round.playersAnswers.filter(
+      (a) => !(a.playerId === player.id && a.questionIndex === qIndex)
+    )
 
     const points = timeToPoint(this.round.startTime, question.time);
 
@@ -1247,15 +1392,14 @@ return
       text: "Waiting for the players to answer",
     })
 
-    socket
-      .to(this.gameId)
-      .emit("game:playerAnswer", this.round.playersAnswers.length)
+    // Acknowledge by simply re-sending the question state to refresh UI with correct button feedback
+    this.sendPlayerQuizzQuestion(player.id)
 
-    this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
+    // Update the manager's live leaderboard
+    this.sendManagerQuizzLeaderboard()
 
-    if (this.round.playersAnswers.length === this.players.length) {
-      this.abortCooldown()
-    }
+    // In async mode, "playerAnswer" might just track total answers currently given.
+    socket.to(this.gameId).emit("game:playerAnswer", this.round.playersAnswers.length)
   }
 
   nextRound(socket: Socket) {
