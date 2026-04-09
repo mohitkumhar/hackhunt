@@ -33,6 +33,7 @@ export type CommonStatusDataMap = {
     audio?: string
     time: number
     totalPlayer: number
+    selectedAnswer?: number
   }
   SHOW_RESULT: {
     correct: boolean
@@ -42,7 +43,6 @@ export type CommonStatusDataMap = {
     rank: number
     aheadOfMe: string | null
     hideRank?: boolean
-    hidePoints?: boolean
   }
   WAIT: { text: string }
   FINISHED: { 
@@ -67,6 +67,16 @@ export type CommonStatusDataMap = {
         language: string;
         submitted: boolean;
       }[];
+    }[];
+    quizzResults?: {
+      rank: number;
+      username: string;
+      teamName?: string;
+      correctAnswers: number;
+      totalQuestions: number;
+      totalPoints: number;
+      timeTaken: string;
+      timeTakenSeconds: number;
     }[];
   }
   REVERSE_WRITE_CODE: {
@@ -106,7 +116,7 @@ type ManagerExtraStatus = {
     image?: string
     video?: string
   }
-  SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[] }
+  SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[]; isQuizz?: boolean }
   REVERSE_SHOW_RESPONSES: {
     output: string
     expectedCode: string

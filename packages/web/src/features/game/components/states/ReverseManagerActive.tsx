@@ -22,6 +22,12 @@ const formatDuration = (seconds: number | null) => {
   return `${m}m ${s.toString().padStart(2, "0")}s`
 }
 
+const formatTimeStr = (totalSeconds: number) => {
+  const m = Math.floor(totalSeconds / 60)
+  const s = totalSeconds % 60
+  return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+}
+
 const ReverseManagerActive = () => {
   const { players } = useManagerStore()
   const [submissionMap, setSubmissionMap] = useState<Record<string, SubmissionState>>({})
@@ -35,6 +41,12 @@ const ReverseManagerActive = () => {
         isCorrect: data.isCorrect,
       },
     }))
+  })
+
+  const [timeLeft, setTimeLeft] = useState(3600)
+
+  useEvent("game:cooldown", (count) => {
+    setTimeLeft(count)
   })
 
   const rows = useMemo(() => {
@@ -61,7 +73,14 @@ const ReverseManagerActive = () => {
 
   return (
     <section className="anim-show relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center py-10 px-4">
-      <h2 className="mb-6 text-center text-3xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl">
+      <div className="absolute top-0 right-4 sm:top-4 sm:right-8 flex items-center gap-2 bg-[#2a2a35] px-4 py-2 rounded-full border border-gray-700 shadow-xl">
+        <span className="text-base sm:text-lg">⏱️</span>
+        <span className="text-sm sm:text-base font-mono font-bold text-gray-200 tracking-widest">
+          {formatTimeStr(timeLeft)}
+        </span>
+      </div>
+
+      <h2 className="mb-6 text-center text-3xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl mt-8 sm:mt-0">
         Reverse Programming Leaderboard
       </h2>
 

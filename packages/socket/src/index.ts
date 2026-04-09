@@ -8,6 +8,7 @@ import { mkdtemp, rm, writeFile } from "fs/promises"
 import { tmpdir } from "os"
 import { join } from "path"
 import { Server as ServerIO } from "socket.io"
+import { app } from "./api";
 import { createServer } from "http"
 import { spawn } from "child_process"
 
@@ -211,36 +212,7 @@ const executeLocally = async (
   }
 }
 
-const httpServer = createServer((req, res) => {
-  if (req.method === "POST" && req.url === "/api/execute") {
-    let body = ""
-    req.on("data", (chunk: Buffer) => { body += chunk.toString() })
-    req.on("end", async () => {
-      try {
-        // Parse the Piston-format request from the frontend
-        const pistonReq = JSON.parse(body)
-        const lang = pistonReq.language as string
-        const code = pistonReq.files?.[0]?.content || ""
-        const normalizedLang = normalizeLanguage(lang)
-        console.log(`Executing ${normalizedLang} code with local compiler/runtime...`)
-        const pistonResponse = await executeLocally(normalizedLang, code)
-
-        res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" })
-        res.end(JSON.stringify(pistonResponse))
-      } catch (err: unknown) {
-        console.error("Execution API error:", err)
-        res.writeHead(502, { "Content-Type": "application/json" })
-        res.end(JSON.stringify({ message: "Failed to reach execution engine" }))
-      }
-    })
-
-    
-return
-  }
-
-  res.writeHead(404)
-  res.end()
-})
+const httpServer = createServer(app)
 
 const io: Server = new ServerIO(httpServer, {
   path: "/ws",
@@ -385,7 +357,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("player:login", ({ gameId, data }) =>
-    withGame(gameId, socket, (game) => game.join(socket, data.username, data.teamName)),
+    withGame(gameId, socket, (game) => game.join(socket, data.username, data.teamName, data.year)),
   )
 
   socket.on("manager:kickPlayer", ({ gameId, playerId }) =>
@@ -412,6 +384,16 @@ io.on("connection", (socket) => {
     withGame(gameId, socket, (game) =>
       game.navigateReverseQuestion(socket, data.direction),
     ),
+  )
+
+  socket.on("player:navigateQuizzQuestion", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.navigateQuizzQuestion(socket, data.direction),
+    ),
+  )
+
+  socket.on("player:finishQuizz", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) => game.finishQuizz(socket, data.answers)),
   )
 
   socket.on("player:submitBlindCode", ({ gameId, data }) =>
