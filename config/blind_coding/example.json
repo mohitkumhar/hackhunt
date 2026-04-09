@@ -18,8 +18,8 @@
       "cooldown": 5
     },
     {
-      "title": "Last Character of Anish",
-      "description": "Write a program that takes the string \"Anish\" as input and prints its last character.",
+      "title": "Last Character of Dishant",
+      "description": "Write a program that takes the string \"Dishant\" as input and prints its last character.",
       "examples": [{ "input": "s = 'Dishant'", "output": "t" }],
       "constraints": ["1 <= length(s) <= 20"],
       "cooldown": 5
