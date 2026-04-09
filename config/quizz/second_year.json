@@ -1,0 +1,29 @@
+{
+  "subject": "2nd year quizz round",
+  "questions": [
+    {
+      "question": "What is the time complexity of binary search?",
+      "answers": [
+        "O(n)",
+        "O(log n)",
+        "O(n^2)",
+        "O(1)"
+      ],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 20
+    },
+    {
+      "question": "What is encapsulation in Object-Oriented Programming?",
+      "answers": [
+        "Binding data and methods together",
+        "Inheriting properties from other classes",
+        "Multiple classes defining the same method",
+        "Hiding class structure completely"
+      ],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 20
+    }
+  ]
+}

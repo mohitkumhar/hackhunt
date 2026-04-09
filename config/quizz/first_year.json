@@ -1,0 +1,29 @@
+{
+  "subject": "1st year quizz round",
+  "questions": [
+    {
+      "question": "What is the output of print(2 ** 3) in Python?",
+      "answers": [
+        "6",
+        "8",
+        "9",
+        "Error"
+      ],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 20
+    },
+    {
+      "question": "Which of the following is a dynamically typed language?",
+      "answers": [
+        "C++",
+        "Java",
+        "Python",
+        "C"
+      ],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 20
+    }
+  ]
+}

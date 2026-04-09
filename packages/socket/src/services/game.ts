@@ -584,11 +584,11 @@ class Game {
       output: "Multi-Question Random Assignment...",
       language: "multi",
       hint: "",
-      time: question.time,
+      time: 3600,
       totalPlayer: this.players.length,
     })
 
-    await this.startCooldown(question.time)
+    await this.startCooldown(3600)
 
     if (!this.started) {
       return
@@ -611,7 +611,7 @@ class Game {
     }
 
     const question = this.reverseQuizz.questions[qIndex]
-    const remainingTime = this.cooldown.count || question.time
+    const remainingTime = this.cooldown.count || 3600
 
     this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
       output: question.output,
