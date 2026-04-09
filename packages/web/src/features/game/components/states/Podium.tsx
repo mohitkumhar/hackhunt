@@ -62,7 +62,7 @@ const usePodiumAnimation = (topLength: number) => {
   return apparition
 }
 
-const Podium = ({ data: { subject, top, blindPlayerResults, blindSubmissionsHistory } }: Props) => {
+const Podium = ({ data: { subject, top, blindPlayerResults, blindSubmissionsHistory, quizzResults } }: Props) => {
   const apparition = usePodiumAnimation(top.length)
   const [expandedPlayers, setExpandedPlayers] = useState<Set<string>>(new Set())
   const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set())
@@ -127,7 +127,94 @@ return `${m}m ${s.toString().padStart(2, "0")}s`
           {subject}
         </h2>
 
-        {blindPlayerResults && blindPlayerResults.length > 0 ? (
+        {quizzResults && quizzResults.length > 0 ? (
+          <div className="w-full mt-8 mb-12 shrink-0 px-4">
+            {/* Blue tabular leaderboard */}
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-blue-400/30">
+              {/* Background gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800" />
+              <div className="absolute inset-0 opacity-20" style={{
+                backgroundImage: "repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(255,255,255,0.05) 40px, rgba(255,255,255,0.05) 80px)"
+              }} />
+
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-center gap-3 py-6 border-b border-white/10">
+                  <span className="text-3xl">🏆</span>
+                  <h3 className="text-3xl font-extrabold text-white tracking-wider uppercase drop-shadow-lg">
+                    Leaderboard
+                  </h3>
+                  <span className="text-3xl">🏆</span>
+                </div>
+
+                {/* Column Headers */}
+                <div className="grid grid-cols-12 gap-2 px-4 md:px-8 py-3 border-b border-white/20 text-[10px] sm:text-xs font-bold text-amber-300 uppercase tracking-widest">
+                  <div className="col-span-1 text-center">Ranking</div>
+                  <div className="col-span-4">Player Name</div>
+                  <div className="col-span-2 text-center">Correct</div>
+                  <div className="col-span-2 text-center">Total Points</div>
+                  <div className="col-span-3 text-center">Time Taken</div>
+                </div>
+
+                {/* Rows */}
+                {quizzResults.map((result, idx) => {
+                  const isTop3 = result.rank <= 3
+                  const rowBg = idx % 2 === 0 ? "bg-white/5" : "bg-white/[0.02]"
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`grid grid-cols-12 gap-2 px-4 md:px-8 py-4 items-center border-b border-white/5 transition-colors hover:bg-white/10 ${rowBg}`}
+                    >
+                      {/* Ranking */}
+                      <div className="col-span-1 flex justify-center">
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-full font-bold text-lg shadow-md ${
+                          result.rank === 1 ? "bg-gradient-to-br from-yellow-400 to-amber-500 text-white" :
+                          result.rank === 2 ? "bg-gradient-to-br from-zinc-300 to-zinc-400 text-gray-800" :
+                          result.rank === 3 ? "bg-gradient-to-br from-amber-600 to-amber-700 text-white" :
+                          "bg-white/10 text-white/70"
+                        }`}>
+                          {result.rank.toString().padStart(2, "0")}
+                        </span>
+                      </div>
+
+                      {/* Player Name */}
+                      <div className="col-span-4 flex flex-col">
+                        <span className={`text-base md:text-lg font-bold truncate ${isTop3 ? "text-white" : "text-white/80"}`}>
+                          {result.username}
+                        </span>
+                        {result.teamName && (
+                          <span className="text-xs text-white/40 truncate">{result.teamName}</span>
+                        )}
+                      </div>
+
+                      {/* Correct Answers */}
+                      <div className="col-span-2 text-center">
+                        <span className={`text-lg font-bold ${isTop3 ? "text-green-300" : "text-white/70"}`}>
+                          {result.correctAnswers}/{result.totalQuestions}
+                        </span>
+                      </div>
+
+                      {/* Total Points */}
+                      <div className="col-span-2 text-center">
+                        <span className={`text-lg font-bold ${isTop3 ? "text-amber-300" : "text-white/70"}`}>
+                          {result.totalPoints}
+                        </span>
+                      </div>
+
+                      {/* Time Taken */}
+                      <div className="col-span-3 text-center">
+                        <span className={`text-sm font-semibold ${isTop3 ? "text-cyan-300" : "text-white/60"}`}>
+                          ⏱ {result.timeTaken}
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        ) : blindPlayerResults && blindPlayerResults.length > 0 ? (
           <div className="w-full mt-8 mb-12 shrink-0">
             <h3 className="text-2xl font-bold text-white mb-6 text-center">Leaderboard & Submissions</h3>
             {blindPlayerResults.map((player, idx) => {

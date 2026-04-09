@@ -106,6 +106,8 @@ export interface ClientToServerEvents {
     _message: MessageWithoutStatus<{ code: string; output: string }>,
   ) => void
   "player:navigateReverseQuestion": (_message: MessageBlindNavigate) => void
+  "player:navigateQuizzQuestion": (_message: MessageBlindNavigate) => void
+  "player:finishQuizz": (_message: MessageGameId & { data: { answers: Record<string, number> } }) => void
 
   // Reverse programming
   "game:createReverse": (_quizzId: string) => void

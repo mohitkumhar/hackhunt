@@ -371,6 +371,16 @@ io.on("connection", (socket) => {
     ),
   )
 
+  socket.on("player:navigateQuizzQuestion", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) =>
+      game.navigateQuizzQuestion(socket, data.direction),
+    ),
+  )
+
+  socket.on("player:finishQuizz", ({ gameId, data }) =>
+    withGame(gameId, socket, (game) => game.finishQuizz(socket, data.answers)),
+  )
+
   socket.on("player:submitBlindCode", ({ gameId, data }) =>
     withGame(gameId, socket, (game) =>
       game.submitBlindCode(socket, data.code, data.language),
