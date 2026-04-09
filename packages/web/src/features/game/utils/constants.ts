@@ -1,6 +1,7 @@
 import Answers from "@rahoot/web/features/game/components/states/Answers"
 import BlindCodingAnswer from "@rahoot/web/features/game/components/states/BlindCodingAnswer"
 import BlindCodingResponses from "@rahoot/web/features/game/components/states/BlindCodingResponses"
+import BugHuntingAnswer from "@rahoot/web/features/game/components/states/BugHuntingAnswer"
 import CodeAnswer from "@rahoot/web/features/game/components/states/CodeAnswer"
 import CodeResponses from "@rahoot/web/features/game/components/states/CodeResponses"
 import Leaderboard from "@rahoot/web/features/game/components/states/Leaderboard"
@@ -49,6 +50,7 @@ export const GAME_STATE_COMPONENTS = {
   [STATUS.SHOW_PREPARED]: Prepared,
   [STATUS.REVERSE_WRITE_CODE]: CodeAnswer,
   [STATUS.BLIND_CODING_WRITE]: BlindCodingAnswer,
+  [STATUS.BUG_HUNTING_WRITE]: BugHuntingAnswer,
 }
 
 export const GAME_STATE_COMPONENTS_MANAGER = {
@@ -60,6 +62,8 @@ export const GAME_STATE_COMPONENTS_MANAGER = {
   [STATUS.REVERSE_WRITE_CODE]: ReverseManagerActive as any,
   [STATUS.REVERSE_SHOW_RESPONSES]: CodeResponses,
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: BlindCodingResponses,
+  [STATUS.BUG_HUNTING_WRITE]: ReverseManagerActive as any,
+  [STATUS.BUG_HUNTING_SHOW_RESPONSES]: CodeResponses,
 }
 
 export const SFX_ANSWERS_MUSIC = "/sounds/answersMusic.mp3"
@@ -81,6 +85,8 @@ export const MANAGER_SKIP_EVENTS = {
   [STATUS.REVERSE_SHOW_RESPONSES]: "manager:showLeaderboard",
   [STATUS.BLIND_CODING_WRITE]: "manager:abortQuiz",
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: "manager:showLeaderboard",
+  [STATUS.BUG_HUNTING_WRITE]: "manager:abortQuiz",
+  [STATUS.BUG_HUNTING_SHOW_RESPONSES]: "manager:showLeaderboard",
 } as const satisfies Partial<
   Record<keyof typeof GAME_STATE_COMPONENTS_MANAGER, string>
 >
@@ -107,4 +113,6 @@ export const MANAGER_SKIP_BTN = {
   [STATUS.REVERSE_SHOW_RESPONSES]: null,
   [STATUS.BLIND_CODING_WRITE]: "Skip",
   [STATUS.BLIND_CODING_SHOW_RESPONSES]: null,
+  [STATUS.BUG_HUNTING_WRITE]: null,
+  [STATUS.BUG_HUNTING_SHOW_RESPONSES]: null,
 }

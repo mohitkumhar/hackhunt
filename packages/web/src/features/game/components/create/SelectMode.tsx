@@ -3,11 +3,11 @@ import { useState } from "react"
 import clsx from "clsx"
 
 type Props = {
-  onSelect: (_mode: "quiz" | "reverse_programming" | "blind_coding") => void
+  onSelect: (_mode: "quiz" | "reverse_programming" | "blind_coding" | "bug_hunting") => void
 }
 
 const SelectMode = ({ onSelect }: Props) => {
-  const [selected, setSelected] = useState<"quiz" | "reverse_programming" | "blind_coding" | null>(null)
+  const [selected, setSelected] = useState<"quiz" | "reverse_programming" | "blind_coding" | "bug_hunting" | null>(null)
 
   const handleSubmit = () => {
     if (!selected) {
@@ -35,6 +35,12 @@ const SelectMode = ({ onSelect }: Props) => {
       icon: "🙈",
       title: "Blind Coding",
       description: "Type code without seeing it — the ultimate coding challenge!",
+    },
+    {
+      id: "bug_hunting" as const,
+      icon: "🐛",
+      title: "Bug Hunting",
+      description: "Find and fix the bugs in the given code to match the expected output",
     },
   ]
 

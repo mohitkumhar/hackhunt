@@ -4,6 +4,7 @@ import type {
   Player,
   QuizzWithId,
   ReverseQuizzWithId,
+  BugHuntingQuizzWithId,
 } from "@rahoot/common/types/game"
 import type { Status, StatusDataMap } from "@rahoot/common/types/game/status"
 import { Server as ServerIO, Socket as SocketIO } from "socket.io"
@@ -75,6 +76,7 @@ export interface ServerToClientEvents {
   "manager:playerKicked": (_playerId: string) => void
   "manager:reverseQuizzList": (_quizzList: ReverseQuizzWithId[]) => void
   "manager:blindCodingQuizzList": (_quizzList: BlindCodingQuizzWithId[]) => void
+  "manager:bugHuntingQuizzList": (_quizzList: BugHuntingQuizzWithId[]) => void
   "manager:playerSubmitted": (_data: {
     playerId: string
     username: string
@@ -117,6 +119,13 @@ export interface ClientToServerEvents {
     _message: MessageWithoutStatus<{ submissions: Record<number, { code: string; language: string }> }>,
   ) => void
   "player:navigateBlindQuestion": (_message: MessageBlindNavigate) => void
+
+  // Bug Hunting
+  "game:createBugHunting": (_quizzId: string) => void
+  "player:submitAllBugHuntingCodes": (
+    _message: MessageWithoutStatus<{ submissions: Record<number, { code: string; language: string }> }>,
+  ) => void
+  "player:navigateBugHuntingQuestion": (_message: MessageBlindNavigate) => void
 
   // Common
   disconnect: () => void

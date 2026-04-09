@@ -15,6 +15,8 @@ export const STATUS = {
   REVERSE_SHOW_RESPONSES: "REVERSE_SHOW_RESPONSES",
   BLIND_CODING_WRITE: "BLIND_CODING_WRITE",
   BLIND_CODING_SHOW_RESPONSES: "BLIND_CODING_SHOW_RESPONSES",
+  BUG_HUNTING_WRITE: "BUG_HUNTING_WRITE",
+  BUG_HUNTING_SHOW_RESPONSES: "BUG_HUNTING_SHOW_RESPONSES",
 } as const
 
 export type Status = (typeof STATUS)[keyof typeof STATUS]
@@ -83,6 +85,15 @@ export type CommonStatusDataMap = {
     time: number
     totalPlayer: number
   }
+  BUG_HUNTING_WRITE: {
+    title: string
+    description: string
+    buggyCode: string
+    language: string
+    expectedOutput: string
+    time: number
+    totalPlayer: number
+  }
 }
 
 type ManagerExtraStatus = {
@@ -115,6 +126,14 @@ type ManagerExtraStatus = {
       submitted: boolean
     }[]
     totalSubmitted: number
+    totalPlayers: number
+  }
+  BUG_HUNTING_SHOW_RESPONSES: {
+    title: string
+    expectedOutput: string
+    language: string
+    totalCorrect: number
+    totalWrong: number
     totalPlayers: number
   }
 }

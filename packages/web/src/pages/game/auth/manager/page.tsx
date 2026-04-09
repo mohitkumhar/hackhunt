@@ -1,4 +1,4 @@
-import type { QuizzWithId, ReverseQuizzWithId, BlindCodingQuizzWithId, GameMode } from "@rahoot/common/types/game"
+import type { QuizzWithId, ReverseQuizzWithId, BlindCodingQuizzWithId, BugHuntingQuizzWithId, GameMode } from "@rahoot/common/types/game"
 import { STATUS } from "@rahoot/common/types/game/status"
 import ManagerPassword from "@rahoot/web/features/game/components/create/ManagerPassword"
 import SelectMode from "@rahoot/web/features/game/components/create/SelectMode"
@@ -21,6 +21,7 @@ const ManagerAuthPage = () => {
   const [quizzList, setQuizzList] = useState<QuizzWithId[]>([])
   const [reverseQuizzList, setReverseQuizzList] = useState<ReverseQuizzWithId[]>([])
   const [blindCodingQuizzList, setBlindCodingQuizzList] = useState<BlindCodingQuizzWithId[]>([])
+  const [bugHuntingQuizzList, setBugHuntingQuizzList] = useState<BugHuntingQuizzWithId[]>([])
 
   useEvent("manager:quizzList", (quizzList) => {
     setIsAuth(true)
@@ -33,6 +34,10 @@ const ManagerAuthPage = () => {
 
   useEvent("manager:blindCodingQuizzList", (blindList) => {
     setBlindCodingQuizzList(blindList)
+  })
+
+  useEvent("manager:bugHuntingQuizzList", (bugList) => {
+    setBugHuntingQuizzList(bugList)
   })
 
   useEvent("manager:gameCreated", ({ gameId, inviteCode }) => {
@@ -54,6 +59,8 @@ const ManagerAuthPage = () => {
       socket?.emit("game:createReverse", quizzId)
     } else if (mode === "blind_coding") {
       socket?.emit("game:createBlindCoding", quizzId)
+    } else if (mode === "bug_hunting") {
+      socket?.emit("game:createBugHunting", quizzId)
     } else {
       socket?.emit("game:create", quizzId)
     }
@@ -82,6 +89,16 @@ const ManagerAuthPage = () => {
     }))
 
     return <SelectQuizz quizzList={blindAsQuizz} onSelect={handleCreate} />
+  }
+
+  if (mode === "bug_hunting") {
+    const bugAsQuizz: QuizzWithId[] = bugHuntingQuizzList.map((bq) => ({
+      id: bq.id,
+      subject: bq.subject,
+      questions: [],
+    }))
+
+    return <SelectQuizz quizzList={bugAsQuizz} onSelect={handleCreate} />
   }
 
   // Reverse Programming mode - show reverse quizz list
