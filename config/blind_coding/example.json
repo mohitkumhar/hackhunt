@@ -11,9 +11,7 @@
     {
       "title": "Multiplication Table of 5",
       "description": "Write a program that prints the multiplication table of 5 up to 10 terms.",
-      "examples": [
-        { "input": "n = 5", "output": "5 10 15 20 25 30 35 40 45 50" }
-      ],
+      "examples": [{ "input": "n = 5", "output": "5 10 15 20 25 30 35 40 45 50" }],
       "constraints": ["1 <= n <= 10"],
       "cooldown": 5
     },
@@ -62,9 +60,7 @@
     {
       "title": "4x4 Star Pattern",
       "description": "Write a program to print a 4×4 square pattern using *.",
-      "examples": [
-        { "input": "n = 4", "output": "* * * *\n* * * *\n* * * *\n* * * *" }
-      ],
+      "examples": [{ "input": "n = 4", "output": "* * * *\n* * * *\n* * * *\n* * * *" }],
       "constraints": ["n = 4"],
       "cooldown": 5
     },
@@ -141,9 +137,7 @@
     {
       "title": "Rotate Array",
       "description": "Write a program that rotates an array by k positions.",
-      "examples": [
-        { "input": "arr = [1,2,3,4,5], k = 2", "output": "[4,5,1,2,3]" }
-      ],
+      "examples": [{ "input": "arr = [1,2,3,4,5], k = 2", "output": "[4,5,1,2,3]" }],
       "constraints": ["1 <= size(arr) <= 20", "0 <= k <= 20"],
       "cooldown": 5
     },
@@ -151,6 +145,34 @@
       "title": "Reverse Words in String",
       "description": "Write a program that takes a string as input and reverses the order of words.",
       "examples": [{ "input": "s = 'hello world'", "output": "world hello" }],
+      "constraints": ["1 <= length(s) <= 50"],
+      "cooldown": 5
+    },
+    {
+      "title": "Skip Every 4th Alphabet",
+      "description": "Print all lowercase alphabets from a to z, but skip every 4th character.",
+      "examples": [{ "input": "n = 26", "output": "a b c e f g i j k m n o q r s u v w y z" }],
+      "constraints": ["Only lowercase alphabets a-z"],
+      "cooldown": 5
+    },
+    {
+      "title": "Most Frequent Character",
+      "description": "Given a string s, print the character that appears the most number of times.",
+      "examples": [{ "input": "s = 'aabbbcc'", "output": "b" }],
+      "constraints": ["1 <= length(s) <= 50"],
+      "cooldown": 5
+    },
+    {
+      "title": "Print 1 to N using Recursion",
+      "description": "Given an integer N, print numbers from 1 to N using recursion.",
+      "examples": [{ "input": "n = 5", "output": "1 2 3 4 5" }],
+      "constraints": ["1 <= n <= 20"],
+      "cooldown": 5
+    },
+    {
+      "title": "Min Removal for Palindrome",
+      "description": "Given a string s, find the minimum number of characters to remove to make it a palindrome.",
+      "examples": [{ "input": "s = 'abcda'", "output": "2" }],
       "constraints": ["1 <= length(s) <= 50"],
       "cooldown": 5
     }

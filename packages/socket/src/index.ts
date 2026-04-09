@@ -4,13 +4,13 @@ import Config from "@rahoot/socket/services/config"
 import Game from "@rahoot/socket/services/game"
 import Registry from "@rahoot/socket/services/registry"
 import { withGame } from "@rahoot/socket/utils/game"
+import { spawn } from "child_process"
 import { mkdtemp, rm, writeFile } from "fs/promises"
+import { createServer } from "http"
 import { tmpdir } from "os"
 import { join } from "path"
 import { Server as ServerIO } from "socket.io"
-import { app } from "./api";
-import { createServer } from "http"
-import { spawn } from "child_process"
+import { app } from "./api"
 
 const WS_PORT = 3001
 

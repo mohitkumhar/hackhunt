@@ -219,9 +219,7 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
       if (result.compile && result.compile.code !== 0) {
         setRunError(`Compilation Error:\n${result.compile.output}`)
         setIsSubmitting(false)
-
-        
-return
+        return
       }
 
       if (result.run && result.run.signal) {
@@ -245,9 +243,14 @@ return
       if (result.run && result.run.code !== 0 && !result.run.stdout) {
         setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
         setIsSubmitting(false)
+        return
+      }
 
-        
-return
+      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
+      if (result.run && result.run.code !== 0 && !result.run.stdout) {
+        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
+        setIsSubmitting(false)
+        return
       }
 
       playerOutput = result.run.stdout || ""
@@ -259,9 +262,7 @@ return
     } catch (err: unknown) {
       setRunError(err instanceof Error ? err.message : "Execution failed")
       setIsSubmitting(false)
-
-      
-return
+      return
     }
 
     setSubmitted(true)
