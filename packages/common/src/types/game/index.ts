@@ -4,6 +4,7 @@ export type Player = {
   connected: boolean
   username: string
   teamName: string
+  year?: number
   points: number
   completionTime?: number
 }
@@ -17,6 +18,7 @@ export type Answer = {
 export type Quizz = {
   subject: string
   questions: {
+    id: string
     question: string
     image?: string
     video?: string
@@ -31,6 +33,7 @@ export type Quizz = {
 export type QuizzWithId = Quizz & { id: string }
 
 export type ReverseQuestion = {
+  id: string
   output: string
   language: string
   expectedCode: string
@@ -53,6 +56,7 @@ export type BlindCodingExample = {
 }
 
 export type BlindCodingQuestion = {
+  id: string
   title: string
   description: string
   examples: BlindCodingExample[]

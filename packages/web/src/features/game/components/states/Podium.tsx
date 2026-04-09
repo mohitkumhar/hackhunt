@@ -366,6 +366,49 @@ return `${m}m ${s.toString().padStart(2, "0")}s`
             )}
           </div>
         )}
+        {blindSubmissionsHistory && blindSubmissionsHistory.length > 0 && (
+          <div className="w-full mt-12 bg-gray-900/90 p-6 rounded-xl border border-white/20 backdrop-blur shrink-0 mb-12">
+              <h3 className="text-2xl font-bold text-white mb-6">Review Submissions</h3>
+              {blindSubmissionsHistory.map((history: any, idx: number) => {
+                const submittedCount = history.submissions.filter((s: any) => s.submitted).length
+                const totalCount = history.submissions.length
+
+                return (
+                  <div key={idx} className="mb-8 last:mb-0">
+                    <h4 className="text-xl text-yellow-400 font-bold flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
+                      <span>Q{idx + 1}: {history.question}</span>
+                      <span className="text-sm font-medium bg-white/10 text-white/80 px-2 py-0.5 rounded-full">
+                        {submittedCount} / {totalCount} submitted
+                      </span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {history.submissions.map((sub: any, sidx: number) => (
+                        <div key={sidx} className={`p-4 rounded-lg shadow ${sub.submitted ? "bg-gray-800" : "bg-red-900/30"}`}>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold text-white">{sub.username}</span>
+                            {sub.submitted && (
+                              <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-300 rounded">
+                                {sub.language || history.language}
+                              </span>
+                            )}
+                          </div>
+                          <div className="bg-gray-950 p-3 rounded overflow-x-auto max-h-48 overflow-y-auto">
+                            {sub.submitted ? (
+                              <pre className="text-sm text-green-400">
+                                {sub.code}
+                              </pre>
+                            ) : (
+                              <p className="text-sm text-red-400 italic">No code was submitted</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
       </section>
     </>
   )

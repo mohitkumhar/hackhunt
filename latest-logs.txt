@@ -1,0 +1,52 @@
+rahoot-1  | 2026-04-08 19:44:54,537 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+rahoot-1  | 2026-04-08 19:44:54,545 INFO supervisord started with pid 1
+rahoot-1  | 2026-04-08 19:44:55,554 INFO spawned: 'nginx' with pid 8
+rahoot-1  | 2026-04-08 19:44:55,573 INFO spawned: 'socket' with pid 9
+rahoot-1  | 2026-04-08 19:44:56,605 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+rahoot-1  | 2026-04-08 19:44:56,605 INFO success: socket entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+rahoot-1  | Game cleanup task started
+rahoot-1  | Socket server running on port 3001
+rahoot-1  | A user connected: socketId: 0hUnPtGBOkAqIc96AAAC, clientId: 019d6e8a-d78b-7066-9680-02d11653a6ae
+rahoot-1  | A user connected: socketId: fnRV5mJyL3jRwRV5AAAD, clientId: 019d6e8a-c6cb-72aa-a7f5-3a903f1550d3
+rahoot-1  | MongoDB Connection Error: I6 [MongooseServerSelectionError]: C08C1887D0750000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:../deps/openssl/openssl/ssl/record/rec_layer_s3.c:918:SSL alert number 80
+rahoot-1  | 
+rahoot-1  |     at vde (/app/socket/index.cjs:82:260766)
+rahoot-1  |     at me.openUri (/app/socket/index.cjs:82:260155)
+rahoot-1  |     at async kme (/app/socket/index.cjs:122:20512) {
+rahoot-1  |   errorLabelSet: Set(0) {},
+rahoot-1  |   reason: t {
+rahoot-1  |     type: 'ReplicaSetNoPrimary',
+rahoot-1  |     servers: Map(3) {
+rahoot-1  |       'ac-bwghwkd-shard-00-00.my6eqmb.mongodb.net:27017' => [sk],
+rahoot-1  |       'ac-bwghwkd-shard-00-01.my6eqmb.mongodb.net:27017' => [sk],
+rahoot-1  |       'ac-bwghwkd-shard-00-02.my6eqmb.mongodb.net:27017' => [sk]
+rahoot-1  |     },
+rahoot-1  |     stale: false,
+rahoot-1  |     compatible: true,
+rahoot-1  |     heartbeatFrequencyMS: 10000,
+rahoot-1  |     localThresholdMS: 15,
+rahoot-1  |     setName: 'atlas-13bizw-shard-0',
+rahoot-1  |     maxElectionId: null,
+rahoot-1  |     maxSetVersion: null,
+rahoot-1  |     commonWireVersion: 0,
+rahoot-1  |     logicalSessionTimeoutMinutes: null
+rahoot-1  |   },
+rahoot-1  |   code: undefined,
+rahoot-1  |   cause: t {
+rahoot-1  |     type: 'ReplicaSetNoPrimary',
+rahoot-1  |     servers: Map(3) {
+rahoot-1  |       'ac-bwghwkd-shard-00-00.my6eqmb.mongodb.net:27017' => [sk],
+rahoot-1  |       'ac-bwghwkd-shard-00-01.my6eqmb.mongodb.net:27017' => [sk],
+rahoot-1  |       'ac-bwghwkd-shard-00-02.my6eqmb.mongodb.net:27017' => [sk]
+rahoot-1  |     },
+rahoot-1  |     stale: false,
+rahoot-1  |     compatible: true,
+rahoot-1  |     heartbeatFrequencyMS: 10000,
+rahoot-1  |     localThresholdMS: 15,
+rahoot-1  |     setName: 'atlas-13bizw-shard-0',
+rahoot-1  |     maxElectionId: null,
+rahoot-1  |     maxSetVersion: null,
+rahoot-1  |     commonWireVersion: 0,
+rahoot-1  |     logicalSessionTimeoutMinutes: null
+rahoot-1  |   }
+rahoot-1  | }
