@@ -40,7 +40,7 @@ const SelectMode = ({ onSelect }: Props) => {
       id: "bug_hunting" as const,
       icon: "🐛",
       title: "Bug Hunting",
-      description: "Find and fix the bugs in the given code to match the expected output",
+      description: "Test your security knowledge — find and fix vulnerabilities",
     },
   ]
 

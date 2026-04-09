@@ -12,7 +12,7 @@ import { app } from "./api";
 import { createServer } from "http"
 import { spawn } from "child_process"
 
-const WS_PORT = 3001
+const WS_PORT = process.env.PORT || 3001
 
 const EXECUTION_TIMEOUT_MS = 30000
 
