@@ -77,16 +77,6 @@ class Game {
       submitted: boolean
     }[]
   }[]
-  allBlindCodeSubmissions: {
-    question: string
-    language: string
-    submissions: {
-      username: string
-      code: string
-      language: string
-      submitted: boolean
-    }[]
-  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null, bugHuntingQuizz?: BugHuntingQuizz | null) {
     if (!io) {

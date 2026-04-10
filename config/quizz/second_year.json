@@ -114,34 +114,6 @@
       "time": 30
     },
     {
-      "question": "Find next: 2, 5, 11, 23, ?",
-      "answers": ["45", "46", "47", "48"],
-      "solution": 2,
-      "cooldown": 5,
-      "time": 30
-    },
-    {
-      "question": "If today is Monday, after 100 days?",
-      "answers": ["Tuesday", "Wednesday", "Thursday", "Friday"],
-      "solution": 1,
-      "cooldown": 5,
-      "time": 30
-    },
-    {
-      "question": "Find next: Z, X, U, Q, ?",
-      "answers": ["L", "M", "N", "O"],
-      "solution": 0,
-      "cooldown": 5,
-      "time": 30
-    },
-    {
-      "question": "Which keyword is used to define the macros in c++?",
-      "answers": ["#macro", "#define", "macro", "define"],
-      "solution": 1,
-      "cooldown": 5,
-      "time": 30
-    },
-    {
       "question": "Default port of HTTPS?",
       "answers": ["80", "21", "443", "25"],
       "solution": 2,

@@ -185,35 +185,55 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
 
     let playerOutput = ""
 
+    const PISTON_ENDPOINTS = [
+      "/api/execute",
+      "https://emkc.org/api/v2/piston/execute",
+    ]
+
     const requestBody = JSON.stringify({
       language: selectedLang,
       version: LANGUAGES[selectedLang].version,
       files: [
         {
-          name: selectedLang === "java" ? "Main.java" : undefined,
           content: code,
         },
       ],
     })
 
     try {
-      const controller = new AbortController()
-      // Increased to 30s for Java
-      const timeout = setTimeout(() => controller.abort(), 30000) 
+      let response: Response | null = null
+      let lastError = ""
 
-      const response = await fetch("/api/execute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: requestBody,
-        signal: controller.signal,
-      })
+      for (const endpoint of PISTON_ENDPOINTS) {
+        try {
+          const controller = new AbortController()
+          const timeout = setTimeout(() => controller.abort(), 30000) // Increased to 30s for Java
 
-      clearTimeout(timeout)
+          response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: requestBody,
+            signal: controller.signal,
+          })
 
-      if (!response.ok) {
-        throw new Error(`Execution engine error: ${response.status}`)
+          clearTimeout(timeout)
+
+          if (response.ok) {
+            break
+          }
+
+          lastError = `API returned status ${response.status}`
+          response = null
+        } catch {
+          lastError = "Network error or timeout"
+          response = null
+        }
+      }
+
+      if (!response) {
+        throw new Error(`Failed to execute code: ${lastError}`)
       }
 
       const result = await response.json()
@@ -227,9 +247,14 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
       if (result.run && result.run.signal) {
         setRunError(`Runtime Error (${result.run.signal}):\n${result.run.stderr || ""}`)
         setIsSubmitting(false)
+        return
+      }
 
-        
-return
+      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
+      if (result.run && result.run.code !== 0 && !result.run.stdout) {
+        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
+        setIsSubmitting(false)
+        return
       }
 
       // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
