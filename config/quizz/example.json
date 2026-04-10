@@ -254,12 +254,48 @@
       "id": "q_quizz_example_28"
     },
     {
+  "question": "Output: int arr[5]; printf(\"%lu\", sizeof(arr)); (Assume int = 4 bytes)",
+  "answers": ["5", "20", "4", "8"],
+  "solution": 1,
+  "cooldown": 5,
+  "time": 60,
+  "id": "q_quizz_example_29"
+  },
+    {
       "question": "Output: int a=5; int b=(a++,a+2);",
       "answers": ["5 7", "6 8", "6 7", "7 8"],
       "solution": 1,
       "cooldown": 5,
       "time": 60,
       "id": "q_quizz_example_29"
+    },
+    {
+      "question": "If today is Monday, after 100 days?",
+      "answers": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Find next: Z, X, U, Q, ?",
+      "answers": ["L", "M", "N", "O"],
+      "solution": 0,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Which keyword is used to define the macros in c++?",
+      "answers": ["#macro", "#define", "macro", "define"],
+      "solution": 1,
+      "cooldown": 5,
+      "time": 30
+    },
+    {
+      "question": "Find next: 2, 5, 11, 23, ?",
+      "answers": ["45", "46", "47", "48"],
+      "solution": 2,
+      "cooldown": 5,
+      "time": 30
     }
   ]
 }
