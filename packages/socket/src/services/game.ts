@@ -738,6 +738,7 @@ class Game {
 
     // Manager status should just be generic for the ROUND
     this.sendStatus(this.manager.id, STATUS.REVERSE_WRITE_CODE, {
+      title: "Multi-Question Random Assignment",
       output: "Multi-Question Random Assignment...",
       language: "multi",
       hint: "",
@@ -771,9 +772,12 @@ class Game {
     const remainingTime = this.cooldown.count || 3600
 
     this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
+      title: question.title,
       output: question.output,
       language: question.language,
       hint: question.hint,
+      example: question.example,
+      explanation: question.explanation,
       time: remainingTime,
       totalPlayer: this.players.length,
     })
