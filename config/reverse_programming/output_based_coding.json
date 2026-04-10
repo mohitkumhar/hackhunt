@@ -1,0 +1,59 @@
+{
+  "subject": "Output Based coding",
+  "questions": [
+    {
+      "output": "Hello World from 1st Year!",
+      "language": "c",
+      "expectedCode": "#include <stdio.h>\n\nint main() {\n    printf(\"Hello World from 1st Year!\\n\");\n    return 0;\n}",
+      "hint": "Use printf in C",
+      "cooldown": 5,
+      "time": 90,
+      "id": "q_output_based_coding_0"
+    },
+    {
+      "output": "Sum: 15",
+      "language": "c",
+      "expectedCode": "#include <stdio.h>\n\nint main() {\n    int a = 5, b = 10;\n    printf(\"Sum: %d\\n\", a + b);\n    return 0;\n}",
+      "hint": "Declare variables and format print the sum",
+      "cooldown": 5,
+      "time": 90,
+      "id": "q_output_based_coding_1"
+    },
+    {
+      "output": "2\n4\n6\n8\n10",
+      "language": "c",
+      "expectedCode": "#include <stdio.h>\n\nint main() {\n    for (int i = 2; i <= 10; i += 2) {\n        printf(\"%d\\n\", i);\n    }\n    return 0;\n}",
+      "hint": "Use a for loop that increments by 2",
+      "cooldown": 5,
+      "time": 90,
+      "id": "q_output_based_coding_2"
+    },
+    {
+      "output": "[1, 4, 9, 16, 25]",
+      "language": "python",
+      "expectedCode": "print([x**2 for x in range(1, 6)])",
+      "hint": "Use Python list comprehension",
+      "cooldown": 5,
+      "time": 120,
+      "id": "q_output_based_coding_3"
+    },
+    {
+      "output": "Object Created\nHello from OOP!",
+      "language": "cpp",
+      "expectedCode": "#include <iostream>\n\nclass Sample {\npublic:\n    Sample() { std::cout << \"Object Created\\n\"; }\n    void greet() { std::cout << \"Hello from OOP!\\n\"; }\n};\n\nint main() {\n    Sample obj;\n    obj.greet();\n    return 0;\n}",
+      "hint": "Create a C++ class with a constructor and member function",
+      "cooldown": 5,
+      "time": 240,
+      "id": "q_output_based_coding_4"
+    },
+    {
+      "output": "Reversed: avaJ",
+      "language": "java",
+      "expectedCode": "public class Main {\n    public static void main(String[] args) {\n        String s = \"Java\";\n        String rev = new StringBuilder(s).reverse().toString();\n        System.out.println(\"Reversed: \" + rev);\n    }\n}",
+      "hint": "Use StringBuilder in Java to reverse the string",
+      "cooldown": 5,
+      "time": 180,
+      "id": "q_output_based_coding_5"
+    }
+  ]
+}

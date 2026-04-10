@@ -27,7 +27,7 @@ const SelectMode = ({ onSelect }: Props) => {
     {
       id: "reverse_programming" as const,
       icon: "💻",
-      title: "Reverse Programming",
+      title: "Output Based Coding",
       description: "See the output, write the code — powered by Pyodide",
     },
     {

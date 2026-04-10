@@ -89,6 +89,8 @@ const CodeAnswer = ({
   const [submittedQuestions, setSubmittedQuestions] = useState<Set<number>>(
     () => new Set<number>(),
   )
+  const [showFinalSubmit, setShowFinalSubmit] = useState(false)
+  const [pendingSubmitData, setPendingSubmitData] = useState<{code: string; output: string} | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const [sfxPop] = useSound(SFX_ANSWERS_SOUND, { volume: 0.1 })
@@ -219,9 +221,7 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
       if (result.compile && result.compile.code !== 0) {
         setRunError(`Compilation Error:\n${result.compile.output}`)
         setIsSubmitting(false)
-
-        
-return
+        return
       }
 
       if (result.run && result.run.signal) {
@@ -245,9 +245,14 @@ return
       if (result.run && result.run.code !== 0 && !result.run.stdout) {
         setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
         setIsSubmitting(false)
+        return
+      }
 
-        
-return
+      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
+      if (result.run && result.run.code !== 0 && !result.run.stdout) {
+        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
+        setIsSubmitting(false)
+        return
       }
 
       playerOutput = result.run.stdout || ""
@@ -259,30 +264,51 @@ return
     } catch (err: unknown) {
       setRunError(err instanceof Error ? err.message : "Execution failed")
       setIsSubmitting(false)
-
-      
-return
+      return
     }
 
-    setSubmitted(true)
     sfxPop()
 
+    if (questionStates && questionStates.current === questionStates.total) {
+      setPendingSubmitData({ code, output: playerOutput })
+      setShowFinalSubmit(true)
+    } else {
+      setSubmitted(true)
+      socket?.emit("player:submitCode", {
+        gameId,
+        data: {
+          code,
+          output: playerOutput,
+        },
+      })
+
+      setSubmittedQuestions((prev) => {
+        const next = new Set(prev)
+        next.add(currentQuestionIndex)
+        return next
+      })
+    }
+
+    setIsSubmitting(false)
+  }
+
+  const handleFinalSubmit = () => {
+    if (!pendingSubmitData) return
+
+    setSubmitted(true)
     socket?.emit("player:submitCode", {
       gameId,
-      data: {
-        code,
-        output: playerOutput,
-      },
+      data: pendingSubmitData,
     })
 
     setSubmittedQuestions((prev) => {
       const next = new Set(prev)
       next.add(currentQuestionIndex)
-
       return next
     })
 
-    setIsSubmitting(false)
+    setShowFinalSubmit(false)
+    setPendingSubmitData(null)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -479,7 +505,7 @@ return
                     : isSubmitting
                       ? "Running..."
                       : code.trim()
-                        ? "Run & Submit"
+                        ? "Submit"
                         : "Type something first..."}
                 </button>
                 {!isManager ? (
@@ -499,6 +525,29 @@ return
         </div>
       </div>
 
+      {/* Confirmation Modal */}
+      {showFinalSubmit && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="flex w-11/12 max-w-md flex-col items-center rounded-2xl bg-orange-600 p-8 text-center shadow-2xl">
+            <h2 className="mb-4 text-3xl font-bold text-white drop-shadow-md">Finish Round?</h2>
+            <p className="mb-8 text-lg text-white/90">Are you sure you want to finalize your answer and finish this round?</p>
+            <div className="flex w-full gap-4">
+              <button
+                onClick={() => setShowFinalSubmit(false)}
+                className="flex-1 rounded-xl bg-black/20 px-6 py-4 font-bold text-white transition-colors hover:bg-black/40 shadow-lg"
+              >
+                No, Go Back
+              </button>
+              <button
+                onClick={handleFinalSubmit}
+                className="flex-1 rounded-xl bg-white px-6 py-4 font-bold text-orange-600 transition-colors hover:bg-gray-100 shadow-lg"
+              >
+                Yes, Submit!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
