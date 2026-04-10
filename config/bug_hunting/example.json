@@ -2,6 +2,7 @@
   "subject": "1st Year - Bug Hunting",
   "questions": [
     {
+<<<<<<< HEAD
       "title": "Recursive Factorial",
       "description": "Fix the recursive factorial function so it terminates properly.",
       "buggyCode": "int fact(int n) {\n    return n * fact(n - 1);\n}",
@@ -25,10 +26,18 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[5] = {1,2,3,4,5}, sum;\n    for(int i = 0; i <= 5; i++) {\n        if(i = 3)\n            break;\n        sum = sum + arr[i];\n    }\n    printf(\"%d\", sum)\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "6",
+=======
+      "title": "Recursion Factorial",
+      "description": "This function is supposed to calculate the factorial of n, but it's missing a base case. Fix the code.",
+      "buggyCode": "int fact(int n) {\n    return n * fact(n - 1);\n}",
+      "language": "c",
+      "expectedOutput": "",
+>>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
       "cooldown": 5,
       "time": 120
     },
     {
+<<<<<<< HEAD
       "title": "Sum Function",
       "description": "Fix the recursive function so it calculates the sum of numbers from 1 to n properly.",
       "buggyCode": "int sum(int n) {\n    if(n == 0)\n        return 0;\n    else\n        return sum(n) + n;\n}",
@@ -61,10 +70,72 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[4] = {9, 7, 2, 8};\n    int max = 0, i;\n\n    for(i = 1; i <= 4; i++) {\n        if(arr[i] > max)\n            max = arr[i];\n    }\n\n    printf(\"%d\", max);\n\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "9",
+=======
+      "title": "Array Index Error",
+      "description": "This program tries to print array elements but has an indexing error in the loop. Fix it.",
+      "buggyCode": "#include <stdio.h>\nint main() {\n    int arr[5] = {1,2,3,4,5};\n    for(int i=1; i<=5; i++) {\n        printf(\"%d \", arr[i]);\n    }\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Find the Errors",
+      "description": "There are multiple errors here: assignment in 'if', out-of-bounds access, uninitialized variable, and missing semicolon. Fix them all.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[5] = {1,2,3,4,5}, sum;\n    for(int i = 0; i <= 5; i++) {\n        if(i = 3)\n            break;\n        sum = sum + arr[i];\n    }\n    printf(\"%d\", sum)\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 180
+    },
+    {
+      "title": "Recursive Sum",
+      "description": "This recursive function to calculate sum up to n will result in infinite recursion. Fix the call syntax.",
+      "buggyCode": "int sum(int n) {\n    if(n == 0)\n        return 0;\n    else\n        return sum(n) + n;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Multiplication Table",
+      "description": "The logic inside the printf is wrong. It should print the multiplication table of n. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 5, i;\n\n    for(i = 1; i <= 10; i++) {\n        printf(\"%d x %d = %d\\n\", i, n, n+n); // BUG\n    }\n\n    printf(\"Done\\n\");\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Reverse Number",
+      "description": "The logic for reversing the number is incomplete. Fix the calculation of 'rev'.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 123, rev = 0, rem;\n\n    while(n > 0) {\n        rem = n % 10;\n        rev = rev + rem;  \n        n = n / 10;\n    }\n\n    printf(\"%d\", rev);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Find Maximum in Array",
+      "description": "The initialization of max and the loop bounds are problematic. Fix them.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[4] = {9, 7, 2, 8};\n    int max = 0, i;\n\n    for(i = 1; i <= 4; i++) {\n        if(arr[i] > max)\n            max = arr[i];\n    }\n\n    printf(\"%d\", max);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Function Without Return",
+      "description": "The 'add' function is not returning the correct value. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint add(int a, int b) {\n    a + b; \n    return 0;\n}\n\nint main() {\n    int result = add(2, 3);\n    printf(\"%d\", result);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+>>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
       "cooldown": 5,
       "time": 90
     },
     {
+<<<<<<< HEAD
       "title": "Function Without Return",
       "description": "Make the function return the sum instead of returning 0.",
       "buggyCode": "#include <stdio.h>\n\nint add(int a, int b) {\n    a + b; \n    return 0;\n}\n\nint main() {\n    int result = add(2, 3);\n    printf(\"%d\", result);\n\n    return 0;\n}",
@@ -88,11 +159,28 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i = 1;\n\n    while(i <= 5) {\n        printf(\"%d \", l);\n    }\n\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "1 2 3 4 5 ",
+=======
+      "title": "String Length",
+      "description": "The loop condition for finding string length is using a wrong numeric value. Fix it to check for the null terminator.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    char str[] = \"Hello\";\n    int i = 0;\n\n    while(str[i] != 0) {\n        i++;\n    }\n\n    printf(\"%d\", i);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Loop Fix",
+      "description": "The loop has a typo in the variable name and is missing an increment. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i = 1;\n\n    while(i <= 5) {\n        printf(\"%d \", l);\n    }\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+>>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
       "cooldown": 5,
       "time": 90
     },
     {
       "title": "Swap Values",
+<<<<<<< HEAD
       "description": "Fix the swap function so it uses pointers to modify the actual variables.",
       "buggyCode": "#include <stdio.h>\n\nvoid swap(int *a, int *b) {\n    int t = a;\n    a = b;\n    b = t;\n}\n\nint main() {\n    int x = 2, y = 3;\n\n    swap(&x, &y);\n\n    printf(\"%d %d\", x, y);\n\n    return 0;\n}",
       "language": "c",
@@ -178,10 +266,62 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a=1,b=1,c,i;\n\n    for(i=1;i<=5;i++) {\n        c=a+b;\n        printf(\"%d \",c);\n        a=b;\n        b=c;\n    }\n\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "0 1 1 2 3 5 ",
+=======
+      "description": "The swap function is not correctly dereferencing pointers. Fix the pointer usage.",
+      "buggyCode": "#include <stdio.h>\n\nvoid swap(int *a, int *b) {\n    int t = a;\n    a = b;\n    b = t;\n}\n\nint main() {\n    int x = 2, y = 3;\n\n    swap(&x, &y);\n\n    printf(\"%d %d\", x, y);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
       "cooldown": 5,
       "time": 120
     },
     {
+      "title": "Even Count in Array",
+      "description": "Multiple errors: loop out-of-bounds, assignment instead of comparison, and wrong logic for counting even numbers. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[5] = {1,2,3,4,6};\n    int i, count = 0;\n\n    for(i = 0; i <= 5; i++) {\n        if(arr[i] % 2 = 0) \n            count++;\n\telse\n\t    count--;\n    }\n\n    printf(\"%d\", count);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Sum of Digits",
+      "description": "The calculation of 'sum' is incorrect. Fix it to add the remainder to the sum.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 123, sum = 0, r;\n\n    while(n > 0) {\n        r = n % 10;\n        sum = n + r; \n        n = n / 10;\n    }\n\n    printf(\"%d\", sum);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Check Palindrome Number",
+      "description": "The logic for building the reverse number is wrong, and the original value is lost. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 121, rev = 0, r, temp;\n\n    while(n > 0) {\n        r = n % 10;\n        rev = rev + n; // BUG\n        n = n / 10;\n    }\n\n    if(temp == rev)\n        printf(\"Palindrome\");\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Count Vowels",
+      "description": "The 'if' condition logic for checking multiple characters is fundamentally wrong. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    char s[] = \"hello\";\n    int i = 0, count = 0;\n\n    while(s[i] != '\\0') {\n        if(s[i] == 'a' || 'e' || 'i' || 'o' || 'u'){\n            count++;\n\t}\n        i++;\n    }\n\n    printf(\"%d\", count);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Smallest in Array",
+      "description": "Initializing 'min' to 0 is wrong if the array contains positive numbers. Fix the logic.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[4] = {5,2,8,1}, i;\n    int min = 0; \n\n    for(i=0;i<4;i++) {\n        if(a[i] < min)\n            min = a[i];\n    }\n\n    printf(\"%d\", min);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+>>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+<<<<<<< HEAD
       "title": "Linear Search",
       "description": "Fix the assignment inside the if condition and stop searching when found.",
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[5]={2,4,6,8,10}, i, key=6;\n\n    for(i=0;i<5;i++) {\n        if(a[i]=key) { // BUG\n            printf(\"Found\");\n        }\n    }\n\n    return 0;\n}",
@@ -241,10 +381,99 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i = 5;\n\n    while(i > 1) {\n        printf(\"%d \", i);\n\ti++;\n    }\n\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "5 4 3 2 ",
+=======
+      "title": "Check Even Function",
+      "description": "The function 'check' is declared to return an 'int' but doesn't return anything. Fix its return type.",
+      "buggyCode": "#include <stdio.h>\n\nint check(int n) {\n    if(n%2==0)\n        printf(\"Even\");\n    else\n        printf(\"Odd\");\n}\n\nint main() {\n    int n=4;\n\n    check(n);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
       "cooldown": 5,
       "time": 90
     },
     {
+      "title": "Power Function",
+      "description": "The logic for calculating power is using addition instead of multiplication. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint power(int a, int b) {\n    int i, res=1;\n\n    for(i=1;i<=b;i++)\n        res = a + res; // BUG\n\n    return res;\n}\n\nint main() {\n    printf(\"%d\", power(2,3));\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "String Reverse",
+      "description": "The loop is simply copying the string instead of reversing it. Fix the loop to print in reverse.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    char s[]=\"abc\";\n    int i;\n\n    for(i=0;i<3;i++)\n        printf(\"%c\",s[i]); // BUG\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Fibonacci Logic",
+      "description": "The starting values of the Fibonacci sequence are wrong. Fix them to start from 0 and 1.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a=1,b=1,c,i;\n\n    for(i=1;i<=5;i++) {\n        c=a+b;\n        printf(\"%d \",c);\n        a=b;\n        b=c;\n    }\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Linear Search",
+      "description": "The search is using assignment instead of comparison and lacks a break. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[5]={2,4,6,8,10}, i, key=6;\n\n    for(i=0;i<5;i++) {\n        if(a[i]=key) { // BUG\n            printf(\"Found\");\n        }\n    }\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Copy Array",
+      "description": "The loop bounds are off and the logic is copying from target to source. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[3]={1,2,3}, b[3], i;\n\n    for(i=0;i<=3;i++) {\n        a[i]=b[i];\n    }\n\n    for(i=0;i<=3;i++)\n        printf(\"%d \",b[i]);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Sum Function Return",
+      "description": "The 'sum' function prints instead of returning, causing an issue in the main function. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint sum(int a,int b) {\n    printf(\"%d\",a+b); \n}\n\nint main() {\n    int x=2,y=3;\n\n    int s = sum(x,y);\n\n    printf(\"%d\",s);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Pointer Increment",
+      "description": "The pointer increment is moving the pointer instead of incrementing the value. Fix it with parentheses.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int x=5;\n    int *p=&x;\n\n    p++; // BUG\n\n    printf(\"%d\",*p);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Count Words",
+      "description": "The loop is missing an increment for 'i', causing an infinite loop. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    char str[]=\"hello world\";\n    int i=0,count=0;\n\n    while(str[i]!='\\0') {\n        if(str[i]==' ')\n            count++;\n    }\n\n    printf(\"%d\",count+1);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Factorial Loop",
+      "description": "Factorial initialization to 0 will always result in 0. Fix it to start from 1.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 5, fact = 0, i;\n\n    for(i = 1; i <= n; i++) {\n        fact = fact * i;\n    }\n\n    printf(\"%d\", fact);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+>>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+<<<<<<< HEAD
       "title": "Reverse loop",
       "description": "Fix the loop iterator decrement instead of increment.",
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i;\n\n    for(i = 5; i >= 0; i++) {\n        printf(\"%d \", i);\n    }\n\n    return 0;\n}",
@@ -270,6 +499,42 @@
       "expectedOutput": "4",
       "cooldown": 5,
       "time": 60
+=======
+      "title": "Infinite Loop Fix",
+      "description": "The loop is incrementing instead of decrementing, leading to an infinite loop. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i = 5;\n\n    while(i > 1) {\n        printf(\"%d \", i);\n\ti++;\n    }\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Reverse Loop",
+      "description": "The loop condition and increment are wrong for a reverse loop. Fix them.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i;\n\n    for(i = 5; i >= 0; i++) {\n        printf(\"%d \", i);\n    }\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Switch Case Break",
+      "description": "The switch case is missing 'break' statements, leading to fall-through. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 2;\n\n    switch(n) {\n        case 1: printf(\"One\");\n        case 2: printf(\"Two\");\n        case 3: printf(\"Three\");\n    }\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Count Digits",
+      "description": "The loop is missing a statement to reduce 'n', causing an infinite loop. Fix it.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int n = 1234, count = 0;\n\n    while(n > 0) {\n        count++;\n    }\n\n    printf(\"%d\", count);\n\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+>>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
     }
   ]
 }
