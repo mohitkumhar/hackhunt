@@ -183,9 +183,10 @@ app.post("/api/submit-answer", async (req: Request, res: Response): Promise<any>
       participant.questionDetails[qIndex].timeTaken = timeTaken;
       participant.questionDetails[qIndex].isCorrect = isCorrect;
       participant.questionDetails[qIndex].score = isCorrect ? score : 0;
+      participant.questionDetails[qIndex].answer = answer;
     } else {
       participant.totalQuestionsSubmitted = (participant.totalQuestionsSubmitted || 0) + 1;
-      participant.questionDetails.push({ questionId, timeTaken, isCorrect, score: isCorrect ? score : 0 });
+      participant.questionDetails.push({ questionId, question: questionDoc.question, answer, timeTaken, isCorrect, score: isCorrect ? score : 0 });
     }
     participant.totalTimeTaken = (participant.totalTimeTaken || 0) + timeTaken;
     participant.totalScore = (participant.totalScore || 0) + (isCorrect ? score : 0);
