@@ -10,10 +10,8 @@
       ],
       "hint": "Use nested loops",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_7"
     },
-
     {
       "title": "Given an array arr, rotate the array by one position in clockwise direction.",
       "example": [
@@ -22,10 +20,8 @@
       ],
       "hint": "Store last element",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_8"
     },
-
     {
       "title": "Given an array arr[]. Your task is to find the minimum and maximum elements in the array.",
       "example": [
@@ -34,10 +30,8 @@
       ],
       "hint": "Use comparisons",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_9"
     },
-
     {
       "title": "You are given an array arr (0-based index) and two positive integers index and val. You need to insert val at the given index.",
       "example": [
@@ -46,10 +40,8 @@
       ],
       "hint": "Use shifting",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_10"
     },
-
     {
       "title": "Given an array arr of integers and an index key (0-based index). Your task is to return the element present at the index key in the array.",
       "example": [
@@ -58,10 +50,8 @@
       ],
       "hint": "Indexing",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_11"
     },
-
     {
       "title": "Given two arrays a[] and b[], your task is to determine whether b[] is a subset of a[].",
       "example": [
@@ -70,10 +60,8 @@
       ],
       "hint": "Use set",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_12"
     },
-
     {
       "title": "Given an integer year. Print \"True\" (without quotes) if it can represent a leap year, otherwise print \"False\" (without quotes).",
       "example": [
@@ -83,10 +71,8 @@
       ],
       "hint": "Apply conditions",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_13"
     },
-
     {
       "title": "Given an array arr[], print all its elements space-separated.",
       "example": [
@@ -95,10 +81,8 @@
       ],
       "hint": "Loop",
       "cooldown": 5,
-      "time": 60,
       "id": "q_output_based_coding_14"
     },
-
     {
       "title": "Given an array arr of distinct elements, return an array of all elements except the two greatest elements in sorted order.",
       "example": [
@@ -107,10 +91,8 @@
       ],
       "hint": "Sorting",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_15"
     },
-
     {
       "title": "Given two arrays arr1 and arr2, calculate the product of the maximum element of arr1 and minimum element of arr2.",
       "example": [
@@ -119,10 +101,8 @@
       ],
       "hint": "Use loops",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_16"
     },
-
     {
       "title": "Count elements less than or equal to and greater than or equal to a given target value.",
       "example": [
@@ -131,10 +111,8 @@
       ],
       "hint": "Loop counting",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_17"
     },
-
     {
       "title": "Split the array into two halves and return the product of their sums.",
       "example": [
@@ -143,10 +121,8 @@
       ],
       "hint": "Divide array",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_18"
     },
-
     {
       "title": "Find the index of a given element in the array, or return -1 if not found.",
       "example": [
@@ -155,10 +131,8 @@
       ],
       "hint": "Linear search",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_19"
     },
-
     {
       "title": "Find indices where the value equals the index (1-based indexing).",
       "example": [
@@ -167,10 +141,8 @@
       ],
       "hint": "Index logic",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_20"
     },
-
     {
       "title": "Find the last index of '1' in a binary string.",
       "example": [
@@ -180,10 +152,8 @@
       ],
       "hint": "Reverse loop",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_21"
     },
-
     {
       "title": "Sort all elements of an NxN matrix in non-decreasing order.",
       "example": [
@@ -192,10 +162,8 @@
       ],
       "hint": "Sorting",
       "cooldown": 7,
-      "time": 180,
       "id": "q_output_based_coding_22"
     },
-
     {
       "title": "Count the number of substrings that start and end with the character '1' in a binary string.",
       "example": [
@@ -204,10 +172,8 @@
       ],
       "hint": "nC2",
       "cooldown": 7,
-      "time": 180,
       "id": "q_output_based_coding_23"
     },
-
     {
       "title": "Count the number of uppercase characters in a given string.",
       "example": [
@@ -216,10 +182,8 @@
       ],
       "hint": "ASCII",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_24"
     },
-
     {
       "title": "Print the decreasing pattern of a given string by removing one character from the end in each line.",
       "example": [
@@ -228,10 +192,8 @@
       ],
       "hint": "Substring",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_25"
     },
-
     {
       "title": "Find the maximum extra amount obtained by replacing all occurrences of digit 6 with digit 9 in a given number.",
       "example": [
@@ -240,10 +202,8 @@
       ],
       "hint": "Digit manipulation",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_26"
     },
-
     {
       "title": "Find the LCM and GCD of two given numbers.",
       "example": [
@@ -252,10 +212,8 @@
       ],
       "hint": "GCD formula",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_27"
     },
-
     {
       "title": "Find the median of a given array of integers.",
       "example": [
@@ -264,10 +222,8 @@
       ],
       "hint": "Sorting",
       "cooldown": 6,
-      "time": 120,
       "id": "q_output_based_coding_28"
     },
-
     {
       "title": "Round a given number to the nearest multiple of 10.",
       "example": [
@@ -277,10 +233,8 @@
       ],
       "hint": "Math",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_29"
     },
-
     {
       "title": "Divide each element of the array into parts of size at most k and count the total number of parts.",
       "example": [
@@ -289,10 +243,8 @@
       ],
       "hint": "Division",
       "cooldown": 7,
-      "time": 180,
       "id": "q_output_based_coding_30"
     },
-
     {
       "title": "Check if the digits of the given numbers can form a number that is divisible by 3.",
       "example": [
@@ -301,10 +253,8 @@
       ],
       "hint": "Divisibility rule",
       "cooldown": 7,
-      "time": 180,
       "id": "q_output_based_coding_31"
     },
-
     {
       "title": "Count the number of cells (i, j) in an NxN matrix where i + j equals a given value q (0-based indexing).",
       "example": [
@@ -313,10 +263,8 @@
       ],
       "hint": "Nested loops",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_32"
     },
-
     {
       "title": "Find the digital root of a given number. The digital root is obtained by repeatedly summing the digits until a single digit remains.",
       "example": [
@@ -325,10 +273,8 @@
       ],
       "hint": "Loop",
       "cooldown": 5,
-      "time": 90,
       "id": "q_output_based_coding_33"
     },
-
     {
       "title": "Find the number of factors (divisors) of N factorial (N!).",
       "example": [
@@ -337,10 +283,8 @@
       ],
       "hint": "Prime factorization",
       "cooldown": 8,
-      "time": 240,
       "id": "q_output_based_coding_34"
     },
-
     {
       "title": "Generate the multiplication table of a given number from 1 to 10.",
       "example": [
@@ -349,10 +293,8 @@
       ],
       "hint": "Loop",
       "cooldown": 5,
-      "time": 60,
       "id": "q_output_based_coding_35"
     },
-
     {
       "title": "Return all numbers from the array whose digits consist only of 1, 2, or 3.",
       "example": [
@@ -361,7 +303,6 @@
       ],
       "hint": "Digit extraction",
       "cooldown": 6,
-      "time": 150,
       "id": "q_output_based_coding_36"
     }
   ]
