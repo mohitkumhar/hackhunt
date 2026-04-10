@@ -21,6 +21,7 @@ RUN pnpm build
 FROM node:22-bookworm-slim AS runner
 
 RUN apt-get update && apt-get install -y nginx supervisor && rm -rf /var/lib/apt/lists/*
+RUN rm /etc/nginx/sites-enabled/default /etc/nginx/conf.d/default.conf || true
 
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
