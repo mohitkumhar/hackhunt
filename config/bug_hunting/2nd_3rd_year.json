@@ -1,0 +1,248 @@
+{
+  "subject": "2nd/3rd Year - Bug hunting",
+  "questions": [
+    {
+      "title": "Array Out-of-Bounds",
+      "description": "This C program has a bug in the loop condition which causes it to access memory outside the array bounds. Fix the loop condition.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[5] = {1,2,3,4,5};\n    for(int i = 0; i <= 5; i++) { // BUG\n        printf(\"%d \", arr[i]);\n    }\n    return 0;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Dangling Reference",
+      "description": "This C++ function returns a reference to a local variable that will be destroyed when the function returns. Fix the function to return by value.",
+      "buggyCode": "#include <iostream>\nusing namespace std;\n\nint& getValue() {\n    int x = 10;\n    return x;  \n}\n\nint main() {\n    int &val = getValue();\n    cout << val << endl;\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Invalid Pointer Assignment",
+      "description": "This C++ program tries to assign an integer value directly to a pointer. Fix it to point to the address of x.",
+      "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x;\n    int *ptr = 10;\n    cout << *ptr;\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Java String Comparison",
+      "description": "In Java, using '==' for string comparison checks reference equality instead of content. Fix it to correctly compare the content of strings.",
+      "buggyCode": "public class Main {\n    public static void main(String[] args) {\n        String a = \"hello\";\n        String b = \"hello\";\n\n        if(a == b) { // BUG\n            System.out.println(\"Equal\");\n        }\n    }\n}",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Python Recursion Base Case",
+      "description": "This Python factorial function is missing its base case, which will lead to a recursion error. Fix it.",
+      "buggyCode": "def fact(n):\n    return n * fact(n-1)\n\nprint(fact(5))",
+      "language": "python",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Missing Return Value",
+      "description": "This C++ function is declared to return an 'int' but doesn't return anything. Fix the function logic.",
+      "buggyCode": "#include <iostream>\nusing namespace std;\n\nint add(int a, int b) {\n    int c = a + b;\n}\n\nint main() {\n    cout << add(2,3);\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Java String Concatenation",
+      "description": "This Java program results in unexpected string concatenation instead of mathematical addition. Fix it to perform addition first.",
+      "buggyCode": "public class Main {\n    public static void main(String[] args) {\n        int a = 5;\n        System.out.println(\"Value: \" + a + 10); // wrong\n    }\n}",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Integer Division Problem",
+      "description": "In C, dividing two integers results in an integer. Fix the code to perform a float division and correctly display 2.5.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a = 5, b = 2;\n    printf(\"%f\", a/b);  //Expected Output: 2.5\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Wrong Pointer Arithmetic",
+      "description": "This C program is trying to access an out-of-bounds element using pointer arithmetic. Fix the offset to point to the last element (30).",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[3] = {10,20,30};\n    int *p = arr;\n    printf(\"%d\", *(p + 3)); \n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Python String Split",
+      "description": "The current split() call in Python splits by whitespace by default. Fix it to split the string by commas.",
+      "buggyCode": "s = \"a,b,c\"\nprint(s.split())",
+      "language": "python",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "C++ Boolean Condition",
+      "description": "The current 'if' condition is always false (0). Fix it to correctly compare x with 0.",
+      "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 0;\n    if(0) {\n        cout << \"Zero\";\n    }\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 90
+    },
+    {
+      "title": "Java Constructor Name",
+      "description": "The method intended to be a constructor has a 'void' return type and doesn't match the class name capitalization. Fix it.",
+      "buggyCode": "class Test {\n    void test() { // must be constructor\n        System.out.println(\"Hi\");\n    }\n}",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Java Access Modifier",
+      "description": "Trying to access a 'private' field directly from another class is an error. Fix the code by providing and using a public getter method.",
+      "buggyCode": "class Test {\n    private int x = 10;\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Test t = new Test();\n        System.out.println(t.x);\n    }\n}",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Java String Immutability",
+      "description": "In Java, strings are immutable and cannot be modified using array indexing. Fix the code to create a new string with the first character capitalized.",
+      "buggyCode": "public class Main {\n    public static void main(String[] args) {\n        String s = \"hello\";\n        s[0] = 'H'; // error\n    }\n}",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "C Pointer Initialization",
+      "description": "Trying to dereference an uninitialized pointer causes a runtime crash. Fix the code by assigning the address of a valid variable to the pointer.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int *p;\n    *p = 10;\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "C String Comparison",
+      "description": "In C, using '==' for string comparison only compares pointer addresses. Fix the code to correctly compare the content of the strings.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    char *a = \"hi\";\n    char *b = \"hi\";\n    if(a == b)\n        printf(\"Equal\");\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Matrix Transpose Logic",
+      "description": "The indexing for the matrix transpose is reversed. Fix the assignment logic in the nested loops.",
+      "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[2][3] = {{1,2,3},{4,5,6}};\n    int t[3][2];\n\n    for(int i=0;i<2;i++){\n        for(int j=0;j<3;j++){\n            t[i][j] = a[j][i]; // wrong\n        }\n    }\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Python Loop Logic",
+      "description": "The logic erroneously uses 'break', which stops the entire inner loop if a non-even number is found. Fix it to correctly count all even numbers.",
+      "buggyCode": "for i in range(n):\n    for j in range(m):\n        if matrix[i][j] % 2 == 0:\n            count += 1\n        else:\n            break",
+      "language": "python",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "C String Reversal (Off-by-One)",
+      "description": "The loop executes too many times, swapping characters back to their original positions. Fix the loop condition.",
+      "buggyCode": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char str[] = \"hello\";\n    int n = strlen(str);\n\n    for(int i=0;i<=n/2;i++){ // extra swap\n        char temp = str[i];\n        str[i] = str[n-i-1];\n        str[n-i-1] = temp;\n    }\n\n    printf(\"%s\", str);\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Java Palindrome Logic",
+      "description": "The logic for Palindrome checking incorrectly overrides the result in each iteration. Fix the condition and add a break.",
+      "buggyCode": "String s = \"madam\";\nboolean isPal = true;\n\nfor(int i=0;i<s.length();i++){\n    if(s.charAt(i) != s.charAt(s.length()-i-1)){\n        isPal = true; // wrong assignment\n    }\n    else{\n        isPal = false;\n    }\n}\nSystem.out.println(isPal);",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 180
+    },
+    {
+      "title": "Linked List Traversal",
+      "description": "The traversal condition incorrectly skips the last node of the linked list. Fix the while loop condition.",
+      "buggyCode": "struct Node {\n    int data;\n    Node* next;\n};\n\nvoid print(Node* head){\n    while(head->next != NULL){ // skips last node\n        cout << head->data << \" \";\n        head = head->next;\n    }\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Find Second Largest",
+      "description": "The 'else if' condition is incorrectly comparing the current element with max1 instead of max2. Fix the logic.",
+      "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int arr[] = {5,2,9,1,7};\n    int max1 = 0, max2 = 0;\n\n    for(int i=0;i<5;i++){\n        if(arr[i] > max1){\n            max2 = max1;\n            max1 = arr[i];\n        }\n        else if(arr[i] > max1) // wrong condition\n            max2 = arr[i];\n    }\n    cout<<max2;\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 180
+    },
+    {
+      "title": "C Digit Count Error",
+      "description": "The value of 'n' is not being updated within the loop, leading to an infinite loop. Fix the statement.",
+      "buggyCode": "#include <stdio.h>\n\nint main(){\n    int n = 12345, count = 0;\n\n    while(n > 0){\n        count++;\n        n / 10; // value not updated\n    }\n\n    printf(\"%d\", count);\n}",
+      "language": "c",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Java Fibonacci Recursion",
+      "description": "The recursive calls in this Fibonacci function are identical, resulting in wrong results. Fix the second recursive call.",
+      "buggyCode": "int fib(int n){\n    if(n <= 1) return n;\n    return fib(n-1) + fib(n-1); // duplicate call\n}",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "Python Sorted Array Check",
+      "description": "The logic incorrectly resets the 'sorted' flag to True even if an unsorted element is found. Fix the logic.",
+      "buggyCode": "arr = [1,2,3,2,5]\nsorted = True\n\nfor i in range(len(arr)-1):\n    if arr[i] > arr[i+1]:\n        sorted = True  # wrong\nprint(sorted)",
+      "language": "python",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    },
+    {
+      "title": "C++ Array Sum Over-bounds",
+      "description": "The loop starts at a wrong index and goes out of bounds. Fix the loop initialization and condition.",
+      "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main(){\n    int arr[] = {1,2,3,4};\n    int sum = 0;\n\n    for(int i=1;i<=4;i++){\n        sum += arr[i];\n    }\n    cout<<sum;\n}",
+      "language": "cpp",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 120
+    },
+    {
+      "title": "Java Reverse Number Logic",
+      "description": "The 'rev' variable is being overwritten in each iteration. Fix the formula to correctly build the reversed number.",
+      "buggyCode": "int n = 123, rev = 0;\n\nwhile(n > 0){\n    int d = n % 10;\n    rev = d * 10; // overwriting\n    n /= 10;\n}\nSystem.out.println(rev);",
+      "language": "java",
+      "expectedOutput": "",
+      "cooldown": 5,
+      "time": 150
+    }
+  ]
+}

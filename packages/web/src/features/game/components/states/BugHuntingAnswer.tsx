@@ -257,18 +257,9 @@ const BugHuntingAnswer = ({
 
             <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
               <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
-                Expected Output
+                🐞 Buggy Code
               </div>
-              <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
-                {expectedOutput}
-              </pre>
-            </div>
-
-            <div className="mt-2 rounded-lg bg-red-500/20 px-4 py-3 border border-red-500/30">
-              <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">
-                🐞 Original Buggy Code
-              </div>
-              <pre className="text-xs text-red-200 font-mono whitespace-pre-wrap overflow-x-auto max-h-40 overflow-y-auto">
+              <pre className="text-xs text-red-200 font-mono whitespace-pre-wrap overflow-x-auto max-h-80 overflow-y-auto">
                 {buggyCode}
               </pre>
             </div>
