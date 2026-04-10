@@ -1,14 +1,14 @@
 /* eslint-disable no-nested-ternary */
 import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
 import {
-    useSocket,
+  useSocket,
 } from "@rahoot/web/features/game/contexts/socketProvider"
 import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
 import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
 import { useQuestionStore } from "@rahoot/web/features/game/stores/question"
 import {
-    SFX_ANSWERS_MUSIC,
-    SFX_ANSWERS_SOUND,
+  SFX_ANSWERS_MUSIC,
+  SFX_ANSWERS_SOUND,
 } from "@rahoot/web/features/game/utils/constants"
 import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { useParams } from "react-router"
@@ -257,15 +257,9 @@ const BugHuntingAnswer = ({
 
             <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
               <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
-<<<<<<< HEAD
                 🐞 Original Buggy Code
               </div>
               <pre className="whitespace-pre-wrap font-mono text-sm text-red-400 overflow-x-auto max-h-60 overflow-y-auto">
-=======
-                🐞 Buggy Code
-              </div>
-              <pre className="text-xs text-red-200 font-mono whitespace-pre-wrap overflow-x-auto max-h-80 overflow-y-auto">
->>>>>>> 7c250b0 (Update Bug Hunting: Added 2nd/3rd year category, updated 57 questions, and simplified UI (#35))
                 {buggyCode}
               </pre>
             </div>
