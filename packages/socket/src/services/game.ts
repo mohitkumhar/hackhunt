@@ -77,16 +77,6 @@ class Game {
       submitted: boolean
     }[]
   }[]
-  allBlindCodeSubmissions: {
-    question: string
-    language: string
-    submissions: {
-      username: string
-      code: string
-      language: string
-      submitted: boolean
-    }[]
-  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null, bugHuntingQuizz?: BugHuntingQuizz | null) {
     if (!io) {
@@ -820,7 +810,6 @@ class Game {
       return
     }
 
-<<<<<<< HEAD
     const pIndex = this.playerCurrentQuestion[player.id] !== undefined 
       ? this.playerCurrentQuestion[player.id] 
       : this.round.currentQuestion
@@ -832,9 +821,6 @@ class Game {
     }
       
     const question = this.reverseQuizz.questions[pIndex]
-=======
-    const question = this.reverseQuizz.questions[this.round.currentQuestion]
->>>>>>> cf2a8db (feat: complete reverse programming multi-language execution engine and bug fixes)
 
     // Ultra-forgiving normalization: remove ALL spaces, newlines, and make lowercase
     // This way "Sum: 15", "sum:15", "SUM  :  15\n" all match correctly!
