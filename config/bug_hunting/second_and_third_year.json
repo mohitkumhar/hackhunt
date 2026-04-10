@@ -7,8 +7,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[5] = {1,2,3,4,5};\n    for(int i = 0; i <= 5; i++) { // BUG\n        printf(\"%d \", arr[i]);\n    }\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "1 2 3 4 5 ",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Dangling Reference",
@@ -16,8 +15,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint& getValue() {\n    int x = 10;\n    return x;  \n}\n\nint main() {\n    int &val = getValue();\n    cout << val << endl;\n}",
       "language": "cpp",
       "expectedOutput": "10",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Pointer Initialization",
@@ -25,8 +23,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x;\n    int *ptr = 10;\n    cout << *ptr;\n}",
       "language": "cpp",
       "expectedOutput": "10",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Wrong String Comparison",
@@ -34,8 +31,7 @@
       "buggyCode": "public class Main {\n    public static void main(String[] args) {\n        String a = \"hello\";\n        String b = \"hello\";\n\n        if(a == b) { // BUG\n            System.out.println(\"Equal\");\n        }\n    }\n}",
       "language": "java",
       "expectedOutput": "Equal",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Incorrect Recursion Base Case",
@@ -43,8 +39,7 @@
       "buggyCode": "def fact(n):\n    return n * fact(n-1)\n\nprint(fact(5))",
       "language": "python",
       "expectedOutput": "120",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Missing Return",
@@ -52,8 +47,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint add(int a, int b) {\n    int c = a + b;\n}\n\nint main() {\n    cout << add(2,3);\n}",
       "language": "cpp",
       "expectedOutput": "5",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "String Concatenation Issue",
@@ -61,8 +55,7 @@
       "buggyCode": "public class Main {\n    public static void main(String[] args) {\n        int a = 5;\n        System.out.println(\"Value: \" + a + 10); // wrong\n    }\n}",
       "language": "java",
       "expectedOutput": "Value: 15",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Integer Division",
@@ -70,8 +63,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a = 5, b = 2;\n    printf(\"%f\", a/b);  //Expected Output: 2.500000\n}",
       "language": "c",
       "expectedOutput": "2.500000",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Wrong Pointer Arithmetic",
@@ -79,8 +71,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int arr[3] = {10,20,30};\n    int *p = arr;\n    printf(\"%d\", *(p + 3)); \n}",
       "language": "c",
       "expectedOutput": "30",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Wrong String Split",
@@ -88,8 +79,7 @@
       "buggyCode": "s = \"a,b,c\"\nprint(s.split())  ",
       "language": "python",
       "expectedOutput": "['a', 'b', 'c']",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Incorrect Boolean Condition",
@@ -97,8 +87,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int x = 0;\n    if(0) {\n        cout << \"Zero\";\n    }\n}",
       "language": "cpp",
       "expectedOutput": "Zero",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Wrong Constructor Name",
@@ -106,8 +95,7 @@
       "buggyCode": "class Test {\n    void test() { // must be constructor\n        System.out.println(\"Hi\");\n    }\n}",
       "language": "java",
       "expectedOutput": "Hi",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Wrong Access Modifier",
@@ -115,8 +103,7 @@
       "buggyCode": "class Test {\n    private int x = 10;\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Test t = new Test();\n        System.out.println(t.x);\n    }\n}",
       "language": "java",
       "expectedOutput": "10",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Mutable String Issue",
@@ -124,8 +111,7 @@
       "buggyCode": "public class Main {\n    public static void main(String[] args) {\n        String s = \"hello\";\n        s[0] = 'H'; // error\n    }\n}",
       "language": "java",
       "expectedOutput": "Hello",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Wrong Pointer Initialization 2",
@@ -133,8 +119,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int *p;\n    *p = 10;\n}",
       "language": "c",
       "expectedOutput": "Fixed assignment",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Using == for Strings",
@@ -142,8 +127,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    char *a = \"hi\";\n    char *b = \"hi\";\n    if(a == b)\n        printf(\"Equal\");\n}",
       "language": "c",
       "expectedOutput": "Equal",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Matrix Transpose (Index Bug)",
@@ -151,8 +135,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[2][3] = {{1,2,3},{4,5,6}};\n    int t[3][2];\n\n    for(int i=0;i<2;i++){\n        for(int j=0;j<3;j++){\n            t[i][j] = a[j][i]; // wrong\n        }\n    }\n}",
       "language": "c",
       "expectedOutput": "Transposed matrix",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Count Even Numbers (Logic Skip)",
@@ -160,8 +143,7 @@
       "buggyCode": "matrix = [[1,2,3],[4,5,6]]\nn, m = 2, 3\ncount = 0\nfor i in range(n):\n    for j in range(m):\n        if matrix[i][j] % 2 == 0:\n            count += 1\n        else:\n            break  ",
       "language": "python",
       "expectedOutput": "3",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Reverse String (Off-by-One)",
@@ -169,8 +151,7 @@
       "buggyCode": "#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char str[] = \"hello\";\n    int n = strlen(str);\n\n    for(int i=0;i<=n/2;i++){ \n        char temp = str[i];\n        str[i] = str[n-i-1];\n        str[n-i-1] = temp;\n    }\n\n    printf(\"%s\", str);\n}",
       "language": "c",
       "expectedOutput": "olleh",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Palindrome Check (Wrong Condition)",
@@ -178,8 +159,7 @@
       "buggyCode": "public class Main {\npublic static void main(String[] args){\nString s = \"madam\";\nboolean isPal = true;\n\nfor(int i=0;i<s.length();i++){\n    if(s.charAt(i) != s.charAt(s.length()-i-1)){\n        isPal = true; \n    }\n    else{\n        isPal = false;\n    }\n}\nSystem.out.println(isPal);\n}\n}",
       "language": "java",
       "expectedOutput": "true",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Linked List Traversal (Skipping Node)",
@@ -187,8 +167,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\nstruct Node {\n    int data;\n    Node* next;\n};\n\nvoid print(Node* head){\n    while(head->next != NULL){\n        cout << head->data << \" \";\n        head = head->next;\n    }\n}",
       "language": "cpp",
       "expectedOutput": "Prints all elements",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Find Second Largest (Wrong Update)",
@@ -196,8 +175,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int arr[] = {5,2,9,1,7};\n    int max1 = 0, max2 = 0;\n\n    for(int i=0;i<5;i++){\n        if(arr[i] > max1){\n            max2 = max1;\n            max1 = arr[i];\n        }\n        else if(arr[i] > max1)\n            max2 = arr[i];\n    }\n    cout<<max2;\n}",
       "language": "cpp",
       "expectedOutput": "7",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Count Digits (Infinite Loop)",
@@ -205,8 +183,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main(){\n    int n = 12345, count = 0;\n\n    while(n > 0){\n        count++;\n        n / 10;\n    }\n\n    printf(\"%d\", count);\n}",
       "language": "c",
       "expectedOutput": "5",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Fibonacci (Wrong Recursion)",
@@ -214,8 +191,7 @@
       "buggyCode": "class Main {\nstatic int fib(int n){\n    if(n <= 1) return n;\n    return fib(n-1) + fib(n-1);\n}\npublic static void main(String[] args){\nSystem.out.println(fib(5));\n}\n}",
       "language": "java",
       "expectedOutput": "5",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Check Sorted Array",
@@ -223,8 +199,7 @@
       "buggyCode": "arr = [1,2,3,2,5]\nsorted = True\n\nfor i in range(len(arr)-1):\n    if arr[i] > arr[i+1]:\n        sorted = True\nprint(sorted)",
       "language": "python",
       "expectedOutput": "False",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Sum of Array (Index Bug)",
@@ -232,8 +207,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main(){\n    int arr[] = {1,2,3,4};\n    int sum = 0;\n\n    for(int i=1;i<=4;i++){\n        sum += arr[i];\n    }\n    cout<<sum;\n}",
       "language": "cpp",
       "expectedOutput": "10",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Reverse Number",
@@ -241,8 +215,7 @@
       "buggyCode": "public class Main {\npublic static void main(String[] args){\nint n = 123, rev = 0;\n\nwhile(n > 0){\n    int d = n % 10;\n    rev = d * 10;\n    n /= 10;\n}\nSystem.out.println(rev);\n}\n}",
       "language": "java",
       "expectedOutput": "321",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Missing Increment",
@@ -250,8 +223,7 @@
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i = 0;\n    while(i < 5) {\n        printf(\"%d \", i);\n        // missing increment \n    }\n    return 0;\n}",
       "language": "c",
       "expectedOutput": "0 1 2 3 4 ",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "Unsafe List Removal",
@@ -259,8 +231,7 @@
       "buggyCode": "nums = [1,2,3,4,5]\n\nfor i in nums:\n    if i % 2 == 0:\n        nums.remove(i)\nprint(nums)",
       "language": "python",
       "expectedOutput": "[1, 3, 5]",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     },
     {
       "title": "NULL Pointer Dereference",
@@ -268,8 +239,7 @@
       "buggyCode": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int *ptr = NULL;\n    cout << *ptr;\n}",
       "language": "cpp",
       "expectedOutput": "Proper pointer output or handled NULL check",
-      "cooldown": 5,
-      "time": 90
+      "cooldown": 5
     }
   ]
 }
