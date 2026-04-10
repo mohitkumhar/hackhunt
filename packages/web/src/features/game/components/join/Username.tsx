@@ -3,8 +3,8 @@ import Button from "@rahoot/web/features/game/components/Button"
 import Form from "@rahoot/web/features/game/components/Form"
 import Input from "@rahoot/web/features/game/components/Input"
 import {
-  useEvent,
-  useSocket,
+    useEvent,
+    useSocket,
 } from "@rahoot/web/features/game/contexts/socketProvider"
 import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
 
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router"
 
 const Username = () => {
   const { socket } = useSocket()
-  const { gameId, login, setStatus } = usePlayerStore()
+  const { gameId, login, setStatus, reset } = usePlayerStore()
   const navigate = useNavigate()
   const [username, setUsername] = useState("")
   const [year, setYear] = useState<number>(1)
@@ -38,6 +38,11 @@ const Username = () => {
 
     navigate(`/party/${gameId}`)
   })
+
+  const handleReEnterPin = (e: React.MouseEvent) => {
+    e.preventDefault()
+    reset()
+  }
 
   return (
     <Form>
@@ -68,6 +73,12 @@ const Username = () => {
         <option value={4}>4th Year</option>
       </select>
       <Button onClick={handleLogin}>Join Game</Button>
+      <button
+        onClick={handleReEnterPin}
+        className="w-full mt-2 p-3 text-gray-600 font-semibold hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+      >
+        Enter New Pin
+      </button>
     </Form>
   )
 }

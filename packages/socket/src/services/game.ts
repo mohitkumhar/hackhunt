@@ -77,16 +77,6 @@ class Game {
       submitted: boolean
     }[]
   }[]
-  allBlindCodeSubmissions: {
-    question: string
-    language: string
-    submissions: {
-      username: string
-      code: string
-      language: string
-      submitted: boolean
-    }[]
-  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null, bugHuntingQuizz?: BugHuntingQuizz | null) {
     if (!io) {
@@ -791,6 +781,7 @@ class Game {
 
     // Manager status should just be generic for the ROUND
     this.sendStatus(this.manager.id, STATUS.REVERSE_WRITE_CODE, {
+      title: "Multi-Question Random Assignment",
       output: "Multi-Question Random Assignment...",
       language: "multi",
       hint: "",
@@ -824,9 +815,12 @@ class Game {
     const remainingTime = this.cooldown.count || 3600
 
     this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
+      title: question.title,
       output: question.output,
       language: question.language,
       hint: question.hint,
+      example: question.example,
+      explanation: question.explanation,
       time: remainingTime,
       totalPlayer: this.players.length,
     })

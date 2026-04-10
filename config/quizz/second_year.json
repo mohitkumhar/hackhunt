@@ -210,58 +210,6 @@
       "id": "f0b07541-8ce9-4547-aba0-810c5e114f8f"
     },
     {
-      "question": "Find next: 2, 5, 11, 23, ?",
-      "answers": [
-        "45",
-        "46",
-        "47",
-        "48"
-      ],
-      "solution": 2,
-      "cooldown": 5,
-      "time": 30,
-      "id": "df52a562-0f83-4a66-8288-5423795b17b8"
-    },
-    {
-      "question": "If today is Monday, after 100 days?",
-      "answers": [
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ],
-      "solution": 1,
-      "cooldown": 5,
-      "time": 30,
-      "id": "4885116a-a4dc-4ef7-9bf1-19202d52b081"
-    },
-    {
-      "question": "Find next: Z, X, U, Q, ?",
-      "answers": [
-        "L",
-        "M",
-        "N",
-        "O"
-      ],
-      "solution": 0,
-      "cooldown": 5,
-      "time": 30,
-      "id": "098fb796-a820-4ff8-8909-fff413c98712"
-    },
-    {
-      "question": "Which keyword is used to define the macros in c++?",
-      "answers": [
-        "#macro",
-        "#define",
-        "macro",
-        "define"
-      ],
-      "solution": 1,
-      "cooldown": 5,
-      "time": 30,
-      "id": "37a7734f-123c-4c39-bff3-92c1f8098ab0"
-    },
-    {
       "question": "Default port of HTTPS?",
       "answers": [
         "80",

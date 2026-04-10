@@ -1,14 +1,14 @@
 /* eslint-disable no-nested-ternary */
 import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
 import {
-    useSocket,
+  useSocket,
 } from "@rahoot/web/features/game/contexts/socketProvider"
 import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
 import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
 import { useQuestionStore } from "@rahoot/web/features/game/stores/question"
 import {
-    SFX_ANSWERS_MUSIC,
-    SFX_ANSWERS_SOUND,
+  SFX_ANSWERS_MUSIC,
+  SFX_ANSWERS_SOUND,
 } from "@rahoot/web/features/game/utils/constants"
 import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { useParams } from "react-router"

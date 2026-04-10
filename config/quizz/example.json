@@ -392,6 +392,14 @@
       "id": "q_quizz_example_28"
     },
     {
+  "question": "Output: int arr[5]; printf(\"%lu\", sizeof(arr)); (Assume int = 4 bytes)",
+  "answers": ["5", "20", "4", "8"],
+  "solution": 1,
+  "cooldown": 5,
+  "time": 60,
+  "id": "q_quizz_example_29"
+  },
+    {
       "question": "Output: int a=5; int b=(a++,a+2);",
       "answers": [
         "5 7",
