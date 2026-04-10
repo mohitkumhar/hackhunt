@@ -449,13 +449,15 @@ class Game {
         durationMinutes: 40,
       }))
       // Upsert to handle disconnects/reconnects gracefully if necessary
-      for (const dp of dbParticipants) {
-        await Participant.findOneAndUpdate(
-          { participantId: dp.participantId },
-          { $set: dp },
-          { upsert: true }
-        );
-      }
+      await Promise.all(
+        dbParticipants.map((dp) =>
+          Participant.findOneAndUpdate(
+            { participantId: dp.participantId },
+            { $set: dp },
+            { upsert: true }
+          )
+        )
+      );
     } catch (dbErr) {
       console.error("Failed to save participants to DB:", dbErr);
     }
@@ -893,26 +895,25 @@ class Game {
     ).catch(err => console.error("Failed to save submission to DB:", err));
 
     // Update aggregate participant metrics
-    Participant.findOne({ participantId: player.id }).then(pDoc => {
-      if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        // Update existing question data if code is re-submitted
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.totalScore -= (pDoc.questionDetails[qIndex].score || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].isCorrect = isCorrect;
-        pDoc.questionDetails[qIndex].score = points;
-        pDoc.questionDetails[qIndex].language = question.language;
-      } else {
-        // New question answered
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, timeTaken, isCorrect, score: points, language: question.language });
+    Participant.findOneAndUpdate(
+      { participantId: player.id },
+      {
+        $inc: {
+          totalQuestionsSubmitted: 1,
+          totalTimeTaken: timeTaken,
+          totalScore: points
+        },
+        $push: {
+          questionDetails: {
+            questionId: question.id,
+            timeTaken,
+            isCorrect,
+            score: points,
+            language: question.language
+          }
+        }
       }
-      pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
-      pDoc.totalScore = (pDoc.totalScore || 0) + points;
-      pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
-    }).catch(err => console.error("Failed to retrieve participant:", err));
+    ).catch(err => console.error("Failed to update participant metrics:", err));
 
     // Immediately process points for the submitting player
     if (isCorrect) {
@@ -1398,20 +1399,24 @@ return
     ).catch(err => console.error("Failed to save submission to DB:", err));
 
     // Update aggregate participant metrics
-    Participant.findOne({ participantId: player.id }).then(pDoc => {
-      if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].language = language;
-      } else {
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, timeTaken, isCorrect: true, score: 0, language });
+    Participant.findOneAndUpdate(
+      { participantId: player.id },
+      {
+        $inc: {
+          totalQuestionsSubmitted: 1,
+          totalTimeTaken: timeTaken
+        },
+        $push: {
+          questionDetails: { 
+            questionId: question.id, 
+            timeTaken, 
+            isCorrect: true, 
+            score: 0, 
+            language 
+          }
+        }
       }
-      pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
-      pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
-    }).catch(err => console.error("Failed to retrieve participant:", err));
+    ).catch(err => console.error("Failed to update participant metrics:", err));
 
     // Move to the next question index after this submission.
     this.playerCurrentQuestion[player.id]++
@@ -1652,23 +1657,24 @@ return
     ).catch(err => console.error("Failed to save sumbission to DB:", err));
 
     // Update aggregate participant metrics
-    Participant.findOne({ participantId: player.id }).then(pDoc => {
-      if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.totalScore -= (pDoc.questionDetails[qIndex].score || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].isCorrect = isCorrect;
-        pDoc.questionDetails[qIndex].score = isCorrect ? points : 0;
-      } else {
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, timeTaken, isCorrect, score: isCorrect ? points : 0 });
+    Participant.findOneAndUpdate(
+      { participantId: player.id },
+      {
+        $inc: {
+          totalQuestionsSubmitted: 1,
+          totalTimeTaken: timeTaken,
+          totalScore: isCorrect ? points : 0
+        },
+        $push: {
+          questionDetails: {
+            questionId: question.id,
+            timeTaken,
+            isCorrect,
+            score: isCorrect ? points : 0
+          }
+        }
       }
-      pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
-      pDoc.totalScore = (pDoc.totalScore || 0) + (isCorrect ? points : 0);
-      pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
-    }).catch(err => console.error("Failed to retrieve participant:", err));
+    ).catch(err => console.error("Failed to update participant metrics:", err));
 
     this.sendStatus(socket.id, STATUS.WAIT, {
       text: "Waiting for the players to answer",
