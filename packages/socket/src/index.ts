@@ -12,7 +12,7 @@ import { join } from "path"
 import { Server as ServerIO } from "socket.io"
 import { app } from "./api"
 
-const WS_PORT = process.env.PORT || 3001
+const WS_PORT = 3001
 
 const EXECUTION_TIMEOUT_MS = 30000
 
