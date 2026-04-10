@@ -2,466 +2,255 @@
   "subject": "1st year: Round 1",
   "questions": [
     {
-      "question": "In a website address, what does “.com” mainly indicate?",
-      "answers": [
-        "A type of computer",
-        "A domain extension",
-        "A password field",
-        "A file format"
-      ],
+      "question": "In a website address, what does '.com' mainly indicate?",
+      "answers": ["A type of computer", "A domain extension", "A password field", "A file format"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_0"
     },
     {
       "question": "What is the difference between a browser and a search engine?",
-      "answers": [
-        "They are the same thing",
-        "Browser opens websites; search engine helps find websites",
-        "Search engine opens websites; browser helps find websites",
-        "Browser works only offline"
-      ],
+      "answers": ["They are the same thing", "Browser opens websites; search engine helps find websites", "Search engine opens websites; browser helps find websites", "Browser works only offline"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_1"
     },
     {
       "question": "An email asks you to verify your account using a suspicious link. What is this called?",
-      "answers": [
-        "Backup",
-        "Phishing",
-        "Verification",
-        "Uploading"
-      ],
+      "answers": ["Backup", "Phishing", "Verification", "Uploading"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_2"
     },
     {
       "question": "If A = 1, B = 2, C = 3, what is the result of C + A * B?",
-      "answers": [
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
+      "answers": ["4", "5", "6", "7"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_3"
     },
     {
       "question": "A man walks 3 km north and 4 km east. How far is he from the start?",
-      "answers": [
-        "5 km",
-        "6 km",
-        "7 km",
-        "1 km"
-      ],
+      "answers": ["5 km", "6 km", "7 km", "1 km"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_4"
     },
     {
       "question": "If 5 machines make 5 parts in 5 minutes, how long will 1 machine take to make 1 part?",
-      "answers": [
-        "1 minute",
-        "5 minutes",
-        "10 minutes",
-        "25 minutes"
-      ],
+      "answers": ["1 minute", "5 minutes", "10 minutes", "25 minutes"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_5"
     },
     {
       "question": "What will be the output? int x = 5; x++; x = x + 2; System.out.println(x--);",
-      "answers": [
-        "5",
-        "6",
-        "7",
-        "8"
-      ],
+      "answers": ["5", "6", "7", "8"],
       "solution": 3,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_6"
     },
     {
       "question": "What will be the output? int x = 5; printf(\"%d %d\", x, x++);",
-      "answers": [
-        "5 5",
-        "5 6",
-        "6 6",
-        "Undefined behavior"
-      ],
+      "answers": ["5 5", "5 6", "6 6", "Undefined behavior"],
       "solution": 3,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_7"
     },
     {
       "question": "Output of: int i = 1; while(i++ <= 3) printf(\"%d \", i);",
-      "answers": [
-        "1 2 3",
-        "2 3 4",
-        "2 3",
-        "1 2 3 4"
-      ],
+      "answers": ["1 2 3", "2 3 4", "2 3", "1 2 3 4"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_8"
     },
     {
       "question": "Output: int x = 0; if (x = 5) printf(\"True\"); else printf(\"False\");",
-      "answers": [
-        "True",
-        "False",
-        "Error",
-        "0"
-      ],
+      "answers": ["True", "False", "Error", "0"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_9"
     },
     {
       "question": "Output: int a=5,b=10; int c=a>b?a:b; printf(\"%d\",c);",
-      "answers": [
-        "5",
-        "10",
-        "0",
-        "Error"
-      ],
+      "answers": ["5", "10", "0", "Error"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_10"
     },
     {
       "question": "Output: int a=2; a*=3+2;",
-      "answers": [
-        "10",
-        "8",
-        "6",
-        "12"
-      ],
+      "answers": ["10", "8", "6", "12"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_11"
     },
     {
       "question": "Output: char ch='A'; printf(\"%d\",ch);",
-      "answers": [
-        "A",
-        "65",
-        "97",
-        "Error"
-      ],
+      "answers": ["A", "65", "97", "Error"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_12"
     },
     {
       "question": "Output: for(i=0;i<5;i++){if(i==3)break; printf(\"%d \",i);}",
-      "answers": [
-        "0 1 2 3 4",
-        "0 1 2",
-        "0 1 2 4",
-        "0 1 2 3"
-      ],
+      "answers": ["0 1 2 3 4", "0 1 2", "0 1 2 4", "0 1 2 3"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_13"
     },
     {
       "question": "Output: int i=1; while(i<=3){printf(\"%d \",i); i*=2;}",
-      "answers": [
-        "1 2 3",
-        "1 2",
-        "1 2 4",
-        "2 4"
-      ],
+      "answers": ["1 2 3", "1 2", "1 2 4", "2 4"],
       "solution": 2,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_14"
     },
     {
       "question": "Why is cache memory faster than RAM?",
-      "answers": [
-        "It has larger size",
-        "It is closer to CPU",
-        "It uses internet",
-        "It stores permanent data"
-      ],
+      "answers": ["It has larger size", "It is closer to CPU", "It uses internet", "It stores permanent data"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_15"
     },
     {
       "question": "Output: int x=10; if(x=0) printf(\"Zero\"); else printf(\"Non-Zero\");",
-      "answers": [
-        "Zero",
-        "Non-Zero",
-        "Error",
-        "Garbage value"
-      ],
+      "answers": ["Zero", "Non-Zero", "Error", "Garbage value"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_16"
     },
     {
       "question": "Output: int i=0; while(i++<5){printf(\"%d \",i);}",
-      "answers": [
-        "1 2 3 4 5",
-        "0 1 2 3 4",
-        "1 2 3 4",
-        "Infinite loop"
-      ],
+      "answers": ["1 2 3 4 5", "0 1 2 3 4", "1 2 3 4", "Infinite loop"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_17"
     },
     {
       "question": "Output: int i=5; while(i--){printf(\"%d \",i);}",
-      "answers": [
-        "5 4 3 2 1",
-        "4 3 2 1 0",
-        "5 4 3 2 1 0",
-        "4 3 2 1"
-      ],
+      "answers": ["5 4 3 2 1", "4 3 2 1 0", "5 4 3 2 1 0", "4 3 2 1"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_18"
     },
     {
       "question": "Which assignment is valid?",
-      "answers": [
-        "8=x=y=z",
-        "x=8=y=z",
-        "x=y=z=8",
-        "None"
-      ],
+      "answers": ["8=x=y=z", "x=8=y=z", "x=y=z=8", "None"],
       "solution": 2,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_19"
     },
     {
       "question": "Operator precedence (highest to lowest)?",
-      "answers": [
-        "%, *, /, +, -",
-        "%, +, /, *, -",
-        "+, -, %, *, /",
-        "%, +, -, *, /"
-      ],
+      "answers": ["%, *, /, +, -", "%, +, /, *, -", "+, -, %, *, /", "%, +, -, *, /"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_20"
     },
     {
       "question": "Output: char s[]=\"Coding\"; printf(\"%s\", s+2);",
-      "answers": [
-        "Coding",
-        "ding",
-        "ing",
-        "oding"
-      ],
+      "answers": ["Coding", "ding", "ing", "oding"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_21"
     },
     {
       "question": "Output: int a=2,b=3; printf(\"%d\",a+++b);",
-      "answers": [
-        "5",
-        "6",
-        "4",
-        "Error"
-      ],
+      "answers": ["5", "6", "4", "Error"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_22"
     },
     {
       "question": "Output: char s[]=\"NPTEL\"; char *p=s; printf(\"%c\",*(p+3));",
-      "answers": [
-        "T",
-        "P",
-        "E",
-        "L"
-      ],
+      "answers": ["T", "P", "E", "L"],
       "solution": 2,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_23"
     },
     {
       "question": "Output with multiple increments in printf?",
-      "answers": [
-        "2 6 4",
-        "2 7 4",
-        "Undefined behavior",
-        "2 5 3"
-      ],
+      "answers": ["2 6 4", "2 7 4", "Undefined behavior", "2 5 3"],
       "solution": 2,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_24"
     },
     {
       "question": "Output: for(;i++<5;printf(\"%d \",i));",
-      "answers": [
-        "1 2 3 4 5",
-        "0 1 2 3 4",
-        "1 2 3 4",
-        "Error"
-      ],
+      "answers": ["1 2 3 4 5", "0 1 2 3 4", "1 2 3 4", "Error"],
       "solution": 0,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_25"
     },
     {
       "question": "Output: if(printf(\"Hello\") && x) printf(\"World\");",
-      "answers": [
-        "Hello",
-        "World",
-        "HelloWorld",
-        "Error"
-      ],
+      "answers": ["Hello", "World", "HelloWorld", "Error"],
       "solution": 2,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_26"
     },
     {
       "question": "Output: int arr[]={1,2,3,4}; int *p=arr; printf(\"%d\",*(p++ + 2));",
-      "answers": [
-        "2",
-        "3",
-        "4",
-        "1"
-      ],
+      "answers": ["2", "3", "4", "1"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_27"
     },
     {
       "question": "Which data type is used to store a single character in C?",
-      "answers": [
-        "int",
-        "float",
-        "char",
-        "string"
-      ],
+      "answers": ["int", "float", "char", "string"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "8fa938ff-9e32-4029-9191-f0be7bdb50a9"
     },
     {
       "question": "Output: char *s=\"ABCDE\"; printf(\"%c\",*(s+3)-1);",
-      "answers": [
-        "D",
-        "C",
-        "E",
-        "B"
-      ],
+      "answers": ["D", "C", "E", "B"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
       "id": "q_quizz_example_28"
     },
     {
-  "question": "Output: int arr[5]; printf(\"%lu\", sizeof(arr)); (Assume int = 4 bytes)",
-  "answers": ["5", "20", "4", "8"],
-  "solution": 1,
-  "cooldown": 5,
-  "time": 60,
-  "id": "q_quizz_example_29"
-  },
-    {
-      "question": "Output: int a=5; int b=(a++,a+2);",
-      "answers": [
-        "5 7",
-        "6 8",
-        "6 7",
-        "7 8"
-      ],
+      "question": "Output: int arr[5]; printf(\"%lu\", sizeof(arr)); (Assume int = 4 bytes)",
+      "answers": ["5", "20", "4", "8"],
       "solution": 1,
       "cooldown": 5,
-      "time": 60,
+      "id": "q_quizz_example_29"
+    },
+    {
+      "question": "Output: int a=5; int b=(a++,a+2);",
+      "answers": ["5 7", "6 8", "6 7", "7 8"],
+      "solution": 1,
+      "cooldown": 5,
       "id": "q_quizz_example_29"
     },
     {
       "question": "Find next: 2, 3, 6, 11, 18, ?",
-      "answers": [
-        "27",
-        "28",
-        "29",
-        "30"
-      ],
+      "answers": ["27", "28", "29", "30"],
       "solution": 0,
       "cooldown": 5,
-      "time": 30,
       "id": "671da2ac-1db0-45c1-96f7-686e8544803f"
     },
     {
       "question": "find Probability when 2 dice are tossed, and sum = 7",
-      "answers": [
-        "1/6",
-        "1/12",
-        "1/36",
-        "6/36"
-      ],
+      "answers": ["1/6", "1/12", "1/36", "6/36"],
       "solution": 0,
       "cooldown": 5,
-      "time": 30,
       "id": "7beab3bd-bdc6-4d4c-8916-86cc1fdf4be0"
     },
     {
       "question": "If x:y = 2:3 and y:z = 4:5 → x:z?",
-      "answers": [
-        "2:5",
-        "8:15",
-        "4:5",
-        "3:5"
-      ],
+      "answers": ["2:5", "8:15", "4:5", "3:5"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "384e5106-be35-46d9-bc5a-22003c6cdca6"
     },
     {
       "question": "Probability: picking red from 3 red, 2 blue?",
-      "answers": [
-        "1/5",
-        "3/5",
-        "2/5",
-        "1/3"
-      ],
+      "answers": ["1/5", "3/5", "2/5", "1/3"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "ba23b840-d903-46f6-be31-1f5457d2e4c6"
     }
   ]

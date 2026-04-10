@@ -8,7 +8,6 @@
       "language": "c",
       "expectedOutput": "1 2 3 4 5 ",
       "cooldown": 5,
-      "time": 90,
       "id": "3ba2d323-37ef-4bec-9d91-28af5d1a5cd7"
     },
     {
@@ -18,7 +17,6 @@
       "language": "cpp",
       "expectedOutput": "10",
       "cooldown": 5,
-      "time": 90,
       "id": "793fe836-3575-427c-b0e4-9841ffb4ee90"
     },
     {
@@ -28,7 +26,6 @@
       "language": "cpp",
       "expectedOutput": "10",
       "cooldown": 5,
-      "time": 90,
       "id": "0c65a958-d477-4fd0-a942-32b634ae419b"
     },
     {
@@ -38,7 +35,6 @@
       "language": "java",
       "expectedOutput": "Equal",
       "cooldown": 5,
-      "time": 90,
       "id": "e5fbe517-e1bf-4f30-92bc-61e6744fcef4"
     },
     {
@@ -48,7 +44,6 @@
       "language": "python",
       "expectedOutput": "120",
       "cooldown": 5,
-      "time": 90,
       "id": "1d66a3f8-b822-4c0c-bc38-f51aeeb7c828"
     },
     {
@@ -58,7 +53,6 @@
       "language": "cpp",
       "expectedOutput": "5",
       "cooldown": 5,
-      "time": 90,
       "id": "bc36027d-8984-447c-9157-8137a7b6ecb7"
     },
     {
@@ -68,7 +62,6 @@
       "language": "java",
       "expectedOutput": "Value: 15",
       "cooldown": 5,
-      "time": 90,
       "id": "a9e4695c-4280-4927-98f0-d0a848337ed1"
     },
     {
@@ -78,7 +71,6 @@
       "language": "c",
       "expectedOutput": "2.500000",
       "cooldown": 5,
-      "time": 90,
       "id": "670c169a-8d14-42de-b2f6-7bdffccc1525"
     },
     {
@@ -88,7 +80,6 @@
       "language": "c",
       "expectedOutput": "30",
       "cooldown": 5,
-      "time": 90,
       "id": "6073bd20-65c7-4043-a037-96e8eed0cbe8"
     },
     {
@@ -98,7 +89,6 @@
       "language": "python",
       "expectedOutput": "['a', 'b', 'c']",
       "cooldown": 5,
-      "time": 90,
       "id": "998eb39d-ecf6-444a-93dc-a77bce9ddb9c"
     },
     {
@@ -108,7 +98,6 @@
       "language": "cpp",
       "expectedOutput": "Zero",
       "cooldown": 5,
-      "time": 90,
       "id": "76e7f8fd-fab1-4a2a-b674-438016e22353"
     },
     {
@@ -118,7 +107,6 @@
       "language": "java",
       "expectedOutput": "Hi",
       "cooldown": 5,
-      "time": 90,
       "id": "52216e65-30f0-4581-9e8e-c1b204e60a4d"
     },
     {
@@ -128,7 +116,6 @@
       "language": "java",
       "expectedOutput": "10",
       "cooldown": 5,
-      "time": 90,
       "id": "8dacb1f8-7e34-484c-8b4b-781e12c6143f"
     },
     {
@@ -138,7 +125,6 @@
       "language": "java",
       "expectedOutput": "Hello",
       "cooldown": 5,
-      "time": 90,
       "id": "ebe5780a-2282-43da-8dc6-b03e43ff796e"
     },
     {
@@ -148,7 +134,6 @@
       "language": "c",
       "expectedOutput": "Fixed assignment",
       "cooldown": 5,
-      "time": 90,
       "id": "c2faf10e-a8a4-401a-9d7d-3c6f47f2f603"
     },
     {
@@ -158,7 +143,6 @@
       "language": "c",
       "expectedOutput": "Equal",
       "cooldown": 5,
-      "time": 90,
       "id": "34462c1d-439d-4b08-aaf8-54b1a1d4fffe"
     },
     {
@@ -168,7 +152,6 @@
       "language": "c",
       "expectedOutput": "Transposed matrix",
       "cooldown": 5,
-      "time": 90,
       "id": "24c68d4c-ad33-4915-b212-4b3cdd35ef22"
     },
     {
@@ -178,7 +161,6 @@
       "language": "python",
       "expectedOutput": "3",
       "cooldown": 5,
-      "time": 90,
       "id": "2d5b7e1b-cc76-411b-a0cf-c0b71fbe435a"
     },
     {
@@ -188,7 +170,6 @@
       "language": "c",
       "expectedOutput": "olleh",
       "cooldown": 5,
-      "time": 90,
       "id": "54d1212e-e2e6-4d2a-98e2-31d5d7c6f0bb"
     },
     {
@@ -198,7 +179,6 @@
       "language": "java",
       "expectedOutput": "true",
       "cooldown": 5,
-      "time": 90,
       "id": "8f1aff4b-bd67-4aab-91ec-3e37a3cb3dd3"
     },
     {
@@ -208,7 +188,6 @@
       "language": "cpp",
       "expectedOutput": "Prints all elements",
       "cooldown": 5,
-      "time": 90,
       "id": "792eccac-ca25-48b5-8f52-bac34aa690f1"
     },
     {
@@ -218,7 +197,6 @@
       "language": "cpp",
       "expectedOutput": "7",
       "cooldown": 5,
-      "time": 90,
       "id": "eee9fea7-f878-497f-b61b-8182c3993247"
     },
     {
@@ -228,7 +206,6 @@
       "language": "c",
       "expectedOutput": "5",
       "cooldown": 5,
-      "time": 90,
       "id": "81e061e6-ca0e-4b81-9467-afaad306f993"
     },
     {
@@ -238,7 +215,6 @@
       "language": "java",
       "expectedOutput": "5",
       "cooldown": 5,
-      "time": 90,
       "id": "19e11bce-3b71-4324-af3e-9047d5da634e"
     },
     {
@@ -248,7 +224,6 @@
       "language": "python",
       "expectedOutput": "False",
       "cooldown": 5,
-      "time": 90,
       "id": "33e2521e-643e-4d05-af18-02d8b6a6b5ce"
     },
     {
@@ -258,7 +233,6 @@
       "language": "cpp",
       "expectedOutput": "10",
       "cooldown": 5,
-      "time": 90,
       "id": "8bff5b30-b84a-4bba-ab4c-0e4881eef407"
     },
     {
@@ -268,7 +242,6 @@
       "language": "java",
       "expectedOutput": "321",
       "cooldown": 5,
-      "time": 90,
       "id": "751cc8bf-6d4d-4d6d-8ebe-7b8eaf3c38d6"
     },
     {
@@ -278,7 +251,6 @@
       "language": "c",
       "expectedOutput": "0 1 2 3 4 ",
       "cooldown": 5,
-      "time": 90,
       "id": "8a529ab2-7d39-41d4-8128-d87cb60fd073"
     },
     {
@@ -288,7 +260,6 @@
       "language": "python",
       "expectedOutput": "[1, 3, 5]",
       "cooldown": 5,
-      "time": 90,
       "id": "6b8c9435-4609-4b2e-b0b7-c871bc0f0aac"
     },
     {
@@ -298,7 +269,6 @@
       "language": "cpp",
       "expectedOutput": "Proper pointer output or handled NULL check",
       "cooldown": 5,
-      "time": 90,
       "id": "c2f006d7-862b-49bf-b5cd-bd3ef7b13188"
     }
   ]

@@ -3,405 +3,219 @@
   "questions": [
     {
       "question": "OSI lowest layer?",
-      "answers": [
-        "Physical",
-        "Data link",
-        "Network",
-        "Transport"
-      ],
+      "answers": ["Physical", "Data link", "Network", "Transport"],
       "solution": 0,
       "cooldown": 5,
-      "time": 30,
       "id": "71cdd8ad-8c8b-44e0-b981-872be84aeec6"
     },
     {
       "question": "SMTP is used for?",
-      "answers": [
-        "Receiving mail",
-        "Sending mail",
-        "Sending and Receiving mail",
-        "File transfer"
-      ],
+      "answers": ["Receiving mail", "Sending mail", "Sending and Receiving mail", "File transfer"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "a2c5993e-4661-4d3d-b236-ef8474f47792"
     },
     {
       "question": "Recursion always requires?",
-      "answers": [
-        "Stack",
-        "Loop",
-        "Array",
-        "Pointer"
-      ],
+      "answers": ["Stack", "Loop", "Array", "Pointer"],
       "solution": 0,
       "cooldown": 5,
-      "time": 30,
       "id": "7aebbbbc-96b6-4df8-990d-96b441e24485"
     },
     {
       "question": "Find next: 2, 6, 12, 20, ?",
-      "answers": [
-        "28",
-        "30",
-        "32",
-        "36"
-      ],
+      "answers": ["28", "30", "32", "36"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "8f9a2e63-8982-4b72-b47e-174aaf0132f6"
     },
     {
       "question": "OSI top layer?",
-      "answers": [
-        "Session",
-        "Application",
-        "Transport",
-        "Network"
-      ],
+      "answers": ["Session", "Application", "Transport", "Network"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "d02480e7-97a1-4bff-aa45-686216cbfbd5"
     },
     {
       "question": "Which of the following is used for comments in C++?",
-      "answers": [
-        "/* comment */",
-        "// comment */",
-        "// comment",
-        "both // comment or /* comment */"
-      ],
+      "answers": ["/* comment */", "// comment */", "// comment", "both // comment or /* comment */"],
       "solution": 3,
       "cooldown": 5,
-      "time": 30,
       "id": "a1298f82-bdee-4656-813f-ea32fbd86b41"
     },
     {
       "question": "IP address version widely used?",
-      "answers": [
-        "IPv3",
-        "IPv4",
-        "IPv5",
-        "IPv6"
-      ],
+      "answers": ["IPv3", "IPv4", "IPv5", "IPv6"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "3086235c-ed7b-49cc-bc20-49bf0de60357"
     },
     {
       "question": "HTTP uses port?",
-      "answers": [
-        "21",
-        "25",
-        "80",
-        "110"
-      ],
+      "answers": ["21", "25", "80", "110"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "8bf8f5a4-1af8-4d44-8025-8aa64bf836fd"
     },
     {
       "question": "Which is NOT stable sorting?",
-      "answers": [
-        "Merge Sort",
-        "Bubble Sort",
-        "Quick Sort",
-        "Insertion Sort"
-      ],
+      "answers": ["Merge Sort", "Bubble Sort", "Quick Sort", "Insertion Sort"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "39e666f0-3271-4d4c-b1f7-c950d6ef8257"
     },
     {
       "question": "Which layer ensures error detection?",
-      "answers": [
-        "Physical",
-        "Data Link",
-        "Session",
-        "Application"
-      ],
+      "answers": ["Physical", "Data Link", "Session", "Application"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "2f877cef-1b63-42ce-998b-ac7b0aaad18b"
     },
     {
       "question": "Which protocol uses 3-way handshake?",
-      "answers": [
-        "UDP",
-        "TCP",
-        "ICMP",
-        "HTTP"
-      ],
+      "answers": ["UDP", "TCP", "ICMP", "HTTP"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "8d5f8693-d3c9-4010-8f0e-2188373a16c7"
     },
     {
       "question": "Which memory is non-volatile?",
-      "answers": [
-        "RAM",
-        "Cache",
-        "ROM",
-        "Register"
-      ],
+      "answers": ["RAM", "Cache", "ROM", "Register"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "43bd02f0-a37b-4dac-8b0e-eddb36923274"
     },
     {
       "question": "Which is more effective while calling the C++ functions?",
-      "answers": [
-        "call by object",
-        "call by pointer",
-        "call by value",
-        "call by reference"
-      ],
+      "answers": ["call by object", "call by pointer", "call by value", "call by reference"],
       "solution": 3,
       "cooldown": 5,
-      "time": 30,
       "id": "1bb08d41-9b2c-4fb8-94fb-52fc02470295"
     },
     {
       "question": "Which DS is used in BFS?",
-      "answers": [
-        "Stack",
-        "Queue",
-        "Heap",
-        "Tree"
-      ],
+      "answers": ["Stack", "Queue", "Heap", "Tree"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "26d724d6-b229-4c21-bc6b-aa5bde3bad4a"
     },
     {
       "question": "Which of the following is used to terminate the function declaration in C++?",
-      "answers": [
-        ";",
-        "}",
-        ")",
-        ":"
-      ],
+      "answers": [";", "}", ")", ":"],
       "solution": 0,
       "cooldown": 5,
-      "time": 30,
       "id": "3b8392e7-c4b3-411e-a4be-b5a7e6f60e28"
     },
     {
       "question": "Which traversal gives sorted output in BST?",
-      "answers": [
-        "Preorder",
-        "Postorder",
-        "Inorder",
-        "Level order"
-      ],
+      "answers": ["Preorder", "Postorder", "Inorder", "Level order"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "f0b07541-8ce9-4547-aba0-810c5e114f8f"
     },
     {
       "question": "Default port of HTTPS?",
-      "answers": [
-        "80",
-        "21",
-        "443",
-        "25"
-      ],
+      "answers": ["80", "21", "443", "25"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "6be278a7-2d9e-4ce3-af0b-2656ffc75fa9"
     },
     {
       "question": "DNS Full Form?",
-      "answers": [
-        "Domain name Service",
-        "Domain name Server",
-        "Domain name System",
-        "none of these"
-      ],
+      "answers": ["Domain name Service", "Domain name Server", "Domain name System", "none of these"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "df4502e3-7e0c-4ef1-976c-01345273de5c"
     },
     {
       "question": "Output?\nint i = 0;\nfor(i=0; i<5; i++);\nprintf(\"%d\", i);",
-      "answers": [
-        "4",
-        "5",
-        "0",
-        "Error"
-      ],
+      "answers": ["4", "5", "0", "Error"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "635b8325-384f-4f28-b195-3b9f3189a199"
     },
     {
       "question": "Time complexity?\nfor(i=1;i<n;i*=2)\n for(j=0;j<n;j++)",
-      "answers": [
-        "O(n)",
-        "O(log n)",
-        "O(n log n)",
-        "O(n²)"
-      ],
+      "answers": ["O(n)", "O(log n)", "O(n log n)", "O(n²)"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "5e7596e5-f9d2-40b0-9d4a-b11a51c42b83"
     },
     {
       "question": "try block is used for:",
-      "answers": [
-        "Declaring variables",
-        "Handling exceptions",
-        "try code syntax",
-        "Executing loops"
-      ],
+      "answers": ["Declaring variables", "Handling exceptions", "try code syntax", "Executing loops"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "b773ba75-8505-4422-8749-a593c5e8ef46"
     },
     {
       "question": "Time complexity of binary search?",
-      "answers": [
-        "O(n)",
-        "O(log n)",
-        "O(n log n)",
-        "O(1)"
-      ],
+      "answers": ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "11a57134-9448-481a-8109-3b2520f55630"
     },
     {
       "question": "Context switching happens in?",
-      "answers": [
-        "Compile time",
-        "Run time",
-        "Boot time",
-        "Shutdown"
-      ],
+      "answers": ["Compile time", "Run time", "Boot time", "Shutdown"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "7ce582ba-9373-4e42-8603-dd8e73e79c52"
     },
     {
       "question": "Which sorting is fastest on average?",
-      "answers": [
-        "Bubble Sort",
-        "Merge Sort",
-        "Quick Sort",
-        "Selection Sort"
-      ],
+      "answers": ["Bubble Sort", "Merge Sort", "Quick Sort", "Selection Sort"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "1a77451a-2155-45dc-a18b-20f3ac022e66"
     },
     {
       "question": "Pick the incorrect statement about inline functions in C++?",
-      "answers": [
-        "Saves overhead of a return call from a function",
-        "They are generally very large and complicated function",
-        "These functions are inserted/substituted at the point of call",
-        "They reduce function call overheads"
-      ],
+      "answers": ["Saves overhead of a return call from a function", "They are generally very large and complicated function", "These functions are inserted/substituted at the point of call", "They reduce function call overheads"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "f42ae2d9-cfdf-493d-b75c-c9f82530ab74"
     },
     {
       "question": "Cache memory is?",
-      "answers": [
-        "Slow",
-        "Medium",
-        "Fast",
-        "External"
-      ],
+      "answers": ["Slow", "Medium", "Fast", "External"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "eaf9f5b5-16ca-4b09-ae73-617cf4a1ec35"
     },
     {
       "question": "Which is full-duplex?",
-      "answers": [
-        "Walkie-talkie",
-        "Telephone",
-        "Radio",
-        "TV"
-      ],
+      "answers": ["Walkie-talkie", "Telephone", "Radio", "TV"],
       "solution": 1,
       "cooldown": 5,
-      "time": 30,
       "id": "5004879b-b1e8-4745-a759-c0f6d60ca075"
     },
     {
       "question": "Which concept allows you to reuse the written code in C++?",
-      "answers": [
-        "Inheritance",
-        "Polymorphism",
-        "Abstraction",
-        "Encapsulation"
-      ],
+      "answers": ["Inheritance", "Polymorphism", "Abstraction", "Encapsulation"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "539713db-68e5-48bb-b8b2-8aebd4ab3f2a"
     },
     {
       "question": "IPv6 size?",
-      "answers": [
-        "32-bit",
-        "64-bit",
-        "128-bit",
-        "256-bit"
-      ],
+      "answers": ["32-bit", "64-bit", "128-bit", "256-bit"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "a572061f-c9e6-446b-898c-7527f4dd208b"
     },
     {
       "question": "Which of the following is not a type of inheritance?",
-      "answers": [
-        "Multiple",
-        "Multilevel",
-        "Hierarchical",
-        "Distributive"
-      ],
+      "answers": ["Multiple", "Multilevel", "Hierarchical", "Distributive"],
       "solution": 3,
       "cooldown": 5,
-      "time": 30,
       "id": "caa9c6c9-3838-43dc-9a22-7e639869b416"
     },
     {
       "question": "Missing: 6, 15, 35, 77, ?",
-      "answers": [
-        "143",
-        "155",
-        "163",
-        "175"
-      ],
+      "answers": ["143", "155", "163", "175"],
       "solution": 2,
       "cooldown": 5,
-      "time": 30,
       "id": "42831b45-6c34-4c0e-999e-3317c35c29e6"
     }
   ]
