@@ -8,7 +8,8 @@
       "language": "c",
       "expectedOutput": "Returns factorial of n",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "792ddfed-42d2-4011-8a4d-d6afda19a611"
     },
     {
       "title": "Array Iteration",
@@ -17,7 +18,8 @@
       "language": "c",
       "expectedOutput": "1 2 3 4 5 ",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "c7a73da8-90d6-4a59-a845-f3f01bb01052"
     },
     {
       "title": "Find Errors",
@@ -26,7 +28,8 @@
       "language": "c",
       "expectedOutput": "6",
       "cooldown": 5,
-      "time": 120
+      "time": 120,
+      "id": "12a2051c-d465-4539-9937-7f32e0185932"
     },
     {
       "title": "Sum Function",
@@ -35,7 +38,8 @@
       "language": "c",
       "expectedOutput": "Correct sum",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "9abb705a-83b0-4d3b-bf94-80ec6c9963f3"
     },
     {
       "title": "Multiplication Table",
@@ -44,7 +48,8 @@
       "language": "c",
       "expectedOutput": "Multiplication table of 5",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "3dbe0142-169a-4ee3-8c16-ffcec8e54b61"
     },
     {
       "title": "Reverse Number",
@@ -53,7 +58,8 @@
       "language": "c",
       "expectedOutput": "321",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "ee4d0b83-7b83-4dbc-9e92-744f4fea955b"
     },
     {
       "title": "Find Maximum in Array",
@@ -62,7 +68,8 @@
       "language": "c",
       "expectedOutput": "9",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "59ea0a3d-37e5-44c9-a3e7-7ee1242d1a35"
     },
     {
       "title": "Function Without Return",
@@ -71,7 +78,8 @@
       "language": "c",
       "expectedOutput": "5",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "a1f50403-d9d1-4bfb-b480-4e2a9a7f2619"
     },
     {
       "title": "String Length",
@@ -80,7 +88,8 @@
       "language": "c",
       "expectedOutput": "5",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "d26eb8ea-6af8-4de8-93a0-900afa61affd"
     },
     {
       "title": "Loop Fix",
@@ -89,7 +98,8 @@
       "language": "c",
       "expectedOutput": "1 2 3 4 5 ",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "75c10250-018c-48bf-98b8-e82411cc7051"
     },
     {
       "title": "Swap Values",
@@ -98,7 +108,8 @@
       "language": "c",
       "expectedOutput": "3 2",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "53700abd-927c-4950-9a0e-d5c318b2327b"
     },
     {
       "title": "Even Count in Array",
@@ -107,7 +118,8 @@
       "language": "c",
       "expectedOutput": "3",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "5f3e612c-8784-487f-a1fc-5556124ba2cc"
     },
     {
       "title": "Sum of digits",
@@ -116,7 +128,8 @@
       "language": "c",
       "expectedOutput": "6",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "3d89f3f2-b651-4e18-852e-f0b4b7d09055"
     },
     {
       "title": "Check Palindrome Number",
@@ -125,7 +138,8 @@
       "language": "c",
       "expectedOutput": "Palindrome",
       "cooldown": 5,
-      "time": 120
+      "time": 120,
+      "id": "56a35e72-d35c-459a-a648-47fb31bbfb9e"
     },
     {
       "title": "Count vowels in string",
@@ -134,7 +148,8 @@
       "language": "c",
       "expectedOutput": "2",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "10e22b70-ac50-4e6d-94fe-3cbd153b77a7"
     },
     {
       "title": "Find smallest in array",
@@ -143,7 +158,8 @@
       "language": "c",
       "expectedOutput": "1",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "f8afd41d-5cfc-4d9d-aaec-e1b17e46f844"
     },
     {
       "title": "Function to check even",
@@ -152,7 +168,8 @@
       "language": "c",
       "expectedOutput": "Even",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "cf3b0176-1c66-4c6a-8075-514298d1f824"
     },
     {
       "title": "Power function",
@@ -161,7 +178,8 @@
       "language": "c",
       "expectedOutput": "8",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "691176d6-22ce-4c60-8492-7f5c836b2dec"
     },
     {
       "title": "String reverse",
@@ -170,7 +188,8 @@
       "language": "c",
       "expectedOutput": "cba",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "5c67681d-895a-4d1c-9813-c3436bb8cc91"
     },
     {
       "title": "Fibonacci wrong start",
@@ -179,7 +198,8 @@
       "language": "c",
       "expectedOutput": "0 1 1 2 3 5 ",
       "cooldown": 5,
-      "time": 120
+      "time": 120,
+      "id": "c8c14c2a-6a63-46b8-91fd-b51a82cdde43"
     },
     {
       "title": "Linear Search",
@@ -188,7 +208,8 @@
       "language": "c",
       "expectedOutput": "Found",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "96c639cc-6274-4ce4-af8d-2640b257420a"
     },
     {
       "title": "Copy Array",
@@ -197,7 +218,8 @@
       "language": "c",
       "expectedOutput": "1 2 3 ",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "c03f1bac-2d6d-464d-af55-829a5e7d17d6"
     },
     {
       "title": "Sum using Function",
@@ -206,7 +228,8 @@
       "language": "c",
       "expectedOutput": "5",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "cadd3dd0-8edd-4d3e-859e-4a4d744417c7"
     },
     {
       "title": "Pointer Increment",
@@ -215,7 +238,8 @@
       "language": "c",
       "expectedOutput": "6",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "fc2426a9-1a6b-4be6-b0a9-26d53b5d67db"
     },
     {
       "title": "Count Words",
@@ -224,7 +248,8 @@
       "language": "c",
       "expectedOutput": "2",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "e2d8af1a-94d5-4e30-a238-1d4e7f97edc7"
     },
     {
       "title": "Factorial using loop",
@@ -233,7 +258,8 @@
       "language": "c",
       "expectedOutput": "120",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "d6434648-148a-41c1-bc0d-ea5fa2e4d32a"
     },
     {
       "title": "Infinite loop fix",
@@ -242,7 +268,8 @@
       "language": "c",
       "expectedOutput": "5 4 3 2 ",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "795df387-ab39-41a3-81a5-4b174c734201"
     },
     {
       "title": "Reverse loop",
@@ -251,7 +278,8 @@
       "language": "c",
       "expectedOutput": "5 4 3 2 1 0 ",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "6e59101c-d29c-43ad-b951-d708c4e4815b"
     },
     {
       "title": "Switch cases without break",
@@ -260,7 +288,8 @@
       "language": "c",
       "expectedOutput": "Two",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "f72d464d-e40b-4c75-91f3-7d3461513b80"
     },
     {
       "title": "Count digits",
@@ -269,7 +298,8 @@
       "language": "c",
       "expectedOutput": "4",
       "cooldown": 5,
-      "time": 60
+      "time": 60,
+      "id": "0d3dd510-a973-458e-9e27-6c2d831235ea"
     }
   ]
 }

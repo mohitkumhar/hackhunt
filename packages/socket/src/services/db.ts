@@ -19,18 +19,19 @@ export const connectDB = async () => {
 // ======================================
 
 const submissionSchema = new mongoose.Schema({
-  submissionId: { type: String, default: () => new mongoose.Types.ObjectId().toString(), unique: true },
   username: { type: String, required: true },
   participantId: { type: String, required: true },
   eventType: { type: String, required: true, enum: ["quiz", "bug_hunting", "blind_coding", "reverse_programming"] },
   year: { type: Number, default: null }, // 1, 2, or null
-  questionId: { type: String, required: true },
-  question: { type: String },
-  answer: { type: String },
-  language: { type: String },
-  timeTaken: { type: Number },
-  score: { type: Number, default: null },
-  isCorrect: { type: Boolean, default: null },
+  submissions: [{
+    questionId: { type: String },
+    question: { type: String },
+    answer: { type: String },
+    language: { type: String },
+    timeTaken: { type: Number },
+    score: { type: Number, default: null },
+    isCorrect: { type: Boolean, default: null }
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -54,9 +55,7 @@ const participantSchema = new mongoose.Schema({
   totalTimeTaken: { type: Number, default: 0 },
   totalScore: { type: Number, default: 0 },
   questionDetails: [{
-    questionId: { type: String, required: true },
-    question: { type: String, default: "" },
-    answer: { type: String, default: "" },
+    questionId: String,
     timeTaken: Number,
     isCorrect: Boolean,
     score: Number,

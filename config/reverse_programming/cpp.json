@@ -7,7 +7,8 @@
       "expectedCode": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello C++\\n\";\n    return 0;\n}",
       "hint": "Use std::cout to print text",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "ada180e3-5ccb-48bc-9cc9-1d3b0c0b909a"
     },
     {
       "output": "Result: 100",
@@ -15,7 +16,8 @@
       "expectedCode": "#include <iostream>\n\nint main() {\n    int a = 50, b = 50;\n    std::cout << \"Result: \" << (a + b) << \"\\n\";\n    return 0;\n}",
       "hint": "Print 'Result: ' followed by the integer 100",
       "cooldown": 5,
-      "time": 90
+      "time": 90,
+      "id": "c2969fae-183c-470a-889b-af82991edabc"
     }
   ]
 }
