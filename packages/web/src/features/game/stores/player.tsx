@@ -33,30 +33,39 @@ const initialState = {
   status: null,
 }
 
-export const usePlayerStore = create<PlayerStore<StatusDataMap>>((set) => ({
-  ...initialState,
+import { persist } from "zustand/middleware"
 
-  setGameId: (gameId) => set({ gameId }),
+export const usePlayerStore = create<PlayerStore<StatusDataMap>>()(
+  persist(
+    (set) => ({
+      ...initialState,
 
-  setPlayer: (player: PlayerState) => set({ player }),
-  login: (username) =>
-    set((state) => ({
-      player: { ...state.player, username },
-    })),
+      setGameId: (gameId) => set({ gameId }),
 
-  join: (gameId) => {
-    set((state) => ({
-      gameId,
-      player: { ...state.player, points: 0 },
-    }))
-  },
+      setPlayer: (player: PlayerState) => set({ player }),
+      login: (username) =>
+        set((state) => ({
+          player: { ...state.player, username },
+        })),
 
-  updatePoints: (points) =>
-    set((state) => ({
-      player: { ...state.player, points },
-    })),
+      join: (gameId) => {
+        set((state) => ({
+          gameId,
+          player: { ...state.player, points: 0 },
+        }))
+      },
 
-  setStatus: (name, data) => set({ status: createStatus(name, data) }),
+      updatePoints: (points) =>
+        set((state) => ({
+          player: { ...state.player, points },
+        })),
 
-  reset: () => set(initialState),
-}))
+      setStatus: (name, data) => set({ status: createStatus(name, data) }),
+
+      reset: () => set(initialState),
+    }),
+    {
+      name: "player-storage",
+    },
+  ),
+)
