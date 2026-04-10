@@ -220,12 +220,17 @@ class Game {
   }
 
   join(socket: Socket, username: string, teamName: string, year?: number) {
-    const isAlreadyConnected = this.players.find(
+    const existingPlayer = this.players.find(
       (p) => p.clientId === socket.handshake.auth.clientId,
     )
 
-    if (isAlreadyConnected) {
-      socket.emit("game:errorMessage", "Player already connected")
+    if (existingPlayer) {
+      if (existingPlayer.connected) {
+        socket.emit("game:errorMessage", "Player already connected")
+      } else {
+        // Player is in the game but disconnected. They should use reconnect.
+        socket.emit("game:errorMessage", "You are already in this game. Please refresh to reconnect.")
+      }
 
       return
     }
@@ -435,14 +440,14 @@ class Game {
 
     // Save participants to DB
     try {
-      const dbParticipants = this.players.map(p => ({
-        participantId: p.id,
+      const dbParticipants = this.players.map((p) => ({
+        participantId: p.clientId,
         username: p.username,
         eventType: this.gameMode || "quiz",
-        year: null,
+        year: p.year || null,
         startTime: Date.now(),
-        durationMinutes: 40
-      }));
+        durationMinutes: 40,
+      }))
       // Upsert to handle disconnects/reconnects gracefully if necessary
       for (const dp of dbParticipants) {
         await Participant.findOneAndUpdate(

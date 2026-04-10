@@ -89,7 +89,7 @@ app.post("/api/start-quiz", async (req: Request, res: Response): Promise<any> =>
     }
 
     // Check if participant already started
-    let participant = await Participant.findOne({ participantId, eventType });
+    let participant = await Participant.findOne({ participantId });
     
     if (!participant) {
       participant = new Participant({
@@ -101,6 +101,9 @@ app.post("/api/start-quiz", async (req: Request, res: Response): Promise<any> =>
         durationMinutes: 40
       });
       await participant.save();
+      console.log(`New participant registered: ${username} (${participantId})`);
+    } else {
+      console.log(`Existing participant continuing: ${participant.username} (${participantId})`);
     }
 
     res.status(200).json({
