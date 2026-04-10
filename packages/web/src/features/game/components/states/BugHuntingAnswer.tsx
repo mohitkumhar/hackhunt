@@ -1,15 +1,15 @@
 /* eslint-disable no-nested-ternary */
 import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
 import {
-  useSocket,
+    useSocket,
 } from "@rahoot/web/features/game/contexts/socketProvider"
-import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
-import {
-  SFX_ANSWERS_MUSIC,
-  SFX_ANSWERS_SOUND,
-} from "@rahoot/web/features/game/utils/constants"
 import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
+import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
 import { useQuestionStore } from "@rahoot/web/features/game/stores/question"
+import {
+    SFX_ANSWERS_MUSIC,
+    SFX_ANSWERS_SOUND,
+} from "@rahoot/web/features/game/utils/constants"
 import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { useParams } from "react-router"
 import useSound from "use-sound"
@@ -57,7 +57,7 @@ const LANGUAGES: Record<
 }
 
 const BugHuntingAnswer = ({
-  data: { title, description, buggyCode, language: expectedLanguage, expectedOutput },
+  data: { title, description, buggyCode, language: expectedLanguage },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
@@ -257,18 +257,9 @@ const BugHuntingAnswer = ({
 
             <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
               <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
-                Expected Output
-              </div>
-              <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
-                {expectedOutput}
-              </pre>
-            </div>
-
-            <div className="mt-2 rounded-lg bg-red-500/20 px-4 py-3 border border-red-500/30">
-              <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">
                 🐞 Original Buggy Code
               </div>
-              <pre className="text-xs text-red-200 font-mono whitespace-pre-wrap overflow-x-auto max-h-40 overflow-y-auto">
+              <pre className="whitespace-pre-wrap font-mono text-sm text-red-400 overflow-x-auto max-h-60 overflow-y-auto">
                 {buggyCode}
               </pre>
             </div>
