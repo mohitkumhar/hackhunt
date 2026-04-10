@@ -220,12 +220,17 @@ class Game {
   }
 
   join(socket: Socket, username: string, teamName: string, year?: number) {
-    const isAlreadyConnected = this.players.find(
+    const existingPlayer = this.players.find(
       (p) => p.clientId === socket.handshake.auth.clientId,
     )
 
-    if (isAlreadyConnected) {
-      socket.emit("game:errorMessage", "Player already connected")
+    if (existingPlayer) {
+      if (existingPlayer.connected) {
+        socket.emit("game:errorMessage", "Player already connected")
+      } else {
+        // Player is in the game but disconnected. They should use reconnect.
+        socket.emit("game:errorMessage", "You are already in this game. Please refresh to reconnect.")
+      }
 
       return
     }
@@ -435,22 +440,24 @@ class Game {
 
     // Save participants to DB
     try {
-      const dbParticipants = this.players.map(p => ({
-        participantId: p.id,
+      const dbParticipants = this.players.map((p) => ({
+        participantId: p.clientId,
         username: p.username,
         eventType: this.gameMode || "quiz",
-        year: null,
+        year: p.year || null,
         startTime: Date.now(),
-        durationMinutes: 40
-      }));
+        durationMinutes: 40,
+      }))
       // Upsert to handle disconnects/reconnects gracefully if necessary
-      for (const dp of dbParticipants) {
-        await Participant.findOneAndUpdate(
-          { participantId: dp.participantId },
-          { $set: dp },
-          { upsert: true }
-        );
-      }
+      await Promise.all(
+        dbParticipants.map((dp) =>
+          Participant.findOneAndUpdate(
+            { participantId: dp.participantId },
+            { $set: dp },
+            { upsert: true }
+          )
+        )
+      );
     } catch (dbErr) {
       console.error("Failed to save participants to DB:", dbErr);
     }
@@ -888,6 +895,7 @@ class Game {
     ).catch(err => console.error("Failed to save submission to DB:", err));
 
     // Update aggregate participant metrics
+<<<<<<< HEAD
     Participant.findOne({ participantId: player.id }).then(pDoc => {
       if (!pDoc) return;
       const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
@@ -904,11 +912,27 @@ class Game {
         // New question answered (append only)
         pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
         pDoc.questionDetails.push({ questionId: question.id, question: question.output, answer: code, timeTaken, isCorrect, score: points, language: question.language });
+=======
+    Participant.findOneAndUpdate(
+      { participantId: player.id },
+      {
+        $inc: {
+          totalQuestionsSubmitted: 1,
+          totalTimeTaken: timeTaken,
+          totalScore: points
+        },
+        $push: {
+          questionDetails: {
+            questionId: question.id,
+            timeTaken,
+            isCorrect,
+            score: points,
+            language: question.language
+          }
+        }
+>>>>>>> 37e98b8bee40dfd18fd0f8e4476b6dcbf0b86987
       }
-      pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
-      pDoc.totalScore = (pDoc.totalScore || 0) + points;
-      pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
-    }).catch(err => console.error("Failed to retrieve participant:", err));
+    ).catch(err => console.error("Failed to update participant metrics:", err));
 
     // Immediately process points for the submitting player
     if (isCorrect) {
@@ -1435,21 +1459,24 @@ return
     ).catch(err => console.error("Failed to save submission to DB:", err));
 
     // Update aggregate participant metrics
-    Participant.findOne({ participantId: player.id }).then(pDoc => {
-      if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].language = language;
-        pDoc.questionDetails[qIndex].answer = code;
-      } else {
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, question: question.title, answer: code, timeTaken, isCorrect: true, score: 0, language });
+    Participant.findOneAndUpdate(
+      { participantId: player.id },
+      {
+        $inc: {
+          totalQuestionsSubmitted: 1,
+          totalTimeTaken: timeTaken
+        },
+        $push: {
+          questionDetails: { 
+            questionId: question.id, 
+            timeTaken, 
+            isCorrect: true, 
+            score: 0, 
+            language 
+          }
+        }
       }
-      pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
-      pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
-    }).catch(err => console.error("Failed to retrieve participant:", err));
+    ).catch(err => console.error("Failed to update participant metrics:", err));
 
     // Move to the next question index after this submission.
     this.playerCurrentQuestion[player.id]++
@@ -1730,6 +1757,7 @@ return
     ).catch(err => console.error("Failed to save sumbission to DB:", err));
 
     // Update aggregate participant metrics
+<<<<<<< HEAD
     Participant.findOne({ participantId: player.id }).then(pDoc => {
       if (!pDoc) return;
       const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
@@ -1743,11 +1771,26 @@ return
       } else {
         pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
         pDoc.questionDetails.push({ questionId: question.id, question: question.question, answer: answerId.toString(), timeTaken, isCorrect, score: isCorrect ? points : 0 });
+=======
+    Participant.findOneAndUpdate(
+      { participantId: player.id },
+      {
+        $inc: {
+          totalQuestionsSubmitted: 1,
+          totalTimeTaken: timeTaken,
+          totalScore: isCorrect ? points : 0
+        },
+        $push: {
+          questionDetails: {
+            questionId: question.id,
+            timeTaken,
+            isCorrect,
+            score: isCorrect ? points : 0
+          }
+        }
+>>>>>>> 37e98b8bee40dfd18fd0f8e4476b6dcbf0b86987
       }
-      pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
-      pDoc.totalScore = (pDoc.totalScore || 0) + (isCorrect ? points : 0);
-      pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
-    }).catch(err => console.error("Failed to retrieve participant:", err));
+    ).catch(err => console.error("Failed to update participant metrics:", err));
 
     this.sendStatus(socket.id, STATUS.WAIT, {
       text: "Waiting for the players to answer",

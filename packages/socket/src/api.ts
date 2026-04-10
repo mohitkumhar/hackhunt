@@ -89,7 +89,7 @@ app.post("/api/start-quiz", async (req: Request, res: Response): Promise<any> =>
     }
 
     // Check if participant already started
-    let participant = await Participant.findOne({ participantId, eventType });
+    let participant = await Participant.findOne({ participantId });
     
     if (!participant) {
       participant = new Participant({
@@ -101,6 +101,9 @@ app.post("/api/start-quiz", async (req: Request, res: Response): Promise<any> =>
         durationMinutes: 40
       });
       await participant.save();
+      console.log(`New participant registered: ${username} (${participantId})`);
+    } else {
+      console.log(`Existing participant continuing: ${participant.username} (${participantId})`);
     }
 
     res.status(200).json({
@@ -175,22 +178,38 @@ app.post("/api/submit-answer", async (req: Request, res: Response): Promise<any>
       { upsert: true, new: true }
     );
 
-    // Update aggregate participant metrics
-    const qIndex = participant.questionDetails.findIndex((q: any) => q.questionId === questionId);
-    if (qIndex >= 0) {
-      participant.totalTimeTaken -= (participant.questionDetails[qIndex].timeTaken || 0);
-      participant.totalScore -= (participant.questionDetails[qIndex].score || 0);
-      participant.questionDetails[qIndex].timeTaken = timeTaken;
-      participant.questionDetails[qIndex].isCorrect = isCorrect;
-      participant.questionDetails[qIndex].score = isCorrect ? score : 0;
-      participant.questionDetails[qIndex].answer = answer;
-    } else {
-      participant.totalQuestionsSubmitted = (participant.totalQuestionsSubmitted || 0) + 1;
-      participant.questionDetails.push({ questionId, question: questionDoc.question, answer, timeTaken, isCorrect, score: isCorrect ? score : 0 });
+    // Update aggregate participant metrics safely with optimistic concurrency retry
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        const pLatest = await Participant.findOne({ participantId });
+        if (!pLatest) break;
+
+        const qIdx = pLatest.questionDetails.findIndex((q: any) => q.questionId === questionId);
+        if (qIdx >= 0) {
+          pLatest.totalTimeTaken -= (pLatest.questionDetails[qIdx].timeTaken || 0);
+          pLatest.totalScore -= (pLatest.questionDetails[qIdx].score || 0);
+          pLatest.questionDetails[qIdx].timeTaken = timeTaken;
+          pLatest.questionDetails[qIdx].isCorrect = isCorrect;
+          pLatest.questionDetails[qIdx].score = isCorrect ? score : 0;
+        } else {
+          pLatest.totalQuestionsSubmitted = (pLatest.totalQuestionsSubmitted || 0) + 1;
+          pLatest.questionDetails.push({ questionId, timeTaken, isCorrect, score: isCorrect ? score : 0 });
+        }
+        pLatest.totalTimeTaken = (pLatest.totalTimeTaken || 0) + timeTaken;
+        pLatest.totalScore = (pLatest.totalScore || 0) + (isCorrect ? score : 0);
+        
+        await pLatest.save();
+        break; // Success, exit retry loop
+      } catch (err: any) {
+        if (err.name === 'VersionError') {
+          retries--;
+          if (retries === 0) throw new Error("High concurrency error, please retry.");
+        } else {
+          throw err;
+        }
+      }
     }
-    participant.totalTimeTaken = (participant.totalTimeTaken || 0) + timeTaken;
-    participant.totalScore = (participant.totalScore || 0) + (isCorrect ? score : 0);
-    await participant.save();
 
     res.status(200).json({ success: true, isCorrect, score });
   } catch (error: any) {
