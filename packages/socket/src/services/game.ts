@@ -1496,7 +1496,36 @@ return
     const allDone = this.players.every(p => (this.playerCurrentQuestion[p.id] || 0) >= this.blindCodingQuizz!.questions.length);
 
     if (allDone) {
-      this.abortCooldown();
+      // Send blind coding responses to manager
+      const totalSubmitted = this.allBlindCodeSubmissions.reduce(
+        (acc, entry) => acc + entry.submissions.filter(s => s.submitted).length,
+        0
+      );
+
+      this.sendStatus(this.manager.id, STATUS.BLIND_CODING_SHOW_RESPONSES, {
+        title: this.blindCodingQuizz.questions[0]?.title || "Blind Coding Challenge",
+        description: this.blindCodingQuizz.questions[0]?.description || "Complete all coding questions",
+        language: "multi",
+        submissions: this.allBlindCodeSubmissions.flatMap((entry, idx) =>
+          entry.submissions.map(s => ({
+            username: s.username,
+            code: s.code,
+            language: s.language,
+            submitted: s.submitted,
+          }))
+        ),
+        totalSubmitted,
+        totalPlayers: this.players.length,
+      });
+
+      // Auto transition to leaderboard after showing responses
+      setTimeout(() => {
+        if (!this.started || this.gameMode !== "blind_coding" || !this.blindCodingQuizz) {
+          return
+        }
+
+        this.showLeaderboard();
+      }, 4000);
     }
   }
 

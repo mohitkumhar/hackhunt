@@ -81,7 +81,7 @@ const ReverseManagerActive = () => {
       </div>
 
       <h2 className="mb-6 text-center text-3xl font-bold text-white drop-shadow-lg md:text-4xl lg:text-5xl mt-8 sm:mt-0">
-        Reverse Programming Leaderboard
+        Output Based Coding Leaderboard
       </h2>
 
       <div className="w-full max-w-6xl overflow-hidden rounded-xl border border-[#ff9900]/20 bg-[#1a140b]/90 shadow-2xl">

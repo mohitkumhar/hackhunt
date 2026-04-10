@@ -176,6 +176,10 @@ class Config {
     }
 
     try {
+      if (process.env.MANAGER_PASSWORD) {
+        return { managerPassword: process.env.MANAGER_PASSWORD }
+      }
+
       const config = fs.readFileSync(getPath("game.json"), "utf-8")
 
       return JSON.parse(config)

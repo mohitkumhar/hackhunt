@@ -1,0 +1,17 @@
+{
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/ws/(.*)",
+      "destination": "https://hackhunt-1.onrender.com/ws/$1"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "https://hackhunt-1.onrender.com/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
