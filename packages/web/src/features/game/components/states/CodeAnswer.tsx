@@ -57,7 +57,7 @@ const LANGUAGES: Record<
 }
 
 const CodeAnswer = ({
-  data: { output, language: expectedLanguage, hint },
+  data: { title, description, explanation, example, output, language: expectedLanguage, hint },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
@@ -352,10 +352,10 @@ return
         <div className="w-full lg:w-[32%] shrink-0 flex flex-col gap-4">
           <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-5 shadow-2xl flex flex-col gap-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span>📝</span> Expected Output Challenge
+              <span>📝</span> {title || "Expected Output Challenge"}
             </h2>
             <p className="text-sm text-white/80 leading-relaxed">
-              Write a program that precisely produces the exact output provided below.
+              {description || explanation || "Write a program that precisely produces the exact output provided below."}
             </p>
 
             <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
@@ -366,6 +366,23 @@ return
                 {output}
               </pre>
             </div>
+
+            {example && example.length > 0 && (
+              <div className="mt-2 flex flex-col gap-2">
+                <div className="text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
+                   Examples
+                </div>
+                <div className="flex flex-col gap-2">
+                  {example.map((ex, idx) => (
+                    <div key={idx} className="rounded-lg bg-black/20 border border-white/5 p-3">
+                      <pre className="text-xs font-mono text-white/70 whitespace-pre-wrap break-all">
+                        {ex}
+                      </pre>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {hint && (
               <div className="mt-2 rounded-lg bg-yellow-500/20 px-4 py-3 border border-yellow-500/30">

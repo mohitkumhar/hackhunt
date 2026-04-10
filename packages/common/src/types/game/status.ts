@@ -80,6 +80,10 @@ export type CommonStatusDataMap = {
     }[];
   }
   REVERSE_WRITE_CODE: {
+    title?: string
+    description?: string
+    explanation?: string
+    example?: string[]
     output: string
     language: string
     hint?: string
