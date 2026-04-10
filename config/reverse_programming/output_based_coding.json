@@ -3,12 +3,11 @@
   "questions": [
     {
       "title": "Given a 2D integer array mat[][] and a number x, find whether element x is present in the matrix or not.",
-      "output": "true or false",
       "example": [
-        "Input: mat[][] = [[6,23,21],[4,45,32],[69,11,87]], x = 32 → Output: true",
-        "Input: mat[][] = [[14,34,23,95,43,28]], x = 55 → Output: false"
+        "Input: mat[][] = [[6, 23, 21],[4, 45, 32],[69, 11, 87]], x = 32 → Output: true",
+        "Input: mat[][] = [[14, 34, 23, 95, 43, 28]], x = 55 → Output: false",
+        "Input: mat[][] = [[87, 9, 99],[101, 3, 111]], x = 101 → Output: true"
       ],
-      "explanation": "Traverse each row and column using nested loops and check if x exists.",
       "hint": "Use nested loops",
       "cooldown": 6,
       "time": 120,
@@ -17,11 +16,10 @@
 
     {
       "title": "Given an array arr, rotate the array by one position in clockwise direction.",
-      "output": "rotated array",
       "example": [
-        "Input: [1,2,3,4,5] → Output: [5,1,2,3,4]"
+        "Input: arr = [1, 2, 3, 4, 5] → Output: [5, 1, 2, 3, 4]",
+        "Input: arr = [10, 20, 30] → Output: [30, 10, 20]"
       ],
-      "explanation": "Move last element to front and shift remaining elements right.",
       "hint": "Store last element",
       "cooldown": 6,
       "time": 120,
@@ -30,11 +28,10 @@
 
     {
       "title": "Given an array arr[]. Your task is to find the minimum and maximum elements in the array.",
-      "output": "[min, max]",
       "example": [
-        "Input: [1,4,3,5,8,6] → Output: [1,8]"
+        "Input: arr = [1, 4, 3, 5, 8, 6] → Output: [1, 8]",
+        "Input: arr = [100, 200, 50] → Output: [50, 200]"
       ],
-      "explanation": "Traverse array and track minimum and maximum values.",
       "hint": "Use comparisons",
       "cooldown": 6,
       "time": 120,
@@ -42,12 +39,11 @@
     },
 
     {
-      "title": "You are given an array arr(0-based index) and two positive integer index and val. You need to insert an val at given index.",
-      "output": "array after insertion",
+      "title": "You are given an array arr (0-based index) and two positive integers index and val. You need to insert val at the given index.",
       "example": [
-        "Input: arr[] = [1,2,3,4,5], index=2, val=90 → Output: [1,2,90,3,4,5]"
+        "Input: arr = [1, 2, 3, 4, 5], index = 2, val = 90 → Output: [1, 2, 90, 3, 4, 5]",
+        "Input: arr = [10, 20, 30], index = 0, val = 5 → Output: [5, 10, 20, 30]"
       ],
-      "explanation": "Shift elements right and insert value.",
       "hint": "Use shifting",
       "cooldown": 6,
       "time": 120,
@@ -55,12 +51,11 @@
     },
 
     {
-      "title": "Given an array arr of integers and an index key(0-based index). Your task is to return the element present at the index key in the array.",
-      "output": "element at index",
+      "title": "Given an array arr of integers and an index key (0-based index). Your task is to return the element present at the index key in the array.",
       "example": [
-        "Input: key=2, arr=[10,20,30] → Output: 30"
+        "Input: key = 2, arr = [10, 20, 30] → Output: 30",
+        "Input: key = 0, arr = [5, 15, 25] → Output: 5"
       ],
-      "explanation": "Directly return arr[key].",
       "hint": "Indexing",
       "cooldown": 5,
       "time": 90,
@@ -69,11 +64,10 @@
 
     {
       "title": "Given two arrays a[] and b[], your task is to determine whether b[] is a subset of a[].",
-      "output": "true or false",
       "example": [
-        "Input: a=[1,2,3], b=[1,2] → Output: true"
+        "Input: a = [1, 2, 3], b = [1, 2] → Output: true",
+        "Input: a = [4, 5, 6], b = [5, 7] → Output: false"
       ],
-      "explanation": "All elements of b must exist in a.",
       "hint": "Use set",
       "cooldown": 6,
       "time": 150,
@@ -82,12 +76,11 @@
 
     {
       "title": "Given an integer year. Print \"True\" (without quotes) if it can represent a leap year, otherwise print \"False\" (without quotes).",
-      "output": "True or False",
       "example": [
-        "Input: 2020 → Output: True",
-        "Input: 2022 → Output: False"
+        "Input: year = 2020 → Output: True",
+        "Input: year = 2022 → Output: False",
+        "Input: year = 1900 → Output: False"
       ],
-      "explanation": "Leap year divisible by 4 but not 100 unless divisible by 400.",
       "hint": "Apply conditions",
       "cooldown": 5,
       "time": 90,
@@ -96,11 +89,10 @@
 
     {
       "title": "Given an array arr[], print all its elements space-separated.",
-      "output": "space separated elements",
       "example": [
-        "Input: [1,2,3] → Output: 1 2 3"
+        "Input: arr = [1, 2, 3] → Output: 1 2 3",
+        "Input: arr = [10, 20, 30, 40] → Output: 10 20 30 40"
       ],
-      "explanation": "Traverse array and print each element.",
       "hint": "Loop",
       "cooldown": 5,
       "time": 60,
@@ -109,11 +101,10 @@
 
     {
       "title": "Given an array arr of distinct elements, return an array of all elements except the two greatest elements in sorted order.",
-      "output": "filtered array",
       "example": [
-        "Input: [2,8,7,1,5] → Output: [1,2,5]"
+        "Input: arr = [2, 8, 7, 1, 5] → Output: [1, 2, 5]",
+        "Input: arr = [10, 3, 6, 9, 1] → Output: [1, 3, 6]"
       ],
-      "explanation": "Sort array and remove last two elements.",
       "hint": "Sorting",
       "cooldown": 6,
       "time": 150,
@@ -121,12 +112,11 @@
     },
 
     {
-      "title": "Given two arrays of arr1 and arr2, calculate the product of the maximum element of arr1 and minimum element of arr2.",
-      "output": "product",
+      "title": "Given two arrays arr1 and arr2, calculate the product of the maximum element of arr1 and minimum element of arr2.",
       "example": [
-        "Input: [5,7,9], [1,2] → Output: 9"
+        "Input: arr1 = [5, 7, 9], arr2 = [1, 2] → Output: 9",
+        "Input: arr1 = [3, 8, 2], arr2 = [4, 6] → Output: 32"
       ],
-      "explanation": "Find max of arr1 and min of arr2.",
       "hint": "Use loops",
       "cooldown": 5,
       "time": 90,
@@ -134,12 +124,11 @@
     },
 
     {
-      "title": "Count elements less than or equal and greater than or equal to target.",
-      "output": "[<=target, >=target]",
+      "title": "Count elements less than or equal to and greater than or equal to a given target value.",
       "example": [
-        "Input: [1,2,8], target=2 → Output: [2,2]"
+        "Input: arr = [1, 2, 8], target = 2 → Output: [2, 2]",
+        "Input: arr = [5, 10, 15, 20], target = 10 → Output: [2, 3]"
       ],
-      "explanation": "Count elements based on conditions.",
       "hint": "Loop counting",
       "cooldown": 6,
       "time": 150,
@@ -147,12 +136,11 @@
     },
 
     {
-      "title": "Split array into two halves and return product of their sums.",
-      "output": "product",
+      "title": "Split the array into two halves and return the product of their sums.",
       "example": [
-        "Input: [1,2,3,4] → Output: 21"
+        "Input: arr = [1, 2, 3, 4] → Output: 21",
+        "Input: arr = [2, 4, 6, 8] → Output: 84"
       ],
-      "explanation": "Divide array into halves and multiply sums.",
       "hint": "Divide array",
       "cooldown": 6,
       "time": 150,
@@ -160,12 +148,11 @@
     },
 
     {
-      "title": "Find index of element or return -1 if not found.",
-      "output": "index",
+      "title": "Find the index of a given element in the array, or return -1 if not found.",
       "example": [
-        "Input: [1,2,3], x=3 → Output: 2"
+        "Input: arr = [1, 2, 3], x = 3 → Output: 2",
+        "Input: arr = [10, 20, 30], x = 5 → Output: -1"
       ],
-      "explanation": "Search element using loop.",
       "hint": "Linear search",
       "cooldown": 5,
       "time": 90,
@@ -173,12 +160,11 @@
     },
 
     {
-      "title": "Find indices where value equals index (1-based indexing).",
-      "output": "indices",
+      "title": "Find indices where the value equals the index (1-based indexing).",
       "example": [
-        "Input: [15,2,45,4] → Output: [2,4]"
+        "Input: arr = [15, 2, 45, 4] → Output: [2, 4]",
+        "Input: arr = [1, 5, 3, 8] → Output: [1, 3]"
       ],
-      "explanation": "Check if arr[i] == i+1.",
       "hint": "Index logic",
       "cooldown": 6,
       "time": 120,
@@ -186,12 +172,12 @@
     },
 
     {
-      "title": "Find last index of '1' in a binary string.",
-      "output": "index",
+      "title": "Find the last index of '1' in a binary string.",
       "example": [
-        "Input: 00001 → Output: 4"
+        "Input: s = \"00001\" → Output: 4",
+        "Input: s = \"10100\" → Output: 2",
+        "Input: s = \"00000\" → Output: -1"
       ],
-      "explanation": "Traverse string from right.",
       "hint": "Reverse loop",
       "cooldown": 5,
       "time": 90,
@@ -199,12 +185,11 @@
     },
 
     {
-      "title": "Sort all elements of an NxN matrix.",
-      "output": "sorted matrix",
+      "title": "Sort all elements of an NxN matrix in non-decreasing order.",
       "example": [
-        "Input: [[1,5,3],[2,8,7],[4,6,9]] → Output: [[1,2,3],[4,5,6],[7,8,9]]"
+        "Input: mat = [[1, 5, 3],[2, 8, 7],[4, 6, 9]] → Output: [[1, 2, 3],[4, 5, 6],[7, 8, 9]]",
+        "Input: mat = [[9, 3],[1, 7]] → Output: [[1, 3],[7, 9]]"
       ],
-      "explanation": "Flatten, sort and refill.",
       "hint": "Sorting",
       "cooldown": 7,
       "time": 180,
@@ -212,12 +197,11 @@
     },
 
     {
-      "title": "Count substrings that start and end with 1.",
-      "output": "count",
+      "title": "Count the number of substrings that start and end with the character '1' in a binary string.",
       "example": [
-        "Input: 1111 → Output: 6"
+        "Input: s = \"1111\" → Output: 6",
+        "Input: s = \"10101\" → Output: 6"
       ],
-      "explanation": "Count combinations of 1s.",
       "hint": "nC2",
       "cooldown": 7,
       "time": 180,
@@ -225,12 +209,11 @@
     },
 
     {
-      "title": "Count uppercase characters in a string.",
-      "output": "count",
+      "title": "Count the number of uppercase characters in a given string.",
       "example": [
-        "Input: ckjkUUYII → Output: 5"
+        "Input: s = \"ckjkUUYII\" → Output: 5",
+        "Input: s = \"HelloWorld\" → Output: 2"
       ],
-      "explanation": "Check ASCII range of uppercase letters.",
       "hint": "ASCII",
       "cooldown": 5,
       "time": 90,
@@ -238,12 +221,11 @@
     },
 
     {
-      "title": "Print decreasing pattern of string.",
-      "output": "pattern",
+      "title": "Print the decreasing pattern of a given string by removing one character from the end in each line.",
       "example": [
-        "Input: Geek → Output:\nGeek\nGee\nGe\nG"
+        "Input: s = \"Geek\" → Output:\nGeek\nGee\nGe\nG",
+        "Input: s = \"Code\" → Output:\nCode\nCod\nCo\nC"
       ],
-      "explanation": "Print substring reducing one char each time.",
       "hint": "Substring",
       "cooldown": 6,
       "time": 120,
@@ -251,12 +233,11 @@
     },
 
     {
-      "title": "Find maximum extra amount by replacing 6 with 9.",
-      "output": "difference",
+      "title": "Find the maximum extra amount obtained by replacing all occurrences of digit 6 with digit 9 in a given number.",
       "example": [
-        "Input: 56 → Output: 3"
+        "Input: n = 56 → Output: 3",
+        "Input: n = 666 → Output: 333"
       ],
-      "explanation": "Replace digits and compute difference.",
       "hint": "Digit manipulation",
       "cooldown": 6,
       "time": 150,
@@ -264,12 +245,11 @@
     },
 
     {
-      "title": "Find LCM and GCD of two numbers.",
-      "output": "[LCM, GCD]",
+      "title": "Find the LCM and GCD of two given numbers.",
       "example": [
-        "Input: 5,10 → Output: [10,5]"
+        "Input: a = 5, b = 10 → Output: [10, 5]",
+        "Input: a = 12, b = 8 → Output: [24, 4]"
       ],
-      "explanation": "Use Euclid algorithm.",
       "hint": "GCD formula",
       "cooldown": 6,
       "time": 120,
@@ -277,12 +257,11 @@
     },
 
     {
-      "title": "Find median of array.",
-      "output": "median",
+      "title": "Find the median of a given array of integers.",
       "example": [
-        "Input: [1,2,3] → Output: 2"
+        "Input: arr = [1, 2, 3] → Output: 2",
+        "Input: arr = [4, 1, 3, 2] → Output: 2.5"
       ],
-      "explanation": "Sort and find middle element.",
       "hint": "Sorting",
       "cooldown": 6,
       "time": 120,
@@ -290,12 +269,12 @@
     },
 
     {
-      "title": "Round number to nearest multiple of 10.",
-      "output": "rounded value",
+      "title": "Round a given number to the nearest multiple of 10.",
       "example": [
-        "Input: 29 → Output: 30"
+        "Input: n = 29 → Output: 30",
+        "Input: n = 14 → Output: 10",
+        "Input: n = 25 → Output: 30"
       ],
-      "explanation": "Apply rounding rules.",
       "hint": "Math",
       "cooldown": 5,
       "time": 90,
@@ -303,12 +282,11 @@
     },
 
     {
-      "title": "Divide elements into parts <= k and count total parts.",
-      "output": "count",
+      "title": "Divide each element of the array into parts of size at most k and count the total number of parts.",
       "example": [
-        "Input: k=3, arr=[5,8] → Output: 5"
+        "Input: k = 3, arr = [5, 8] → Output: 5",
+        "Input: k = 4, arr = [10, 3] → Output: 4"
       ],
-      "explanation": "Divide each element and count parts.",
       "hint": "Division",
       "cooldown": 7,
       "time": 180,
@@ -316,12 +294,11 @@
     },
 
     {
-      "title": "Check if digits can form a number divisible by 3.",
-      "output": "1 or 0",
+      "title": "Check if the digits of the given numbers can form a number that is divisible by 3.",
       "example": [
-        "Input: [40,50,90] → Output: 1"
+        "Input: arr = [40, 50, 90] → Output: 1",
+        "Input: arr = [11, 22, 44] → Output: 0"
       ],
-      "explanation": "Check sum of digits divisible by 3.",
       "hint": "Divisibility rule",
       "cooldown": 7,
       "time": 180,
@@ -329,12 +306,11 @@
     },
 
     {
-      "title": "Count cells in matrix where i+j equals given value.",
-      "output": "count",
+      "title": "Count the number of cells (i, j) in an NxN matrix where i + j equals a given value q (0-based indexing).",
       "example": [
-        "Input: n=4, q=7 → Output: 2"
+        "Input: n = 4, q = 7 → Output: 0",
+        "Input: n = 4, q = 3 → Output: 4"
       ],
-      "explanation": "Traverse matrix and count satisfying cells.",
       "hint": "Nested loops",
       "cooldown": 6,
       "time": 150,
@@ -342,12 +318,11 @@
     },
 
     {
-      "title": "Find digital root of number.",
-      "output": "digit",
+      "title": "Find the digital root of a given number. The digital root is obtained by repeatedly summing the digits until a single digit remains.",
       "example": [
-        "Input: 99999 → Output: 9"
+        "Input: n = 99999 → Output: 9",
+        "Input: n = 12345 → Output: 6"
       ],
-      "explanation": "Keep summing digits until one digit.",
       "hint": "Loop",
       "cooldown": 5,
       "time": 90,
@@ -355,12 +330,11 @@
     },
 
     {
-      "title": "Find number of factors of N factorial.",
-      "output": "count",
+      "title": "Find the number of factors (divisors) of N factorial (N!).",
       "example": [
-        "Input: 5 → Output: 16"
+        "Input: N = 5 → Output: 16",
+        "Input: N = 3 → Output: 4"
       ],
-      "explanation": "Find factorial and count its factors.",
       "hint": "Prime factorization",
       "cooldown": 8,
       "time": 240,
@@ -368,12 +342,11 @@
     },
 
     {
-      "title": "Generate multiplication table of given number.",
-      "output": "table",
+      "title": "Generate the multiplication table of a given number from 1 to 10.",
       "example": [
-        "Input: 2 → Output: 2 4 6 8 10 12 14 16 18 20"
+        "Input: n = 2 → Output: 2 4 6 8 10 12 14 16 18 20",
+        "Input: n = 5 → Output: 5 10 15 20 25 30 35 40 45 50"
       ],
-      "explanation": "Multiply number from 1 to 10.",
       "hint": "Loop",
       "cooldown": 5,
       "time": 60,
@@ -381,12 +354,11 @@
     },
 
     {
-      "title": "Return numbers whose digits are only 1, 2, or 3.",
-      "output": "filtered array",
+      "title": "Return all numbers from the array whose digits consist only of 1, 2, or 3.",
       "example": [
-        "Input: [1,2,13,4] → Output: [1,2,13]"
+        "Input: arr = [1, 2, 13, 4] → Output: [1, 2, 13]",
+        "Input: arr = [123, 456, 321, 7] → Output: [123, 321]"
       ],
-      "explanation": "Check digits of each number.",
       "hint": "Digit extraction",
       "cooldown": 6,
       "time": 150,

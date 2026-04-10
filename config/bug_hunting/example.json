@@ -2,6 +2,7 @@
   "subject": "1st Year - Bug Hunting",
   "questions": [
     {
+<<<<<<< HEAD
       "title": "Recursive Factorial",
       "description": "Fix the recursive factorial function so it terminates properly.",
       "buggyCode": "int fact(int n) {\n    return n * fact(n - 1);\n}",
@@ -26,6 +27,7 @@
       "cooldown": 5
     },
     {
+<<<<<<< HEAD
       "title": "Sum Function",
       "description": "Fix the recursive function so it calculates the sum of numbers from 1 to n properly.",
       "buggyCode": "int sum(int n) {\n    if(n == 0)\n        return 0;\n    else\n        return sum(n) + n;\n}",
@@ -58,6 +60,7 @@
       "cooldown": 5
     },
     {
+<<<<<<< HEAD
       "title": "Function Without Return",
       "description": "Make the function return the sum instead of returning 0.",
       "buggyCode": "#include <stdio.h>\n\nint add(int a, int b) {\n    a + b; \n    return 0;\n}\n\nint main() {\n    int result = add(2, 3);\n    printf(\"%d\", result);\n\n    return 0;\n}",
@@ -83,6 +86,7 @@
     },
     {
       "title": "Swap Values",
+<<<<<<< HEAD
       "description": "Fix the swap function so it uses pointers to modify the actual variables.",
       "buggyCode": "#include <stdio.h>\n\nvoid swap(int *a, int *b) {\n    int t = a;\n    a = b;\n    b = t;\n}\n\nint main() {\n    int x = 2, y = 3;\n\n    swap(&x, &y);\n\n    printf(\"%d %d\", x, y);\n\n    return 0;\n}",
       "language": "c",
@@ -168,6 +172,7 @@
       
     },
     {
+<<<<<<< HEAD
       "title": "Linear Search",
       "description": "Fix the assignment inside the if condition and stop searching when found.",
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int a[5]={2,4,6,8,10}, i, key=6;\n\n    for(i=0;i<5;i++) {\n        if(a[i]=key) { // BUG\n            printf(\"Found\");\n        }\n    }\n\n    return 0;\n}",
@@ -231,6 +236,7 @@
       
     },
     {
+<<<<<<< HEAD
       "title": "Reverse loop",
       "description": "Fix the loop iterator decrement instead of increment.",
       "buggyCode": "#include <stdio.h>\n\nint main() {\n    int i;\n\n    for(i = 5; i >= 0; i++) {\n        printf(\"%d \", i);\n    }\n\n    return 0;\n}",
