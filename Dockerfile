@@ -28,6 +28,7 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 
 COPY --from=builder /app/packages/web/dist /app/web
 COPY --from=builder /app/packages/socket/dist/index.cjs /app/socket/index.cjs
+COPY --from=builder /app/config /app/config
 
 EXPOSE 3000
 
