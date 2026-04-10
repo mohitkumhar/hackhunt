@@ -670,18 +670,11 @@ class Game {
       return
     }
 
-    // Initialize random question orders for players if not done yet
-    if (Object.keys(this.playerQuestionOrder).length === 0) {
-      this.players.forEach(p => {
-        const indices = this.reverseQuizz!.questions.map((_, i) => i)
-        // Shuffle indices using Fisher-Yates
-        for (let i = indices.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [indices[i], indices[j]] = [indices[j], indices[i]]
-        }
-        this.playerQuestionOrder[p.id] = indices
-      })
-    }
+    // Initialize sequential question orders [0, 1, 2, ... 34]
+    this.playerQuestionOrder = {}
+    this.players.forEach(p => {
+        this.playerQuestionOrder[p.id] = Array.from({ length: this.reverseQuizz!.questions.length }, (_, i) => i)
+    })
 
     this.playerStatus.clear()
     this.codeSubmissions = []
@@ -764,6 +757,10 @@ class Game {
     const remainingTime = this.cooldown.count || 3600
 
     this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
+      title: question.title,
+      description: question.description,
+      explanation: question.explanation,
+      example: question.example,
       output: question.output,
       language: question.language,
       hint: question.hint,
@@ -771,8 +768,11 @@ class Game {
       totalPlayer: this.players.length,
     })
 
+    const pIndices = this.playerQuestionOrder[playerId]
+    const pCurrent = pIndices ? pIndices.indexOf(qIndex) + 1 : qIndex + 1
+
     this.io.to(playerId).emit("game:updateQuestion", {
-      current: qIndex + 1,
+      current: pCurrent,
       total: this.reverseQuizz.questions.length,
     })
   }
@@ -784,18 +784,21 @@ class Game {
       return
     }
 
-    const currentIndex = this.playerCurrentQuestion[player.id] ?? 0
+    const pOrder = this.playerQuestionOrder[player.id]
+    if (!pOrder) return
+
+    const currentIndexInOrder = pOrder.indexOf(this.playerCurrentQuestion[player.id] ?? 0)
     const offset = direction === "next" ? 1 : -1
-    const targetIndex = Math.min(
-      Math.max(currentIndex + offset, 0),
-      this.reverseQuizz.questions.length - 1,
+    const targetIndexInOrder = Math.min(
+      Math.max(currentIndexInOrder + offset, 0),
+      pOrder.length - 1,
     )
 
-    if (targetIndex === currentIndex) {
+    if (targetIndexInOrder === currentIndexInOrder) {
       return
     }
 
-    this.playerCurrentQuestion[player.id] = targetIndex
+    this.playerCurrentQuestion[player.id] = pOrder[targetIndexInOrder]
     this.sendPlayerReverseQuestion(player.id)
   }
 

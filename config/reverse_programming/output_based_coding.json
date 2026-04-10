@@ -4,393 +4,490 @@
     {
       "title": "Given a 2D integer array mat[][] and a number x, find whether element x is present in the matrix or not.",
       "output": "true or false",
-      "example": [
-        "Input: mat[][] = [[6,23,21],[4,45,32],[69,11,87]], x = 32 → Output: true",
-        "Input: mat[][] = [[14,34,23,95,43,28]], x = 55 → Output: false"
-      ],
       "explanation": "Traverse each row and column using nested loops and check if x exists.",
-      "hint": "Use nested loops",
-      "cooldown": 6,
-      "time": 120,
-      "id": "q_output_based_coding_7"
+      "example": [
+        "Input: mat[][] = [[6, 23, 21],[4, 45, 32],[69, 11, 87]], x = 32 → Output: true",
+        "Input: mat[][] = [[14, 34, 23, 95, 43, 28]], x = 55 → Output: false"
+      ],
+      "hint": "Use nested loops and simple search",
+      "language": "python",
+      "cooldown": 5,
+      "time": 150,
+      "id": "q_output_based_coding_1"
     },
-
     {
       "title": "Given an array arr, rotate the array by one position in clockwise direction.",
       "output": "rotated array",
-      "example": [
-        "Input: [1,2,3,4,5] → Output: [5,1,2,3,4]"
-      ],
       "explanation": "Move last element to front and shift remaining elements right.",
-      "hint": "Store last element",
-      "cooldown": 6,
+      "example": [
+        "Input: arr[] = [1, 2, 3, 4, 5] → Output: [5, 1, 2, 3, 4]",
+        "Input: arr[] = [9, 8, 7, 6, 4, 2, 1, 3] → Output: [3, 9, 8, 7, 6, 4, 2, 1]"
+      ],
+      "hint": "Pop last and insert at 0",
+      "language": "python",
+      "cooldown": 5,
       "time": 120,
-      "id": "q_output_based_coding_8"
+      "id": "q_output_based_coding_2"
     },
-
     {
       "title": "Given an array arr[]. Your task is to find the minimum and maximum elements in the array.",
       "output": "[min, max]",
-      "example": [
-        "Input: [1,4,3,5,8,6] → Output: [1,8]"
-      ],
       "explanation": "Traverse array and track minimum and maximum values.",
-      "hint": "Use comparisons",
-      "cooldown": 6,
+      "example": [
+        "Input: arr[] = [1, 4, 3, 5, 8, 6] → Output: [1, 8]",
+        "Input: arr[] = [12, 3, 15, 7, 9] → Output: [3, 15]"
+      ],
+      "hint": "Initialize min/max with first element",
+      "language": "python",
+      "cooldown": 5,
       "time": 120,
-      "id": "q_output_based_coding_9"
+      "id": "q_output_based_coding_3"
     },
-
     {
       "title": "You are given an array arr(0-based index) and two positive integer index and val. You need to insert an val at given index.",
       "output": "array after insertion",
+      "explanation": "Shift elements right and insert value or use insert method.",
       "example": [
-        "Input: arr[] = [1,2,3,4,5], index=2, val=90 → Output: [1,2,90,3,4,5]"
+        "Input: arr[] = [1, 2, 3, 4, 5], index=5, val=90 → Output: [1, 2, 3, 4, 5, 90]",
+        "Input: arr[] = [1, 2, 3, 4, 5], index=2, val=90 → Output: [1, 2, 90, 3, 4, 5]"
       ],
-      "explanation": "Shift elements right and insert value.",
-      "hint": "Use shifting",
-      "cooldown": 6,
+      "hint": "Use array slice or insert",
+      "language": "python",
+      "cooldown": 5,
       "time": 120,
-      "id": "q_output_based_coding_10"
+      "id": "q_output_based_coding_4"
     },
-
     {
       "title": "Given an array arr of integers and an index key(0-based index). Your task is to return the element present at the index key in the array.",
       "output": "element at index",
-      "example": [
-        "Input: key=2, arr=[10,20,30] → Output: 30"
-      ],
       "explanation": "Directly return arr[key].",
-      "hint": "Indexing",
+      "example": [
+        "Input: key=2, arr=[10, 20, 30, 40, 50] → Output: 30",
+        "Input: key=4, arr=[10, 20, 30, 40, 50, 60, 70] → Output: 50"
+      ],
+      "hint": "Simple indexing",
+      "language": "python",
       "cooldown": 5,
       "time": 90,
-      "id": "q_output_based_coding_11"
+      "id": "q_output_based_coding_5"
     },
-
     {
       "title": "Given two arrays a[] and b[], your task is to determine whether b[] is a subset of a[].",
       "output": "true or false",
-      "example": [
-        "Input: a=[1,2,3], b=[1,2] → Output: true"
-      ],
       "explanation": "All elements of b must exist in a.",
-      "hint": "Use set",
-      "cooldown": 6,
+      "example": [
+        "Input: a=[11, 7, 1, 13, 21, 3, 7, 3], b=[11, 3, 7, 1, 7] → Output: true",
+        "Input: a=[1, 2, 3, 4, 4, 5, 6], b=[1, 2, 4] → Output: true"
+      ],
+      "hint": "Use sets or loop",
+      "language": "python",
+      "cooldown": 5,
       "time": 150,
-      "id": "q_output_based_coding_12"
+      "id": "q_output_based_coding_6"
     },
-
     {
       "title": "Given an integer year. Print \"True\" (without quotes) if it can represent a leap year, otherwise print \"False\" (without quotes).",
       "output": "True or False",
+      "explanation": "Leap year rules: divisible by 4, not 100 unless 400.",
       "example": [
         "Input: 2020 → Output: True",
         "Input: 2022 → Output: False"
       ],
-      "explanation": "Leap year divisible by 4 but not 100 unless divisible by 400.",
       "hint": "Apply conditions",
+      "language": "python",
+      "cooldown": 5,
+      "time": 90,
+      "id": "q_output_based_coding_7"
+    },
+    {
+      "title": "Given an array arr[], print all its elements space-separated.",
+      "output": "elements separated by space",
+      "explanation": "Traverse and print with space delimiter.",
+      "example": [
+        "Input: [1, 2, 3, 4, 5] → Output: 1 2 3 4 5",
+        "Input: [2, 3, 5, 5] → Output: 2 3 5 5"
+      ],
+      "hint": "Join list elements",
+      "language": "python",
+      "cooldown": 5,
+      "time": 60,
+      "id": "q_output_based_coding_8"
+    },
+    {
+      "title": "Given an array arr of distinct elements, return an array of all elements except the two greatest elements in sorted order.",
+      "output": "filtered and sorted array",
+      "explanation": "Sort array and remove last two elements.",
+      "example": [
+        "Input: [2, 8, 7, 1, 5] → Output: [1, 2, 5]",
+        "Input: [7, -2, 3, 4, 9, -1] → Output: [-2, -1, 3, 4]"
+      ],
+      "hint": "Sort then slice",
+      "language": "python",
+      "cooldown": 5,
+      "time": 150,
+      "id": "q_output_based_coding_9"
+    },
+    {
+      "title": "Given two arrays of arr1 and arr2, calculate the product of the maximum element of arr1 and minimum element of arr2.",
+      "output": "product",
+      "explanation": "Multiply max(arr1) by min(arr2).",
+      "example": [
+        "Input: arr1=[5, 7, 9, 3, 6, 2], arr2=[1, 2, 6, 1, 9] → Output: 9",
+        "Input: arr1=[0, 0, 0, 0], arr2=[1, 1, 2] → Output: 0"
+      ],
+      "hint": "Find max and min separately",
+      "language": "python",
+      "cooldown": 5,
+      "time": 120,
+      "id": "q_output_based_coding_10"
+    },
+    {
+      "title": "Count elements less than or equal to target and elements greater than or equal to target in a sorted array.",
+      "output": "[count <= target, count >= target]",
+      "explanation": "Loop and count based on conditions.",
+      "example": [
+        "Input: arr=[1, 2, 8, 10, 11, 12, 19], target=0 → Output: [0, 7]",
+        "Input: arr=[1, 5, 8, 12, 12, 12, 19], target=12 → Output: [6, 4]"
+      ],
+      "hint": "Linear scan or binary search",
+      "language": "python",
+      "cooldown": 5,
+      "time": 150,
+      "id": "q_output_based_coding_11"
+    },
+    {
+      "title": "Divide array into two halves, sum each, and return their product.",
+      "output": "product of sums",
+      "explanation": "Use slice to split and sum() to aggregate.",
+      "example": [
+        "Input: [1, 2, 3, 4] → Output: 21",
+        "Input: [1, 2] → Output: 2"
+      ],
+      "hint": "Slice at len/2",
+      "language": "python",
+      "cooldown": 5,
+      "time": 150,
+      "id": "q_output_based_coding_12"
+    },
+    {
+      "title": "Find whether element x is present in array. Return first index or -1.",
+      "output": "index or -1",
+      "explanation": "Linear search for first occurrence.",
+      "example": [
+        "Input: arr=[1, 2, 3, 4], x=3 → Output: 2",
+        "Input: arr=[10, 8, 30], x=6 → Output: -1"
+      ],
+      "hint": "Use index() with try/except",
+      "language": "python",
       "cooldown": 5,
       "time": 90,
       "id": "q_output_based_coding_13"
     },
-
     {
-      "title": "Given an array arr[], print all its elements space-separated.",
-      "output": "space separated elements",
+      "title": "Find elements whose value equals its index (1-based indexing).",
+      "output": "list of values",
+      "explanation": "Check if arr[i] == i + 1.",
       "example": [
-        "Input: [1,2,3] → Output: 1 2 3"
+        "Input: [15, 2, 45, 4, 7] → Output: [2, 4]",
+        "Input: [1] → Output: [1]"
       ],
-      "explanation": "Traverse array and print each element.",
-      "hint": "Loop",
+      "hint": "Enumerate and check",
+      "language": "python",
       "cooldown": 5,
-      "time": 60,
+      "time": 120,
       "id": "q_output_based_coding_14"
     },
-
     {
-      "title": "Given an array arr of distinct elements, return an array of all elements except the two greatest elements in sorted order.",
-      "output": "filtered array",
+      "title": "Find last index of '1' in a binary string.",
+      "output": "index or -1",
+      "explanation": "Search string from the end.",
       "example": [
-        "Input: [2,8,7,1,5] → Output: [1,2,5]"
+        "Input: \"00001\" → Output: 4",
+        "Input: \"0\" → Output: -1"
       ],
-      "explanation": "Sort array and remove last two elements.",
-      "hint": "Sorting",
-      "cooldown": 6,
-      "time": 150,
+      "hint": "rfind()",
+      "language": "python",
+      "cooldown": 5,
+      "time": 90,
       "id": "q_output_based_coding_15"
     },
-
     {
-      "title": "Given two arrays of arr1 and arr2, calculate the product of the maximum element of arr1 and minimum element of arr2.",
-      "output": "product",
+      "title": "Given an NxN matrix, sort all its elements.",
+      "output": "sorted matrix",
+      "explanation": "Flatten matrix, sort list, then reshape.",
       "example": [
-        "Input: [5,7,9], [1,2] → Output: 9"
+        "Input: N=3, Mat=[[1, 5, 3], [2, 8, 7], [4, 6, 9]] → Output: [[1, 2, 3], [4, 5, 6], [7, 8, 9]]"
       ],
-      "explanation": "Find max of arr1 and min of arr2.",
-      "hint": "Use loops",
-      "cooldown": 5,
-      "time": 90,
+      "hint": "List comprehension then sort",
+      "language": "python",
+      "cooldown": 8,
+      "time": 240,
       "id": "q_output_based_coding_16"
     },
-
     {
-      "title": "Count elements less than or equal and greater than or equal to target.",
-      "output": "[<=target, >=target]",
+      "title": "Count substrings that start and end with '1'.",
+      "output": "count",
+      "explanation": "nC2 where n is number of 1s plus n.",
       "example": [
-        "Input: [1,2,8], target=2 → Output: [2,2]"
+        "Input: \"1111\" → Output: 6",
+        "Input: \"01101\" → Output: 3"
       ],
-      "explanation": "Count elements based on conditions.",
-      "hint": "Loop counting",
-      "cooldown": 6,
-      "time": 150,
+      "hint": "Count 1s then use n*(n+1)//2",
+      "language": "python",
+      "cooldown": 5,
+      "time": 180,
       "id": "q_output_based_coding_17"
     },
-
     {
-      "title": "Split array into two halves and return product of their sums.",
-      "output": "product",
+      "title": "Count number of uppercase (Camel Case) characters in a string.",
+      "output": "count",
+      "explanation": "Traverse and check isupper().",
       "example": [
-        "Input: [1,2,3,4] → Output: 21"
+        "Input: \"ckjkUUYII\" → Output: 5",
+        "Input: \"abcd\" → Output: 0"
       ],
-      "explanation": "Divide array into halves and multiply sums.",
-      "hint": "Divide array",
-      "cooldown": 6,
-      "time": 150,
-      "id": "q_output_based_coding_18"
-    },
-
-    {
-      "title": "Find index of element or return -1 if not found.",
-      "output": "index",
-      "example": [
-        "Input: [1,2,3], x=3 → Output: 2"
-      ],
-      "explanation": "Search element using loop.",
-      "hint": "Linear search",
+      "hint": "isupper()",
+      "language": "python",
       "cooldown": 5,
       "time": 90,
+      "id": "q_output_based_coding_18"
+    },
+    {
+      "title": "Decrease one character from string after each line to form pattern.",
+      "output": "pattern string",
+      "explanation": "Print substrings of decreasing length.",
+      "example": [
+        "Input: \"GeeK\" → Output: GeeK\\nGee\\nGe\\nG",
+        "Input: \"G*g\" → Output: G*g\\nG*\\nG"
+      ],
+      "hint": "Loop with slicing",
+      "language": "python",
+      "cooldown": 5,
+      "time": 150,
       "id": "q_output_based_coding_19"
     },
-
     {
-      "title": "Find indices where value equals index (1-based indexing).",
-      "output": "indices",
+      "title": "Find maximum extra amount given by replacing 6 with 9.",
+      "output": "difference",
+      "explanation": "Replace '6' with '9' and subtract original.",
       "example": [
-        "Input: [15,2,45,4] → Output: [2,4]"
+        "Input: 56 → Output: 3",
+        "Input: 66 → Output: 33"
       ],
-      "explanation": "Check if arr[i] == i+1.",
-      "hint": "Index logic",
-      "cooldown": 6,
+      "hint": "replace('6','9')",
+      "language": "python",
+      "cooldown": 5,
       "time": 120,
       "id": "q_output_based_coding_20"
     },
-
     {
-      "title": "Find last index of '1' in a binary string.",
-      "output": "index",
+      "title": "Compute LCM and GCD of two integers.",
+      "output": "[LCM, GCD]",
+      "explanation": "Use math.gcd then LCM = (a*b)//GCD.",
       "example": [
-        "Input: 00001 → Output: 4"
+        "Input: a=5, b=10 → Output: [10, 5]",
+        "Input: a=14, b=8 → Output: [56, 2]"
       ],
-      "explanation": "Traverse string from right.",
-      "hint": "Reverse loop",
+      "hint": "Euclidean algorithm",
+      "language": "python",
       "cooldown": 5,
-      "time": 90,
+      "time": 150,
       "id": "q_output_based_coding_21"
     },
-
     {
-      "title": "Sort all elements of an NxN matrix.",
-      "output": "sorted matrix",
+      "title": "Calculate the median of an array.",
+      "output": "median value",
+      "explanation": "Sort array and find middle or average of middles.",
       "example": [
-        "Input: [[1,5,3],[2,8,7],[4,6,9]] → Output: [[1,2,3],[4,5,6],[7,8,9]]"
+        "Input: [90, 100, 78, 89, 67] → Output: 89",
+        "Input: [56, 67, 30, 79] → Output: 61.5"
       ],
-      "explanation": "Flatten, sort and refill.",
-      "hint": "Sorting",
-      "cooldown": 7,
+      "hint": "Sort then check len % 2",
+      "language": "python",
+      "cooldown": 5,
       "time": 180,
       "id": "q_output_based_coding_22"
     },
-
     {
-      "title": "Count substrings that start and end with 1.",
-      "output": "count",
+      "title": "Round positive number to nearest multiple of 10 (smallest if equal).",
+      "output": "rounded number",
+      "explanation": "Look at last digit: <=5 round down, >5 round up.",
       "example": [
-        "Input: 1111 → Output: 6"
+        "Input: \"29\" → Output: 30",
+        "Input: \"15\" → Output: 10"
       ],
-      "explanation": "Count combinations of 1s.",
-      "hint": "nC2",
-      "cooldown": 7,
-      "time": 180,
+      "hint": "Modulo 10",
+      "language": "python",
+      "cooldown": 5,
+      "time": 150,
       "id": "q_output_based_coding_23"
     },
-
     {
-      "title": "Count uppercase characters in a string.",
-      "output": "count",
+      "title": "Divide each element by k and count total parts.",
+      "output": "total parts",
+      "explanation": "Sum of ceil(element/k) for each element.",
       "example": [
-        "Input: ckjkUUYII → Output: 5"
+        "Input: k=3, arr=[5, 8, 10, 13] → Output: 14",
+        "Input: k=4, arr=[10, 2, 3, 4, 7] → Output: 8"
       ],
-      "explanation": "Check ASCII range of uppercase letters.",
-      "hint": "ASCII",
-      "cooldown": 5,
-      "time": 90,
+      "hint": "Sum of (arr[i] + k - 1) // k",
+      "language": "python",
+      "cooldown": 6,
+      "time": 180,
       "id": "q_output_based_coding_24"
     },
-
     {
-      "title": "Print decreasing pattern of string.",
-      "output": "pattern",
+      "title": "Determine if possible to construct an integer divisible by 3 using all digits.",
+      "output": "1 or 0",
+      "explanation": "Sum of all digits divisible by 3.",
       "example": [
-        "Input: Geek → Output:\nGeek\nGee\nGe\nG"
+        "Input: N=3, arr=[40, 50, 90] → Output: 1",
+        "Input: N=2, arr=[1, 4] → Output: 0"
       ],
-      "explanation": "Print substring reducing one char each time.",
-      "hint": "Substring",
+      "hint": "Property of divisibility by 3",
+      "language": "python",
       "cooldown": 6,
-      "time": 120,
+      "time": 180,
       "id": "q_output_based_coding_25"
     },
-
     {
-      "title": "Find maximum extra amount by replacing 6 with 9.",
-      "output": "difference",
+      "title": "Count cells in n*n matrix where i+j equals q (1-based index).",
+      "output": "count",
+      "explanation": "Count satisfying pairs (i,j) such that 1<=i,j<=n.",
       "example": [
-        "Input: 56 → Output: 3"
+        "Input: n=4, q=7 → Output: 2",
+        "Input: n=5, q=4 → Output: 3"
       ],
-      "explanation": "Replace digits and compute difference.",
-      "hint": "Digit manipulation",
-      "cooldown": 6,
+      "hint": "Range constraints",
+      "language": "python",
+      "cooldown": 5,
       "time": 150,
       "id": "q_output_based_coding_26"
     },
-
     {
-      "title": "Find LCM and GCD of two numbers.",
-      "output": "[LCM, GCD]",
+      "title": "Find the digital root of n (recursive sum of digits until single digit).",
+      "output": "digital root",
+      "explanation": "Keep summing digits until n < 10.",
       "example": [
-        "Input: 5,10 → Output: [10,5]"
+        "Input: 99999 → Output: 9",
+        "Input: 1 → Output: 1"
       ],
-      "explanation": "Use Euclid algorithm.",
-      "hint": "GCD formula",
-      "cooldown": 6,
-      "time": 120,
+      "hint": "Loop or formula n%9",
+      "language": "python",
+      "cooldown": 5,
+      "time": 90,
       "id": "q_output_based_coding_27"
     },
-
     {
-      "title": "Find median of array.",
-      "output": "median",
+      "title": "Find the number of factors in N factorial.",
+      "output": "factor count",
+      "explanation": "Use prime factorization of factorials.",
       "example": [
-        "Input: [1,2,3] → Output: 2"
+        "Input: 5 → Output: 16",
+        "Input: 4 → Output: 8"
       ],
-      "explanation": "Sort and find middle element.",
-      "hint": "Sorting",
-      "cooldown": 6,
-      "time": 120,
+      "hint": "Exponent rules",
+      "language": "python",
+      "cooldown": 8,
+      "time": 300,
       "id": "q_output_based_coding_28"
     },
-
     {
-      "title": "Round number to nearest multiple of 10.",
-      "output": "rounded value",
+      "title": "Return multiplication table of n from 1 to 10.",
+      "output": "table array",
+      "explanation": "Loop 1 to 10 and multiply.",
       "example": [
-        "Input: 29 → Output: 30"
+        "Input: n=9 → Output: 9 18 27 36 45 54 63 72 81 90",
+        "Input: n=2 → Output: 2 4 6 8 10 12 14 16 18 20"
       ],
-      "explanation": "Apply rounding rules.",
-      "hint": "Math",
+      "hint": "Range(1, 11)",
+      "language": "python",
       "cooldown": 5,
-      "time": 90,
+      "time": 60,
       "id": "q_output_based_coding_29"
     },
-
     {
-      "title": "Divide elements into parts <= k and count total parts.",
-      "output": "count",
+      "title": "Find all numbers whose digits consist only of {1, 2, 3}.",
+      "output": "filtered array or [-1]",
+      "explanation": "Check if set(str(n)) is subset of {'1','2','3'}.",
       "example": [
-        "Input: k=3, arr=[5,8] → Output: 5"
+        "Input: [1, 2, 13, 4] → Output: [1, 2, 13]",
+        "Input: [4, 6, 7] → Output: [-1]"
       ],
-      "explanation": "Divide each element and count parts.",
-      "hint": "Division",
-      "cooldown": 7,
-      "time": 180,
-      "id": "q_output_based_coding_30"
-    },
-
-    {
-      "title": "Check if digits can form a number divisible by 3.",
-      "output": "1 or 0",
-      "example": [
-        "Input: [40,50,90] → Output: 1"
-      ],
-      "explanation": "Check sum of digits divisible by 3.",
-      "hint": "Divisibility rule",
-      "cooldown": 7,
-      "time": 180,
-      "id": "q_output_based_coding_31"
-    },
-
-    {
-      "title": "Count cells in matrix where i+j equals given value.",
-      "output": "count",
-      "example": [
-        "Input: n=4, q=7 → Output: 2"
-      ],
-      "explanation": "Traverse matrix and count satisfying cells.",
-      "hint": "Nested loops",
+      "hint": "Regex or string check",
+      "language": "python",
       "cooldown": 6,
       "time": 150,
+      "id": "q_output_based_coding_30"
+    },
+    {
+      "title": "Find the shortest common supersequence of two strings.",
+      "output": "shortest string",
+      "explanation": "Minimum string containing both as subsequences.",
+      "example": [
+        "Input: \"zzazz\", \"zzazz\" → Output: zzazz"
+      ],
+      "hint": "DP with LCS",
+      "language": "python",
+      "cooldown": 8,
+      "time": 300,
+      "id": "q_output_based_coding_31"
+    },
+    {
+      "title": "Minimum insertion steps to make a string palindrome.",
+      "output": "steps",
+      "explanation": "len(s) - LCS(s, reverse(s)).",
+      "example": [
+        "Input: \"mbadm\" → Output: 2",
+        "Input: \"leetcode\" → Output: 5"
+      ],
+      "hint": "LCS with reverse",
+      "language": "python",
+      "cooldown": 7,
+      "time": 240,
       "id": "q_output_based_coding_32"
     },
-
     {
-      "title": "Find digital root of number.",
-      "output": "digit",
+      "title": "Determine if possible to reach last index in jump game.",
+      "output": "true or false",
+      "explanation": "Maintain max reachable index.",
       "example": [
-        "Input: 99999 → Output: 9"
+        "Input: [2, 3, 1, 1, 4] → Output: true",
+        "Input: [3, 2, 1, 0, 4] → Output: false"
       ],
-      "explanation": "Keep summing digits until one digit.",
-      "hint": "Loop",
-      "cooldown": 5,
-      "time": 90,
+      "hint": "Greedy",
+      "language": "python",
+      "cooldown": 7,
+      "time": 240,
       "id": "q_output_based_coding_33"
     },
-
     {
-      "title": "Find number of factors of N factorial.",
-      "output": "count",
+      "title": "Find the longest palindromic substring in s.",
+      "output": "palindrome string",
+      "explanation": "Search radially from each character.",
       "example": [
-        "Input: 5 → Output: 16"
+        "Input: \"babad\" → Output: \"bab\"",
+        "Input: \"cbbd\" → Output: \"bb\""
       ],
-      "explanation": "Find factorial and count its factors.",
-      "hint": "Prime factorization",
-      "cooldown": 8,
+      "hint": "Expand around center",
+      "language": "python",
+      "cooldown": 7,
       "time": 240,
       "id": "q_output_based_coding_34"
     },
-
     {
-      "title": "Generate multiplication table of given number.",
-      "output": "table",
+      "title": "Partition Equal Subset Sum: can array be split into two equal sum subsets?",
+      "output": "true or false",
+      "explanation": "Check if subset with sum total/2 exists.",
       "example": [
-        "Input: 2 → Output: 2 4 6 8 10 12 14 16 18 20"
+        "Input: [1, 5, 11, 5] → Output: true",
+        "Input: [1, 2, 3, 5] → Output: false"
       ],
-      "explanation": "Multiply number from 1 to 10.",
-      "hint": "Loop",
-      "cooldown": 5,
-      "time": 60,
+      "hint": "Knapsack DP",
+      "language": "python",
+      "cooldown": 8,
+      "time": 300,
       "id": "q_output_based_coding_35"
-    },
-
-    {
-      "title": "Return numbers whose digits are only 1, 2, or 3.",
-      "output": "filtered array",
-      "example": [
-        "Input: [1,2,13,4] → Output: [1,2,13]"
-      ],
-      "explanation": "Check digits of each number.",
-      "hint": "Digit extraction",
-      "cooldown": 6,
-      "time": 150,
-      "id": "q_output_based_coding_36"
     }
   ]
 }
