@@ -58,7 +58,7 @@ const LANGUAGES: Record<
 }
 
 const CodeAnswer = ({
-  data: { output, language: expectedLanguage, hint, time },
+  data: { output, language: expectedLanguage, hint, time, title, example, explanation },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
@@ -355,20 +355,48 @@ return
         <div className="w-full lg:w-[32%] shrink-0 flex flex-col gap-4">
           <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-5 shadow-2xl flex flex-col gap-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span>📝</span> Expected Output Challenge
+              <span>📝</span> {title ? "Coding Challenge" : "Expected Output Challenge"}
             </h2>
             <p className="text-sm text-white/80 leading-relaxed">
-              Write a program that precisely produces the exact output provided below.
+              {title ? title : "Write a program that precisely produces the exact output provided below."}
             </p>
 
-            <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
-              <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
-                Target Output
+            {output && (
+              <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
+                <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
+                  Target Output
+                </div>
+                <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
+                  {output}
+                </pre>
               </div>
-              <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
-                {output}
-              </pre>
-            </div>
+            )}
+
+            {example && example.length > 0 && (
+              <div className="mt-2 flex flex-col gap-3">
+                <div className="text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
+                  Examples
+                </div>
+                {example.map((ex, idx) => (
+                  <div key={idx} className="rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-3 shadow-inner">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-blue-300">
+                      {ex}
+                    </pre>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {explanation && (
+              <div className="mt-2 rounded-lg bg-blue-500/20 px-4 py-3 border border-blue-500/30">
+                <div className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">
+                  ℹ️ Explanation
+                </div>
+                <div className="text-sm text-blue-200">
+                  {explanation}
+                </div>
+              </div>
+            )}
 
             {hint && (
               <div className="mt-2 rounded-lg bg-yellow-500/20 px-4 py-3 border border-yellow-500/30">

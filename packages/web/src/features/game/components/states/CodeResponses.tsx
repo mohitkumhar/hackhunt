@@ -8,7 +8,7 @@ type Props = {
 }
 
 const CodeResponses = ({
-  data: { output, expectedCode, language, totalCorrect, totalWrong, totalPlayers },
+  data: { title, output, example, expectedCode, language, totalCorrect, totalWrong, totalPlayers },
 }: Props) => {
   const [sfxResults] = useSound(SFX_RESULTS_SOUND, { volume: 0.3 })
 
@@ -31,9 +31,17 @@ const CodeResponses = ({
           <span className="inline-block h-2 w-2 rounded-full bg-red-500" />
           <span className="inline-block h-2 w-2 rounded-full bg-yellow-500" />
           <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
-          <span className="ml-2">Expected Output</span>
+          <span className="ml-2">{title ? "Coding Challenge" : "Expected Output"}</span>
         </div>
-        <pre className="whitespace-pre-wrap font-mono text-lg text-green-400">{output}</pre>
+        {title && <h3 className="text-white/90 font-medium mb-2">{title}</h3>}
+        {output && <pre className="whitespace-pre-wrap font-mono text-lg text-green-400">{output}</pre>}
+        {example && example.length > 0 && (
+          <div className="mt-2 flex flex-col gap-2">
+            {example.map((ex, idx) => (
+              <pre key={idx} className="whitespace-pre-wrap font-mono text-sm text-blue-300">{ex}</pre>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Reference Solution */}

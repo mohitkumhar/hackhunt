@@ -35,12 +35,15 @@ export type QuizzWithId = Quizz & { id: string }
 
 export type ReverseQuestion = {
   id: string
-  output: string
-  language: string
-  expectedCode: string
+  title?: string
+  output?: string
+  example?: string[]
+  explanation?: string
+  language?: string
+  expectedCode?: string
   hint?: string
   cooldown: number
-  time: number
+  time?: number
 }
 
 export type ReverseQuizz = {
