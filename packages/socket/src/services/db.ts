@@ -23,13 +23,15 @@ const submissionSchema = new mongoose.Schema({
   participantId: { type: String, required: true },
   eventType: { type: String, required: true, enum: ["quiz", "bug_hunting", "blind_coding", "reverse_programming"] },
   year: { type: Number, default: null }, // 1, 2, or null
-  questionId: { type: String },
-  question: { type: String },
-  answer: { type: String },
-  language: { type: String },
-  timeTaken: { type: Number },
-  score: { type: Number, default: null },
-  isCorrect: { type: Boolean, default: null },
+  submissions: [{
+    questionId: { type: String },
+    question: { type: String },
+    answer: { type: String },
+    language: { type: String },
+    timeTaken: { type: Number },
+    score: { type: Number, default: null },
+    isCorrect: { type: Boolean, default: null }
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 
