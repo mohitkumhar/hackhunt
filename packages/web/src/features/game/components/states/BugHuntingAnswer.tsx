@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
 import {
+  useEvent,
   useSocket,
 } from "@rahoot/web/features/game/contexts/socketProvider"
 import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
@@ -57,7 +58,7 @@ const LANGUAGES: Record<
 }
 
 const BugHuntingAnswer = ({
-  data: { title, description, buggyCode, language: expectedLanguage },
+  data: { title, description, buggyCode, language: expectedLanguage, time },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
@@ -80,33 +81,11 @@ const BugHuntingAnswer = ({
   })
 
   // Global competition timer
-  const [timeLeft, setTimeLeft] = useState(3600)
+  const [timeLeft, setTimeLeft] = useState(time ?? 3600)
 
-  useEffect(() => {
-    if (!gameId) {return undefined}
-
-    const storageKey = `competitionStartTime_${gameId}`
-    const storedStartTime = localStorage.getItem(storageKey)
-    let startTimeValue = 0
-
-    if (!storedStartTime) {
-      startTimeValue = Date.now()
-      localStorage.setItem(storageKey, startTimeValue.toString())
-    } else {
-      startTimeValue = parseInt(storedStartTime, 10)
-    }
-
-    const initialElapsed = Math.floor((Date.now() - startTimeValue) / 1000)
-    setTimeLeft(Math.max(0, 3600 - initialElapsed))
-
-    const interval = setInterval(() => {
-      const elapsedSeconds = Math.floor((Date.now() - startTimeValue) / 1000)
-      const remainingSeconds = Math.max(0, 3600 - elapsedSeconds)
-      setTimeLeft(remainingSeconds)
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [gameId])
+  useEvent("game:cooldown", (sec) => {
+    setTimeLeft(sec)
+  })
 
   useEffect(() => {
     playMusic()

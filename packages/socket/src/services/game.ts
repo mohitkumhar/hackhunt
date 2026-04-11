@@ -253,7 +253,61 @@ class Game {
     this.io.to(this.manager.id).emit("manager:newPlayer", playerData)
     this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
 
-    socket.emit("game:successJoin", this.gameId)
+    if (this.started) {
+      // Add participant to DB since the game is already started
+      try {
+        const dp = {
+          participantId: playerData.clientId,
+          username: playerData.username,
+          eventType: this.gameMode || "quiz",
+          year: playerData.year || null,
+          startTime: Date.now(),
+          durationMinutes: 40,
+        };
+        Participant.findOneAndUpdate(
+          { participantId: dp.participantId },
+          { $set: dp },
+          { upsert: true }
+        ).catch(console.error);
+      } catch (err) {
+        console.error("Failed to add late participant to DB", err);
+      }
+
+      const status = this.lastBroadcastStatus || {
+        name: STATUS.WAIT,
+        data: { text: "Waiting for players" },
+      }
+      
+      this.playerStatus.set(socket.id, status)
+
+      // If the game is fully underway (cooldown is active), send the active question
+      if (this.cooldown.active) {
+        if (this.gameMode === "bug_hunting") {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerBugHuntingQuestion(socket.id);
+        } else if (this.gameMode === "reverse_programming") {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerReverseQuestion(socket.id);
+        } else if (this.gameMode === "blind_coding") {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerNextBlindQuestion(socket.id);
+        } else {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerQuizzQuestion(socket.id);
+        }
+      }
+
+      socket.emit("game:successJoin", {
+        gameId: this.gameId,
+        status: this.playerStatus.get(socket.id),
+        currentQuestion: {
+          current: this.playerCurrentQuestion[socket.id] !== undefined ? this.playerCurrentQuestion[socket.id] + 1 : 1,
+          total: this.quizz?.questions?.length || 1,
+        },
+      });
+    } else {
+      socket.emit("game:successJoin", this.gameId)
+    }
   }
 
   kickPlayer(socket: Socket, playerId: string) {
