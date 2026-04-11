@@ -64,7 +64,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     let socketClient: TypedSocket | null = null
 
     try {
-      socketClient = io("/", {
+      socketClient = io(import.meta.env.VITE_WS_URL || "/", {
         path: "/ws",
         autoConnect: false,
         reconnection: true,

@@ -164,7 +164,7 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
     let playerOutput = ""
 
     const PISTON_ENDPOINTS = [
-      "/api/execute",
+      import.meta.env.VITE_WS_URL ? `${import.meta.env.VITE_WS_URL}/api/execute` : "/api/execute",
       "https://emkc.org/api/v2/piston/execute",
     ]
 

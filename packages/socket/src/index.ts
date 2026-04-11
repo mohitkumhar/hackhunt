@@ -216,6 +216,10 @@ const httpServer = createServer(app)
 
 const io: Server = new ServerIO(httpServer, {
   path: "/ws",
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 })
 Config.init()
 
