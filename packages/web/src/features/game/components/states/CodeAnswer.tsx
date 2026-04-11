@@ -1,15 +1,16 @@
 /* eslint-disable no-nested-ternary */
 import type { CommonStatusDataMap } from "@rahoot/common/types/game/status"
 import {
+  useEvent,
   useSocket,
 } from "@rahoot/web/features/game/contexts/socketProvider"
+import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
 import { usePlayerStore } from "@rahoot/web/features/game/stores/player"
+import { useQuestionStore } from "@rahoot/web/features/game/stores/question"
 import {
   SFX_ANSWERS_MUSIC,
   SFX_ANSWERS_SOUND,
 } from "@rahoot/web/features/game/utils/constants"
-import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
-import { useQuestionStore } from "@rahoot/web/features/game/stores/question"
 import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { useParams } from "react-router"
 import useSound from "use-sound"
@@ -57,7 +58,7 @@ const LANGUAGES: Record<
 }
 
 const CodeAnswer = ({
-  data: { output, language: expectedLanguage, hint },
+  data: { output, language: expectedLanguage, hint, time, title, example, explanation },
 }: Props) => {
   const { gameId }: { gameId?: string } = useParams()
   const { socket } = useSocket()
@@ -101,34 +102,11 @@ const CodeAnswer = ({
   })
 
   // Global competition timer state (60 mins = 3600 seconds)
-  const [timeLeft, setTimeLeft] = useState(3600)
+  const [timeLeft, setTimeLeft] = useState(time ?? 3600)
 
-  useEffect(() => {
-    if (!gameId) {return undefined}
-
-    const storageKey = `competitionStartTime_${gameId}`
-    const storedStartTime = localStorage.getItem(storageKey)
-    let startTimeValue = 0
-
-    if (!storedStartTime) {
-      startTimeValue = Date.now()
-      localStorage.setItem(storageKey, startTimeValue.toString())
-    } else {
-      startTimeValue = parseInt(storedStartTime, 10)
-    }
-
-    // Run once immediately so it doesn't wait 1s to hide the "Time's Up" initially
-    const initialElapsed = Math.floor((Date.now() - startTimeValue) / 1000)
-    setTimeLeft(Math.max(0, 3600 - initialElapsed))
-
-    const interval = setInterval(() => {
-      const elapsedSeconds = Math.floor((Date.now() - startTimeValue) / 1000)
-      const remainingSeconds = Math.max(0, 3600 - elapsedSeconds)
-      setTimeLeft(remainingSeconds)
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [gameId])
+  useEvent("game:cooldown", (sec) => {
+    setTimeLeft(sec)
+  })
 
   useEffect(() => {
     playMusic()
@@ -185,35 +163,55 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
 
     let playerOutput = ""
 
+    const PISTON_ENDPOINTS = [
+      "/api/execute",
+      "https://emkc.org/api/v2/piston/execute",
+    ]
+
     const requestBody = JSON.stringify({
       language: selectedLang,
       version: LANGUAGES[selectedLang].version,
       files: [
         {
-          name: selectedLang === "java" ? "Main.java" : undefined,
           content: code,
         },
       ],
     })
 
     try {
-      const controller = new AbortController()
-      // Increased to 30s for Java
-      const timeout = setTimeout(() => controller.abort(), 30000) 
+      let response: Response | null = null
+      let lastError = ""
 
-      const response = await fetch("/api/execute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: requestBody,
-        signal: controller.signal,
-      })
+      for (const endpoint of PISTON_ENDPOINTS) {
+        try {
+          const controller = new AbortController()
+          const timeout = setTimeout(() => controller.abort(), 30000) // Increased to 30s for Java
 
-      clearTimeout(timeout)
+          response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: requestBody,
+            signal: controller.signal,
+          })
 
-      if (!response.ok) {
-        throw new Error(`Execution engine error: ${response.status}`)
+          clearTimeout(timeout)
+
+          if (response.ok) {
+            break
+          }
+
+          lastError = `API returned status ${response.status}`
+          response = null
+        } catch {
+          lastError = "Network error or timeout"
+          response = null
+        }
+      }
+
+      if (!response) {
+        throw new Error(`Failed to execute code: ${lastError}`)
       }
 
       const result = await response.json()
@@ -227,9 +225,14 @@ return `00:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
       if (result.run && result.run.signal) {
         setRunError(`Runtime Error (${result.run.signal}):\n${result.run.stderr || ""}`)
         setIsSubmitting(false)
+        return
+      }
 
-        
-return
+      // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
+      if (result.run && result.run.code !== 0 && !result.run.stdout) {
+        setRunError(`Error:\n${result.run.stderr || "Code exited with non-zero status"}`)
+        setIsSubmitting(false)
+        return
       }
 
       // Check for runtime errors (e.g. Python SyntaxError, Java exceptions)
@@ -352,20 +355,48 @@ return
         <div className="w-full lg:w-[32%] shrink-0 flex flex-col gap-4">
           <div className="rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-5 shadow-2xl flex flex-col gap-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span>📝</span> Expected Output Challenge
+              <span>📝</span> {title ? "Coding Challenge" : "Expected Output Challenge"}
             </h2>
             <p className="text-sm text-white/80 leading-relaxed">
-              Write a program that precisely produces the exact output provided below.
+              {title ? title : "Write a program that precisely produces the exact output provided below."}
             </p>
 
-            <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
-              <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
-                Target Output
+            {output && (
+              <div className="mt-2 rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-4 shadow-inner">
+                <div className="mb-2 text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
+                  Target Output
+                </div>
+                <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
+                  {output}
+                </pre>
               </div>
-              <pre className="whitespace-pre-wrap font-mono text-sm text-green-400">
-                {output}
-              </pre>
-            </div>
+            )}
+
+            {example && example.length > 0 && (
+              <div className="mt-2 flex flex-col gap-3">
+                <div className="text-xs font-bold text-[#b4b4b4] uppercase tracking-wider">
+                  Examples
+                </div>
+                {example.map((ex, idx) => (
+                  <div key={idx} className="rounded-lg bg-[#2a2a2e]/80 border border-white/10 p-3 shadow-inner">
+                    <pre className="whitespace-pre-wrap font-mono text-sm text-blue-300">
+                      {ex}
+                    </pre>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {explanation && (
+              <div className="mt-2 rounded-lg bg-blue-500/20 px-4 py-3 border border-blue-500/30">
+                <div className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">
+                  ℹ️ Explanation
+                </div>
+                <div className="text-sm text-blue-200">
+                  {explanation}
+                </div>
+              </div>
+            )}
 
             {hint && (
               <div className="mt-2 rounded-lg bg-yellow-500/20 px-4 py-3 border border-yellow-500/30">

@@ -5,6 +5,8 @@ services:
       - "3000:3000"
     volumes:
       - ./config:/app/config
+    env_file:
+      - .env
 
   web:
     image: nginx

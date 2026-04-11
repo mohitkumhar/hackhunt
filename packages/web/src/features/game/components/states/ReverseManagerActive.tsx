@@ -1,9 +1,9 @@
-import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
 import {
-  useEvent,
+    useEvent,
 } from "@rahoot/web/features/game/contexts/socketProvider"
-import { useMemo, useState } from "react"
+import { useManagerStore } from "@rahoot/web/features/game/stores/manager"
 import clsx from "clsx"
+import { useMemo, useState } from "react"
 
 type SubmissionState = {
   completionTime: number | null
@@ -125,9 +125,16 @@ const ReverseManagerActive = () => {
                 </div>
 
                 <div className="flex-1 px-3 flex flex-col">
-                  <span className="truncate text-base sm:text-lg md:text-xl font-semibold text-white/90">
-                    {player.username}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-base sm:text-lg md:text-xl font-semibold text-white/90">
+                      {player.username}
+                    </span>
+                    {data && (
+                      <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-bold text-green-400 border border-green-500/30">
+                        Submitted
+                      </span>
+                    )}
+                  </div>
                   {player.teamName && (
                     <span className="mt-0.5 truncate text-xs md:text-sm text-white/40">
                       {player.teamName}
@@ -157,13 +164,13 @@ const ReverseManagerActive = () => {
 
       <div className="mt-6 flex items-center gap-3 text-sm text-white/60">
         <span className="font-mono text-[#ff9900] font-bold">
-          {correctCount}
+          {Object.keys(submissionMap).length}
         </span>
         <span>/</span>
         <span className="font-mono font-bold text-white/80">
           {players.length}
         </span>
-        <span>submitted correct code</span>
+        <span>submitted response</span>
       </div>
     </section>
   )

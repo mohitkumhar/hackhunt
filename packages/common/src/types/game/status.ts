@@ -80,9 +80,12 @@ export type CommonStatusDataMap = {
     }[];
   }
   REVERSE_WRITE_CODE: {
-    output: string
-    language: string
+    title?: string
+    output?: string
+    language?: string
     hint?: string
+    example?: string[]
+    explanation?: string
     time: number
     totalPlayer: number
   }
@@ -118,9 +121,12 @@ type ManagerExtraStatus = {
   }
   SHOW_LEADERBOARD: { oldLeaderboard: Player[]; leaderboard: Player[]; isQuizz?: boolean }
   REVERSE_SHOW_RESPONSES: {
-    output: string
-    expectedCode: string
-    language: string
+    title?: string
+    output?: string
+    example?: string[]
+    explanation?: string
+    expectedCode?: string
+    language?: string
     totalCorrect: number
     totalWrong: number
     totalPlayers: number

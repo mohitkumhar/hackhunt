@@ -28,6 +28,13 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 
 COPY --from=builder /app/packages/web/dist /app/web
 COPY --from=builder /app/packages/socket/dist/index.cjs /app/socket/index.cjs
+COPY --from=builder /app/config /app/config
+
+# Install production dependencies for the socket server (externalized by esbuild)
+WORKDIR /app/socket
+RUN npm init -y > /dev/null 2>&1 && \
+    npm install --save express cors mongoose socket.io dayjs uuid zod --omit=dev
+WORKDIR /app
 
 EXPOSE 3000
 

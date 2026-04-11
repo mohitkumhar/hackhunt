@@ -4,10 +4,20 @@ import { resolve } from "path"
 
 const inContainerPath = process.env.CONFIG_PATH
 
-const getPath = (path: string = "") =>
-  inContainerPath
-    ? resolve(inContainerPath, path)
-    : resolve(process.cwd(), "../../config", path)
+const getPath = (path: string = "") => {
+  if (inContainerPath) {
+    return resolve(inContainerPath, path)
+  }
+
+  // Local development or direct deployment
+  const localPath = resolve(process.cwd(), "config", path)
+  if (fs.existsSync(localPath)) {
+    return localPath
+  }
+
+  // Fallback for monorepo structure (running from package folder)
+  return resolve(process.cwd(), "../../config", path)
+}
 
 class Config {
   static init() {

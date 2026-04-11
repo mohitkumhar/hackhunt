@@ -77,16 +77,6 @@ class Game {
       submitted: boolean
     }[]
   }[]
-  allBlindCodeSubmissions: {
-    question: string
-    language: string
-    submissions: {
-      username: string
-      code: string
-      language: string
-      submitted: boolean
-    }[]
-  }[]
 
   constructor(io: Server, socket: Socket, quizz: Quizz | null, reverseQuizz?: ReverseQuizz | null, mode: GameMode = "quiz", blindCodingQuizz?: BlindCodingQuizz | null, bugHuntingQuizz?: BugHuntingQuizz | null) {
     if (!io) {
@@ -258,7 +248,61 @@ class Game {
     this.io.to(this.manager.id).emit("manager:newPlayer", playerData)
     this.io.to(this.gameId).emit("game:totalPlayers", this.players.length)
 
-    socket.emit("game:successJoin", this.gameId)
+    if (this.started) {
+      // Add participant to DB since the game is already started
+      try {
+        const dp = {
+          participantId: playerData.clientId,
+          username: playerData.username,
+          eventType: this.gameMode || "quiz",
+          year: playerData.year || null,
+          startTime: Date.now(),
+          durationMinutes: 40,
+        };
+        Participant.findOneAndUpdate(
+          { participantId: dp.participantId },
+          { $set: dp },
+          { upsert: true }
+        ).catch(console.error);
+      } catch (err) {
+        console.error("Failed to add late participant to DB", err);
+      }
+
+      const status = this.lastBroadcastStatus || {
+        name: STATUS.WAIT,
+        data: { text: "Waiting for players" },
+      }
+      
+      this.playerStatus.set(socket.id, status)
+
+      // If the game is fully underway (cooldown is active), send the active question
+      if (this.cooldown.active) {
+        if (this.gameMode === "bug_hunting") {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerBugHuntingQuestion(socket.id);
+        } else if (this.gameMode === "reverse_programming") {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerReverseQuestion(socket.id);
+        } else if (this.gameMode === "blind_coding") {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerNextBlindQuestion(socket.id);
+        } else {
+          this.playerCurrentQuestion[socket.id] = 0;
+          this.sendPlayerQuizzQuestion(socket.id);
+        }
+      }
+
+      socket.emit("game:successJoin", {
+        gameId: this.gameId,
+        status: this.playerStatus.get(socket.id),
+        currentQuestion: {
+          current: this.playerCurrentQuestion[socket.id] !== undefined ? this.playerCurrentQuestion[socket.id] + 1 : 1,
+          total: this.quizz?.questions?.length || 1,
+        },
+      });
+    } else {
+      socket.emit("game:successJoin", this.gameId)
+    }
   }
 
   kickPlayer(socket: Socket, playerId: string) {
@@ -624,6 +668,11 @@ class Game {
     if (!player || !this.started || this.gameMode !== "quiz") { return }
 
     // Process all answers submitted in bulk
+    const dbSubmissions: any[] = [];
+    const participantQuestionDetails: any[] = [];
+    let extraScore = 0;
+    const timeTaken = Math.round((Date.now() - this.round.startTime) / 1000);
+
     for (const [qIndexStr, answerId] of Object.entries(answers)) {
       const qIndex = parseInt(qIndexStr)
       const question = this.quizz.questions[qIndex]
@@ -641,6 +690,51 @@ class Game {
         points: isCorrect ? 500 : 0,
         questionIndex: qIndex,
       })
+
+      const qId = question.id || uuid();
+      
+      dbSubmissions.push({
+        questionId: qId,
+        question: question.question,
+        answer: answerId.toString(),
+        timeTaken,
+        score: isCorrect ? 500 : 0,
+        isCorrect
+      });
+
+      participantQuestionDetails.push({
+        questionId: qId,
+        timeTaken,
+        isCorrect,
+        score: isCorrect ? 500 : 0
+      });
+
+      if (isCorrect) extraScore += 500;
+    }
+
+    if (dbSubmissions.length > 0) {
+      Submission.findOneAndUpdate(
+        { participantId: player.id, eventType: this.gameMode },
+        {
+          $setOnInsert: {
+            username: player.username,
+            year: player.year || null,
+          },
+          $push: {
+            submissions: { $each: dbSubmissions }
+          }
+        },
+        { upsert: true, new: true }
+      ).catch(err => console.error("Failed to save submission to DB:", err));
+
+      Participant.findOne({ participantId: player.id }).then(pDoc => {
+        if (!pDoc) return;
+        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + participantQuestionDetails.length;
+        pDoc.questionDetails.push(...participantQuestionDetails);
+        pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
+        pDoc.totalScore = (pDoc.totalScore || 0) + extraScore;
+        pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
+      }).catch(err => console.error("Failed to retrieve participant:", err));
     }
 
     // Recalculate total points for this player
@@ -741,6 +835,7 @@ class Game {
 
     // Manager status should just be generic for the ROUND
     this.sendStatus(this.manager.id, STATUS.REVERSE_WRITE_CODE, {
+      title: "Multi-Question Random Assignment",
       output: "Multi-Question Random Assignment...",
       language: "multi",
       hint: "",
@@ -774,9 +869,12 @@ class Game {
     const remainingTime = this.cooldown.count || 3600
 
     this.sendStatus(playerId, STATUS.REVERSE_WRITE_CODE, {
+      title: question.title,
       output: question.output,
       language: question.language,
       hint: question.hint,
+      example: question.example,
+      explanation: question.explanation,
       time: remainingTime,
       totalPlayer: this.players.length,
     })
@@ -869,41 +967,34 @@ class Game {
     this.reverseSubmittedQuestions[player.id] = submittedForPlayer
 
     // Save submission to DB
+    const qId = question.id || uuid(); // Ensure we have a question ID
     Submission.findOneAndUpdate(
-      { participantId: player.id, questionId: question.id, eventType: this.gameMode },
+      { participantId: player.id, eventType: this.gameMode },
       {
-        username: player.username,
-        participantId: player.id,
-        eventType: this.gameMode,
-        year: player.year || null,
-        questionId: question.id,
-        question: question.output,
-        answer: code,
-        language: question.language,
-        timeTaken,
-        score: points,
-        isCorrect
+        $setOnInsert: {
+          username: player.username,
+          year: player.year || null,
+        },
+        $push: {
+          submissions: {
+            questionId: qId,
+            question: question.output,
+            answer: code,
+            language: question.language,
+            timeTaken,
+            score: points,
+            isCorrect
+          }
+        }
       },
-      { upsert: true }
+      { upsert: true, new: true }
     ).catch(err => console.error("Failed to save submission to DB:", err));
 
-    // Update aggregate participant metrics
+    // Update aggregate participant metrics (Append only)
     Participant.findOne({ participantId: player.id }).then(pDoc => {
       if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        // Update existing question data if code is re-submitted
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.totalScore -= (pDoc.questionDetails[qIndex].score || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].isCorrect = isCorrect;
-        pDoc.questionDetails[qIndex].score = points;
-        pDoc.questionDetails[qIndex].language = question.language;
-      } else {
-        // New question answered
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, timeTaken, isCorrect, score: points, language: question.language });
-      }
+      pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
+      pDoc.questionDetails.push({ questionId: qId, timeTaken, isCorrect, score: points, language: question.language });
       pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
       pDoc.totalScore = (pDoc.totalScore || 0) + points;
       pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
@@ -1142,12 +1233,19 @@ return aTime - bTime
     if (!player || !this.bugHuntingQuizz) {return}
 
     // Store all submitted codes
+    const dbSubmissions: any[] = [];
+    const participantQuestionDetails: any[] = [];
+    const timeTaken = Math.round((Date.now() - this.round.startTime) / 1000);
+
     for (const [indexStr, sub] of Object.entries(submissions)) {
       const pIndex = parseInt(indexStr) - 1 // questionStates.current is 1-indexed
 
       if (isNaN(pIndex) || pIndex < 0 || pIndex >= this.bugHuntingQuizz.questions.length) {
         continue
       }
+
+      const question = this.bugHuntingQuizz.questions[pIndex];
+      const qId = question.id || uuid();
 
       this.codeSubmissions.push({
         playerId: player.id,
@@ -1156,7 +1254,51 @@ return aTime - bTime
         output: "",
         correct: false,
         points: 0,
-      })
+      });
+
+      dbSubmissions.push({
+        questionId: qId,
+        question: question.title,
+        answer: sub.code,
+        language: sub.language || "",
+        timeTaken,
+        score: 0,
+        isCorrect: false
+      });
+
+      participantQuestionDetails.push({
+        questionId: qId,
+        timeTaken,
+        isCorrect: false,
+        score: 0,
+        language: sub.language || ""
+      });
+    }
+
+    if (dbSubmissions.length > 0) {
+      // Save submission to DB
+      Submission.findOneAndUpdate(
+        { participantId: player.id, eventType: this.gameMode },
+        {
+          $setOnInsert: {
+            username: player.username,
+            year: player.year || null,
+          },
+          $push: {
+            submissions: { $each: dbSubmissions }
+          }
+        },
+        { upsert: true, new: true }
+      ).catch(err => console.error("Failed to save submission to DB:", err));
+
+      // Update aggregate participant metrics
+      Participant.findOne({ participantId: player.id }).then(pDoc => {
+        if (!pDoc) return;
+        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + participantQuestionDetails.length;
+        pDoc.questionDetails.push(...participantQuestionDetails);
+        pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
+        pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
+      }).catch(err => console.error("Failed to retrieve participant:", err));
     }
 
     // Mark player as completely done
@@ -1373,37 +1515,35 @@ return
     // Save submission to DB
     const timeTaken = Math.round((Date.now() - this.round.startTime) / 1000)
     const question = this.blindCodingQuizz.questions[pIndex]
+    const qId = question.id || uuid(); // Ensure we have a question ID
     
     Submission.findOneAndUpdate(
-      { participantId: player.id, questionId: question.id, eventType: this.gameMode },
+      { participantId: player.id, eventType: this.gameMode },
       {
-        username: player.username,
-        participantId: player.id,
-        eventType: this.gameMode,
-        year: player.year || null,
-        questionId: question.id,
-        question: question.title,
-        answer: code,
-        language,
-        timeTaken,
-        score: 0,
-        isCorrect: true
+        $setOnInsert: {
+          username: player.username,
+          year: player.year || null,
+        },
+        $push: {
+          submissions: {
+            questionId: qId,
+            question: question.title,
+            answer: code,
+            language,
+            timeTaken,
+            score: 0,
+            isCorrect: true
+          }
+        }
       },
-      { upsert: true }
+      { upsert: true, new: true }
     ).catch(err => console.error("Failed to save submission to DB:", err));
 
-    // Update aggregate participant metrics
+    // Update aggregate participant metrics (Append only)
     Participant.findOne({ participantId: player.id }).then(pDoc => {
       if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].language = language;
-      } else {
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, timeTaken, isCorrect: true, score: 0, language });
-      }
+      pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
+      pDoc.questionDetails.push({ questionId: qId, timeTaken, isCorrect: true, score: 0, language });
       pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
       pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
     }).catch(err => console.error("Failed to retrieve participant:", err));
@@ -1451,6 +1591,10 @@ return
     if (!player || !this.blindCodingQuizz) {return}
 
     // Process all submissions
+    const dbSubmissions: any[] = [];
+    const participantQuestionDetails: any[] = [];
+    const timeTaken = Math.round((Date.now() - this.round.startTime) / 1000);
+
     for (const [indexStr, sub] of Object.entries(submissions)) {
       const pIndex = parseInt(indexStr) - 1; // questionStates.current is 1-indexed
 
@@ -1473,6 +1617,53 @@ return
         existingSub.language = sub.language;
         existingSub.submitted = true;
       }
+
+      const question = this.blindCodingQuizz.questions[pIndex];
+      const qId = question.id || uuid();
+
+      dbSubmissions.push({
+        questionId: qId,
+        question: question.title,
+        answer: sub.code,
+        language: sub.language,
+        timeTaken,
+        score: 0,
+        isCorrect: true
+      });
+
+      participantQuestionDetails.push({
+        questionId: qId,
+        timeTaken,
+        isCorrect: true,
+        score: 0,
+        language: sub.language
+      });
+    }
+
+    if (dbSubmissions.length > 0) {
+      // Save submission to DB
+      Submission.findOneAndUpdate(
+        { participantId: player.id, eventType: this.gameMode },
+        {
+          $setOnInsert: {
+            username: player.username,
+            year: player.year || null,
+          },
+          $push: {
+            submissions: { $each: dbSubmissions }
+          }
+        },
+        { upsert: true, new: true }
+      ).catch(err => console.error("Failed to save submission to DB:", err));
+
+      // Update aggregate participant metrics
+      Participant.findOne({ participantId: player.id }).then(pDoc => {
+        if (!pDoc) return;
+        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + participantQuestionDetails.length;
+        pDoc.questionDetails.push(...participantQuestionDetails);
+        pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
+        pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));
+      }).catch(err => console.error("Failed to retrieve participant:", err));
     }
 
     // Mark player as completely done
@@ -1629,37 +1820,34 @@ return
     // Save submission to DB
     const isCorrect = answerId === question.solution;
     const timeTaken = Math.round((Date.now() - this.round.startTime) / 1000);
+    const qId = question.id || uuid();
+    
     Submission.findOneAndUpdate(
-      { participantId: player.id, questionId: question.id, eventType: this.gameMode },
+      { participantId: player.id, eventType: this.gameMode || "quiz" },
       {
-        username: player.username,
-        participantId: player.id,
-        eventType: this.gameMode || "quiz",
-        year: player.year || null,
-        questionId: question.id,
-        question: question.question,
-        answer: answerId.toString(),
-        timeTaken,
-        score: isCorrect ? points : 0,
-        isCorrect
+        $setOnInsert: {
+          username: player.username,
+          year: player.year || null,
+        },
+        $push: {
+          submissions: {
+            questionId: qId,
+            question: question.question,
+            answer: answerId.toString(),
+            timeTaken,
+            score: isCorrect ? points : 0,
+            isCorrect
+          }
+        }
       },
-      { upsert: true }
-    ).catch(err => console.error("Failed to save sumbission to DB:", err));
+      { upsert: true, new: true }
+    ).catch(err => console.error("Failed to save submission to DB:", err));
 
     // Update aggregate participant metrics
     Participant.findOne({ participantId: player.id }).then(pDoc => {
       if (!pDoc) return;
-      const qIndex = pDoc.questionDetails.findIndex(q => q.questionId === question.id);
-      if (qIndex >= 0) {
-        pDoc.totalTimeTaken -= (pDoc.questionDetails[qIndex].timeTaken || 0);
-        pDoc.totalScore -= (pDoc.questionDetails[qIndex].score || 0);
-        pDoc.questionDetails[qIndex].timeTaken = timeTaken;
-        pDoc.questionDetails[qIndex].isCorrect = isCorrect;
-        pDoc.questionDetails[qIndex].score = isCorrect ? points : 0;
-      } else {
-        pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
-        pDoc.questionDetails.push({ questionId: question.id, timeTaken, isCorrect, score: isCorrect ? points : 0 });
-      }
+      pDoc.totalQuestionsSubmitted = (pDoc.totalQuestionsSubmitted || 0) + 1;
+      pDoc.questionDetails.push({ questionId: qId, timeTaken, isCorrect, score: isCorrect ? points : 0 });
       pDoc.totalTimeTaken = (pDoc.totalTimeTaken || 0) + timeTaken;
       pDoc.totalScore = (pDoc.totalScore || 0) + (isCorrect ? points : 0);
       pDoc.save().catch(err => console.error("Failed to update participant metrics:", err));

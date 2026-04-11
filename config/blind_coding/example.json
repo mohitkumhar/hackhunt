@@ -4,177 +4,378 @@
     {
       "title": "Print 1 to 10",
       "description": "Write a program that prints the numbers from 1 to 10 in ascending order.",
-      "examples": [{ "input": "n = 10", "output": "1 2 3 4 5 6 7 8 9 10" }],
-      "constraints": ["1 <= n <= 10"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 10",
+          "output": "1 2 3 4 5 6 7 8 9 10"
+        }
+      ],
+      "constraints": [
+        "1 <= n <= 10"
+      ],
+      "cooldown": 5,
+      "id": "26e73bb7-3ca0-408b-9a34-c54522c2f8c2"
     },
     {
       "title": "Multiplication Table of 5",
       "description": "Write a program that prints the multiplication table of 5 up to 10 terms.",
-      "examples": [{ "input": "n = 5", "output": "5 10 15 20 25 30 35 40 45 50" }],
-      "constraints": ["1 <= n <= 10"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 5",
+          "output": "5 10 15 20 25 30 35 40 45 50"
+        }
+      ],
+      "constraints": [
+        "1 <= n <= 10"
+      ],
+      "cooldown": 5,
+      "id": "4296aa84-5cc5-41be-9364-776d1521efcb"
     },
     {
       "title": "Last Character of Dishant",
       "description": "Write a program that takes the string \"Dishant\" as input and prints its last character.",
-      "examples": [{ "input": "s = 'Dishant'", "output": "t" }],
-      "constraints": ["1 <= length(s) <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "s = 'Dishant'",
+          "output": "t"
+        }
+      ],
+      "constraints": [
+        "1 <= length(s) <= 20"
+      ],
+      "cooldown": 5,
+      "id": "635fc7a5-c126-4ef3-9291-1b94e8dbaee7"
     },
     {
       "title": "Count Elements in Array",
       "description": "Write a program that takes an array of integers as input and prints the total number of elements.",
-      "examples": [{ "input": "arr = [1,2,3,4,5]", "output": "5" }],
-      "constraints": ["1 <= size(arr) <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "arr = [1,2,3,4,5]",
+          "output": "5"
+        }
+      ],
+      "constraints": [
+        "1 <= size(arr) <= 20"
+      ],
+      "cooldown": 5,
+      "id": "93f6b127-614d-4347-90f2-fbe242436abf"
     },
     {
       "title": "Check Strings Equal",
       "description": "Write a program that takes two strings as input and checks whether they are equal or not.",
-      "examples": [{ "input": "a = 'abc', b = 'abc'", "output": "Equal" }],
-      "constraints": ["1 <= length(a), length(b) <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "a = 'abc', b = 'abc'",
+          "output": "Equal"
+        }
+      ],
+      "constraints": [
+        "1 <= length(a), length(b) <= 20"
+      ],
+      "cooldown": 5,
+      "id": "8f5a2698-b44f-4b1b-9bb6-bf5e4c233852"
     },
     {
       "title": "Sum of Digits",
       "description": "Write a program that takes an integer as input and prints the sum of its digits.",
-      "examples": [{ "input": "n = 123", "output": "6" }],
-      "constraints": ["0 <= n <= 10000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 123",
+          "output": "6"
+        }
+      ],
+      "constraints": [
+        "0 <= n <= 10000"
+      ],
+      "cooldown": 5,
+      "id": "f1ff62b8-543a-4792-bf79-8d004d67fcad"
     },
     {
       "title": "Reverse Number",
       "description": "Write a program that takes an integer as input and prints its reverse.",
-      "examples": [{ "input": "n = 123", "output": "321" }],
-      "constraints": ["0 <= n <= 10000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 123",
+          "output": "321"
+        }
+      ],
+      "constraints": [
+        "0 <= n <= 10000"
+      ],
+      "cooldown": 5,
+      "id": "b605fa3b-3a5b-4e15-943e-a250526d6647"
     },
     {
       "title": "Swap Two Numbers",
       "description": "Write a program that takes two integers as input and swaps their values.",
-      "examples": [{ "input": "a = 5, b = 10", "output": "10 5" }],
-      "constraints": ["-1000 <= a, b <= 1000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "a = 5, b = 10",
+          "output": "10 5"
+        }
+      ],
+      "constraints": [
+        "-1000 <= a, b <= 1000"
+      ],
+      "cooldown": 5,
+      "id": "7ab865c4-5763-4ef0-8301-3aeb5ed9e05a"
     },
     {
       "title": "4x4 Star Pattern",
       "description": "Write a program to print a 4×4 square pattern using *.",
-      "examples": [{ "input": "n = 4", "output": "* * * *\n* * * *\n* * * *\n* * * *" }],
-      "constraints": ["n = 4"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 4",
+          "output": "* * * *\n* * * *\n* * * *\n* * * *"
+        }
+      ],
+      "constraints": [
+        "n = 4"
+      ],
+      "cooldown": 5,
+      "id": "da5612da-2050-4d62-80ae-93529e0d8970"
     },
     {
       "title": "Factorial",
       "description": "Write a program that takes a non-negative integer as input and prints its factorial.",
-      "examples": [{ "input": "n = 5", "output": "120" }],
-      "constraints": ["0 <= n <= 10"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 5",
+          "output": "120"
+        }
+      ],
+      "constraints": [
+        "0 <= n <= 10"
+      ],
+      "cooldown": 5,
+      "id": "a349a335-e211-48d9-b7a5-5db4f5bce28d"
     },
     {
       "title": "Print Factors",
       "description": "Write a program that takes an integer as input and prints all of its factors.",
-      "examples": [{ "input": "n = 6", "output": "1 2 3 6" }],
-      "constraints": ["1 <= n <= 100"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 6",
+          "output": "1 2 3 6"
+        }
+      ],
+      "constraints": [
+        "1 <= n <= 100"
+      ],
+      "cooldown": 5,
+      "id": "a27a3616-6613-48a7-b75e-2673af59230f"
     },
     {
       "title": "Palindrome Number",
       "description": "Write a program that takes an integer as input and checks whether it is a palindrome or not.",
-      "examples": [{ "input": "n = 121", "output": "Palindrome" }],
-      "constraints": ["0 <= n <= 10000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 121",
+          "output": "Palindrome"
+        }
+      ],
+      "constraints": [
+        "0 <= n <= 10000"
+      ],
+      "cooldown": 5,
+      "id": "19eccf13-d1e4-4017-ab88-81b1092f5a6c"
     },
     {
       "title": "Simple Interest",
       "description": "Write a program that takes principal, rate, and time as input and calculates simple interest.",
-      "examples": [{ "input": "p = 1000, r = 5, t = 2", "output": "100" }],
-      "constraints": ["1 <= p, r, t <= 1000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "p = 1000, r = 5, t = 2",
+          "output": "100"
+        }
+      ],
+      "constraints": [
+        "1 <= p, r, t <= 1000"
+      ],
+      "cooldown": 5,
+      "id": "09bca85d-6a9c-4bcd-8edc-f9b336266551"
     },
     {
       "title": "Greatest of Three",
       "description": "Write a program that takes three integers as input and prints the greatest among them.",
-      "examples": [{ "input": "a = 3, b = 7, c = 5", "output": "7" }],
-      "constraints": ["-1000 <= a, b, c <= 1000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "a = 3, b = 7, c = 5",
+          "output": "7"
+        }
+      ],
+      "constraints": [
+        "-1000 <= a, b, c <= 1000"
+      ],
+      "cooldown": 5,
+      "id": "c5916b52-0d1b-4ea0-b0cd-212396473131"
     },
     {
       "title": "Armstrong Number",
       "description": "Write a program that takes an integer as input and checks whether it is an Armstrong number or not.",
-      "examples": [{ "input": "n = 153", "output": "Armstrong" }],
-      "constraints": ["0 <= n <= 1000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 153",
+          "output": "Armstrong"
+        }
+      ],
+      "constraints": [
+        "0 <= n <= 1000"
+      ],
+      "cooldown": 5,
+      "id": "c74f7fe0-9b1f-437d-913a-d10f60f622cc"
     },
     {
       "title": "Neon Number",
       "description": "Write a program that takes an integer as input and checks whether it is a Neon number or not.",
-      "examples": [{ "input": "n = 9", "output": "Neon" }],
-      "constraints": ["0 <= n <= 1000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 9",
+          "output": "Neon"
+        }
+      ],
+      "constraints": [
+        "0 <= n <= 1000"
+      ],
+      "cooldown": 5,
+      "id": "94f65b58-568f-4269-9c1c-8e43240a2f07"
     },
     {
       "title": "Harshad Number",
       "description": "Write a program that takes an integer as input and checks whether it is a Harshad (Niven) number or not.",
-      "examples": [{ "input": "n = 18", "output": "Harshad" }],
-      "constraints": ["1 <= n <= 10000"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 18",
+          "output": "Harshad"
+        }
+      ],
+      "constraints": [
+        "1 <= n <= 10000"
+      ],
+      "cooldown": 5,
+      "id": "8953d5ef-8ed6-4aca-a3d7-fa8068452dcc"
     },
     {
       "title": "Second Largest Element",
       "description": "Write a program that takes an array of integers and finds the second largest element.",
-      "examples": [{ "input": "arr = [1,2,3,4,5]", "output": "4" }],
-      "constraints": ["2 <= size(arr) <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "arr = [1,2,3,4,5]",
+          "output": "4"
+        }
+      ],
+      "constraints": [
+        "2 <= size(arr) <= 20"
+      ],
+      "cooldown": 5,
+      "id": "bcd38e3a-85a9-4c27-b81d-638ad2aa7d48"
     },
     {
       "title": "Remove Duplicates",
       "description": "Write a program that removes duplicate elements from an array and prints the result.",
-      "examples": [{ "input": "arr = [1,2,2,3]", "output": "[1,2,3]" }],
-      "constraints": ["1 <= size(arr) <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "arr = [1,2,2,3]",
+          "output": "[1,2,3]"
+        }
+      ],
+      "constraints": [
+        "1 <= size(arr) <= 20"
+      ],
+      "cooldown": 5,
+      "id": "0373275a-6df6-4f6d-9902-350ae0ce2eda"
     },
     {
       "title": "Rotate Array",
       "description": "Write a program that rotates an array by k positions.",
-      "examples": [{ "input": "arr = [1,2,3,4,5], k = 2", "output": "[4,5,1,2,3]" }],
-      "constraints": ["1 <= size(arr) <= 20", "0 <= k <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "arr = [1,2,3,4,5], k = 2",
+          "output": "[4,5,1,2,3]"
+        }
+      ],
+      "constraints": [
+        "1 <= size(arr) <= 20",
+        "0 <= k <= 20"
+      ],
+      "cooldown": 5,
+      "id": "ea847f90-969f-41e2-9410-52a5698846c6"
     },
     {
       "title": "Reverse Words in String",
       "description": "Write a program that takes a string as input and reverses the order of words.",
-      "examples": [{ "input": "s = 'hello world'", "output": "world hello" }],
-      "constraints": ["1 <= length(s) <= 50"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "s = 'hello world'",
+          "output": "world hello"
+        }
+      ],
+      "constraints": [
+        "1 <= length(s) <= 50"
+      ],
+      "cooldown": 5,
+      "id": "dbc8f6bb-4c52-4513-8c88-ecd8bc437511"
     },
     {
       "title": "Skip Every 4th Alphabet",
       "description": "Print all lowercase alphabets from a to z, but skip every 4th character.",
-      "examples": [{ "input": "n = 26", "output": "a b c e f g i j k m n o q r s u v w y z" }],
-      "constraints": ["Only lowercase alphabets a-z"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 26",
+          "output": "a b c e f g i j k m n o q r s u v w y z"
+        }
+      ],
+      "constraints": [
+        "Only lowercase alphabets a-z"
+      ],
+      "cooldown": 5,
+      "id": "63dca5be-b572-43c9-86ef-0eedfbe6fc3c"
     },
     {
       "title": "Most Frequent Character",
       "description": "Given a string s, print the character that appears the most number of times.",
-      "examples": [{ "input": "s = 'aabbbcc'", "output": "b" }],
-      "constraints": ["1 <= length(s) <= 50"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "s = 'aabbbcc'",
+          "output": "b"
+        }
+      ],
+      "constraints": [
+        "1 <= length(s) <= 50"
+      ],
+      "cooldown": 5,
+      "id": "e4b5f8c0-10f5-486e-852e-d50d0199ff9c"
     },
     {
       "title": "Print 1 to N using Recursion",
       "description": "Given an integer N, print numbers from 1 to N using recursion.",
-      "examples": [{ "input": "n = 5", "output": "1 2 3 4 5" }],
-      "constraints": ["1 <= n <= 20"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "n = 5",
+          "output": "1 2 3 4 5"
+        }
+      ],
+      "constraints": [
+        "1 <= n <= 20"
+      ],
+      "cooldown": 5,
+      "id": "9f557c1e-172f-4e41-b7a3-c3fc6854151d"
     },
     {
       "title": "Min Removal for Palindrome",
       "description": "Given a string s, find the minimum number of characters to remove to make it a palindrome.",
-      "examples": [{ "input": "s = 'abcda'", "output": "2" }],
-      "constraints": ["1 <= length(s) <= 50"],
-      "cooldown": 5
+      "examples": [
+        {
+          "input": "s = 'abcda'",
+          "output": "2"
+        }
+      ],
+      "constraints": [
+        "1 <= length(s) <= 50"
+      ],
+      "cooldown": 5,
+      "id": "7ab845ab-f2b7-4ad2-907f-1f05adf23f52"
     }
   ]
 }

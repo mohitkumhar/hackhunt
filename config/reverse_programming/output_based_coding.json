@@ -2,58 +2,308 @@
   "subject": "Output Based coding",
   "questions": [
     {
-      "output": "Hello World from 1st Year!",
-      "language": "c",
-      "expectedCode": "#include <stdio.h>\n\nint main() {\n    printf(\"Hello World from 1st Year!\\n\");\n    return 0;\n}",
-      "hint": "Use printf in C",
-      "cooldown": 5,
-      "time": 90,
-      "id": "q_output_based_coding_0"
+      "title": "Given a 2D integer array mat[][] and a number x, find whether element x is present in the matrix or not.",
+      "example": [
+        "Input: mat[][] = [[6, 23, 21],[4, 45, 32],[69, 11, 87]], x = 32 → Output: true",
+        "Input: mat[][] = [[14, 34, 23, 95, 43, 28]], x = 55 → Output: false",
+        "Input: mat[][] = [[87, 9, 99],[101, 3, 111]], x = 101 → Output: true"
+      ],
+      "hint": "Use nested loops",
+      "cooldown": 6,
+      "id": "q_output_based_coding_7"
     },
     {
-      "output": "Sum: 15",
-      "language": "c",
-      "expectedCode": "#include <stdio.h>\n\nint main() {\n    int a = 5, b = 10;\n    printf(\"Sum: %d\\n\", a + b);\n    return 0;\n}",
-      "hint": "Declare variables and format print the sum",
-      "cooldown": 5,
-      "time": 90,
-      "id": "q_output_based_coding_1"
+      "title": "Given an array arr, rotate the array by one position in clockwise direction.",
+      "example": [
+        "Input: arr = [1, 2, 3, 4, 5] → Output: [5, 1, 2, 3, 4]",
+        "Input: arr = [10, 20, 30] → Output: [30, 10, 20]"
+      ],
+      "hint": "Store last element",
+      "cooldown": 6,
+      "id": "q_output_based_coding_8"
     },
     {
-      "output": "2\n4\n6\n8\n10",
-      "language": "c",
-      "expectedCode": "#include <stdio.h>\n\nint main() {\n    for (int i = 2; i <= 10; i += 2) {\n        printf(\"%d\\n\", i);\n    }\n    return 0;\n}",
-      "hint": "Use a for loop that increments by 2",
-      "cooldown": 5,
-      "time": 90,
-      "id": "q_output_based_coding_2"
+      "title": "Given an array arr[]. Your task is to find the minimum and maximum elements in the array.",
+      "example": [
+        "Input: arr = [1, 4, 3, 5, 8, 6] → Output: [1, 8]",
+        "Input: arr = [100, 200, 50] → Output: [50, 200]"
+      ],
+      "hint": "Use comparisons",
+      "cooldown": 6,
+      "id": "q_output_based_coding_9"
     },
     {
-      "output": "[1, 4, 9, 16, 25]",
-      "language": "python",
-      "expectedCode": "print([x**2 for x in range(1, 6)])",
-      "hint": "Use Python list comprehension",
-      "cooldown": 5,
-      "time": 120,
-      "id": "q_output_based_coding_3"
+      "title": "You are given an array arr (0-based index) and two positive integers index and val. You need to insert val at the given index.",
+      "example": [
+        "Input: arr = [1, 2, 3, 4, 5], index = 2, val = 90 → Output: [1, 2, 90, 3, 4, 5]",
+        "Input: arr = [10, 20, 30], index = 0, val = 5 → Output: [5, 10, 20, 30]"
+      ],
+      "hint": "Use shifting",
+      "cooldown": 6,
+      "id": "q_output_based_coding_10"
     },
     {
-      "output": "Object Created\nHello from OOP!",
-      "language": "cpp",
-      "expectedCode": "#include <iostream>\n\nclass Sample {\npublic:\n    Sample() { std::cout << \"Object Created\\n\"; }\n    void greet() { std::cout << \"Hello from OOP!\\n\"; }\n};\n\nint main() {\n    Sample obj;\n    obj.greet();\n    return 0;\n}",
-      "hint": "Create a C++ class with a constructor and member function",
+      "title": "Given an array arr of integers and an index key (0-based index). Your task is to return the element present at the index key in the array.",
+      "example": [
+        "Input: key = 2, arr = [10, 20, 30] → Output: 30",
+        "Input: key = 0, arr = [5, 15, 25] → Output: 5"
+      ],
+      "hint": "Indexing",
       "cooldown": 5,
-      "time": 240,
-      "id": "q_output_based_coding_4"
+      "id": "q_output_based_coding_11"
     },
     {
-      "output": "Reversed: avaJ",
-      "language": "java",
-      "expectedCode": "public class Main {\n    public static void main(String[] args) {\n        String s = \"Java\";\n        String rev = new StringBuilder(s).reverse().toString();\n        System.out.println(\"Reversed: \" + rev);\n    }\n}",
-      "hint": "Use StringBuilder in Java to reverse the string",
+      "title": "Given two arrays a[] and b[], your task is to determine whether b[] is a subset of a[].",
+      "example": [
+        "Input: a = [1, 2, 3], b = [1, 2] → Output: true",
+        "Input: a = [4, 5, 6], b = [5, 7] → Output: false"
+      ],
+      "hint": "Use set",
+      "cooldown": 6,
+      "id": "q_output_based_coding_12"
+    },
+    {
+      "title": "Given an integer year. Print \"True\" (without quotes) if it can represent a leap year, otherwise print \"False\" (without quotes).",
+      "example": [
+        "Input: year = 2020 → Output: True",
+        "Input: year = 2022 → Output: False",
+        "Input: year = 1900 → Output: False"
+      ],
+      "hint": "Apply conditions",
       "cooldown": 5,
-      "time": 180,
-      "id": "q_output_based_coding_5"
+      "id": "q_output_based_coding_13"
+    },
+    {
+      "title": "Given an array arr[], print all its elements space-separated.",
+      "example": [
+        "Input: arr = [1, 2, 3] → Output: 1 2 3",
+        "Input: arr = [10, 20, 30, 40] → Output: 10 20 30 40"
+      ],
+      "hint": "Loop",
+      "cooldown": 5,
+      "id": "q_output_based_coding_14"
+    },
+    {
+      "title": "Given an array arr of distinct elements, return an array of all elements except the two greatest elements in sorted order.",
+      "example": [
+        "Input: arr = [2, 8, 7, 1, 5] → Output: [1, 2, 5]",
+        "Input: arr = [10, 3, 6, 9, 1] → Output: [1, 3, 6]"
+      ],
+      "hint": "Sorting",
+      "cooldown": 6,
+      "id": "q_output_based_coding_15"
+    },
+    {
+      "title": "Given two arrays arr1 and arr2, calculate the product of the maximum element of arr1 and minimum element of arr2.",
+      "example": [
+        "Input: arr1 = [5, 7, 9], arr2 = [1, 2] → Output: 9",
+        "Input: arr1 = [3, 8, 2], arr2 = [4, 6] → Output: 32"
+      ],
+      "hint": "Use loops",
+      "cooldown": 5,
+      "id": "q_output_based_coding_16"
+    },
+    {
+      "title": "Count elements less than or equal to and greater than or equal to a given target value.",
+      "example": [
+        "Input: arr = [1, 2, 8], target = 2 → Output: [2, 2]",
+        "Input: arr = [5, 10, 15, 20], target = 10 → Output: [2, 3]"
+      ],
+      "hint": "Loop counting",
+      "cooldown": 6,
+      "id": "q_output_based_coding_17"
+    },
+    {
+      "title": "Split the array into two halves and return the product of their sums.",
+      "example": [
+        "Input: arr = [1, 2, 3, 4] → Output: 21",
+        "Input: arr = [2, 4, 6, 8] → Output: 84"
+      ],
+      "hint": "Divide array",
+      "cooldown": 6,
+      "id": "q_output_based_coding_18"
+    },
+    {
+      "title": "Find the index of a given element in the array, or return -1 if not found.",
+      "example": [
+        "Input: arr = [1, 2, 3], x = 3 → Output: 2",
+        "Input: arr = [10, 20, 30], x = 5 → Output: -1"
+      ],
+      "hint": "Linear search",
+      "cooldown": 5,
+      "id": "q_output_based_coding_19"
+    },
+    {
+      "title": "Find indices where the value equals the index (1-based indexing).",
+      "example": [
+        "Input: arr = [15, 2, 45, 4] → Output: [2, 4]",
+        "Input: arr = [1, 5, 3, 8] → Output: [1, 3]"
+      ],
+      "hint": "Index logic",
+      "cooldown": 6,
+      "id": "q_output_based_coding_20"
+    },
+    {
+      "title": "Find the last index of '1' in a binary string.",
+      "example": [
+        "Input: s = \"00001\" → Output: 4",
+        "Input: s = \"10100\" → Output: 2",
+        "Input: s = \"00000\" → Output: -1"
+      ],
+      "hint": "Reverse loop",
+      "cooldown": 5,
+      "id": "q_output_based_coding_21"
+    },
+    {
+      "title": "Sort all elements of an NxN matrix in non-decreasing order.",
+      "example": [
+        "Input: mat = [[1, 5, 3],[2, 8, 7],[4, 6, 9]] → Output: [[1, 2, 3],[4, 5, 6],[7, 8, 9]]",
+        "Input: mat = [[9, 3],[1, 7]] → Output: [[1, 3],[7, 9]]"
+      ],
+      "hint": "Sorting",
+      "cooldown": 7,
+      "id": "q_output_based_coding_22"
+    },
+    {
+      "title": "Count the number of substrings that start and end with the character '1' in a binary string.",
+      "example": [
+        "Input: s = \"1111\" → Output: 6",
+        "Input: s = \"10101\" → Output: 6"
+      ],
+      "hint": "nC2",
+      "cooldown": 7,
+      "id": "q_output_based_coding_23"
+    },
+    {
+      "title": "Count the number of uppercase characters in a given string.",
+      "example": [
+        "Input: s = \"ckjkUUYII\" → Output: 5",
+        "Input: s = \"HelloWorld\" → Output: 2"
+      ],
+      "hint": "ASCII",
+      "cooldown": 5,
+      "id": "q_output_based_coding_24"
+    },
+    {
+      "title": "Print the decreasing pattern of a given string by removing one character from the end in each line.",
+      "example": [
+        "Input: s = \"Geek\" → Output:\nGeek\nGee\nGe\nG",
+        "Input: s = \"Code\" → Output:\nCode\nCod\nCo\nC"
+      ],
+      "hint": "Substring",
+      "cooldown": 6,
+      "id": "q_output_based_coding_25"
+    },
+    {
+      "title": "Find the maximum extra amount obtained by replacing all occurrences of digit 6 with digit 9 in a given number.",
+      "example": [
+        "Input: n = 56 → Output: 3",
+        "Input: n = 666 → Output: 333"
+      ],
+      "hint": "Digit manipulation",
+      "cooldown": 6,
+      "id": "q_output_based_coding_26"
+    },
+    {
+      "title": "Find the LCM and GCD of two given numbers.",
+      "example": [
+        "Input: a = 5, b = 10 → Output: [10, 5]",
+        "Input: a = 12, b = 8 → Output: [24, 4]"
+      ],
+      "hint": "GCD formula",
+      "cooldown": 6,
+      "id": "q_output_based_coding_27"
+    },
+    {
+      "title": "Find the median of a given array of integers.",
+      "example": [
+        "Input: arr = [1, 2, 3] → Output: 2",
+        "Input: arr = [4, 1, 3, 2] → Output: 2.5"
+      ],
+      "hint": "Sorting",
+      "cooldown": 6,
+      "id": "q_output_based_coding_28"
+    },
+    {
+      "title": "Round a given number to the nearest multiple of 10.",
+      "example": [
+        "Input: n = 29 → Output: 30",
+        "Input: n = 14 → Output: 10",
+        "Input: n = 25 → Output: 30"
+      ],
+      "hint": "Math",
+      "cooldown": 5,
+      "id": "q_output_based_coding_29"
+    },
+    {
+      "title": "Divide each element of the array into parts of size at most k and count the total number of parts.",
+      "example": [
+        "Input: k = 3, arr = [5, 8] → Output: 5",
+        "Input: k = 4, arr = [10, 3] → Output: 4"
+      ],
+      "hint": "Division",
+      "cooldown": 7,
+      "id": "q_output_based_coding_30"
+    },
+    {
+      "title": "Check if the digits of the given numbers can form a number that is divisible by 3.",
+      "example": [
+        "Input: arr = [40, 50, 90] → Output: 1",
+        "Input: arr = [11, 22, 44] → Output: 0"
+      ],
+      "hint": "Divisibility rule",
+      "cooldown": 7,
+      "id": "q_output_based_coding_31"
+    },
+    {
+      "title": "Count the number of cells (i, j) in an NxN matrix where i + j equals a given value q (0-based indexing).",
+      "example": [
+        "Input: n = 4, q = 7 → Output: 0",
+        "Input: n = 4, q = 3 → Output: 4"
+      ],
+      "hint": "Nested loops",
+      "cooldown": 6,
+      "id": "q_output_based_coding_32"
+    },
+    {
+      "title": "Find the digital root of a given number. The digital root is obtained by repeatedly summing the digits until a single digit remains.",
+      "example": [
+        "Input: n = 99999 → Output: 9",
+        "Input: n = 12345 → Output: 6"
+      ],
+      "hint": "Loop",
+      "cooldown": 5,
+      "id": "q_output_based_coding_33"
+    },
+    {
+      "title": "Find the number of factors (divisors) of N factorial (N!).",
+      "example": [
+        "Input: N = 5 → Output: 16",
+        "Input: N = 3 → Output: 4"
+      ],
+      "hint": "Prime factorization",
+      "cooldown": 8,
+      "id": "q_output_based_coding_34"
+    },
+    {
+      "title": "Generate the multiplication table of a given number from 1 to 10.",
+      "example": [
+        "Input: n = 2 → Output: 2 4 6 8 10 12 14 16 18 20",
+        "Input: n = 5 → Output: 5 10 15 20 25 30 35 40 45 50"
+      ],
+      "hint": "Loop",
+      "cooldown": 5,
+      "id": "q_output_based_coding_35"
+    },
+    {
+      "title": "Return all numbers from the array whose digits consist only of 1, 2, or 3.",
+      "example": [
+        "Input: arr = [1, 2, 13, 4] → Output: [1, 2, 13]",
+        "Input: arr = [123, 456, 321, 7] → Output: [123, 321]"
+      ],
+      "hint": "Digit extraction",
+      "cooldown": 6,
+      "id": "q_output_based_coding_36"
     }
   ]
 }
