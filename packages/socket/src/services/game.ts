@@ -7,7 +7,7 @@ import Registry from "@rahoot/socket/services/registry"
 import { createInviteCode, timeToPoint } from "@rahoot/socket/utils/game"
 import sleep from "@rahoot/socket/utils/sleep"
 import { v4 as uuid } from "uuid"
-import { Participant, Submission } from "./db"
+import { Participant, Question, Submission } from "./db"
 
 const registry = Registry.getInstance()
 
@@ -483,7 +483,7 @@ class Game {
         participantId: p.id,
         username: p.username,
         eventType: this.gameMode || "quiz",
-        year: null,
+        year: p.year || null,
         startTime: Date.now(),
         durationMinutes: 40
       }));
@@ -497,6 +497,89 @@ class Game {
       }
     } catch (dbErr) {
       console.error("Failed to save participants to DB:", dbErr);
+    }
+
+    // Store questions in MongoDB for blind_coding and reverse_programming
+    try {
+      if (this.gameMode === "blind_coding" && this.blindCodingQuizz) {
+        for (const q of this.blindCodingQuizz.questions) {
+          const qId = q.id || uuid();
+          await Question.findOneAndUpdate(
+            { questionId: qId, eventType: "blind_coding" },
+            {
+              $set: {
+                eventType: "blind_coding",
+                year: this.players[0]?.year || null,
+                questionId: qId,
+                question: q.title,
+                correctAnswer: null,
+                maxScore: 10
+              }
+            },
+            { upsert: true }
+          );
+        }
+        console.log(`Stored ${this.blindCodingQuizz.questions.length} blind_coding questions in DB`);
+      } else if (this.gameMode === "reverse_programming" && this.reverseQuizz) {
+        for (const q of this.reverseQuizz.questions) {
+          const qId = q.id || uuid();
+          await Question.findOneAndUpdate(
+            { questionId: qId, eventType: "reverse_programming" },
+            {
+              $set: {
+                eventType: "reverse_programming",
+                year: this.players[0]?.year || null,
+                questionId: qId,
+                question: q.output || q.title || "",
+                correctAnswer: q.expectedCode || null,
+                maxScore: 10
+              }
+            },
+            { upsert: true }
+          );
+        }
+        console.log(`Stored ${this.reverseQuizz.questions.length} reverse_programming questions in DB`);
+      } else if (this.gameMode === "quiz" && this.quizz) {
+        for (const q of this.quizz.questions) {
+          const qId = q.id || uuid();
+          await Question.findOneAndUpdate(
+            { questionId: qId, eventType: "quiz" },
+            {
+              $set: {
+                eventType: "quiz",
+                year: this.players[0]?.year || null,
+                questionId: qId,
+                question: q.question,
+                correctAnswer: q.solution?.toString() || null,
+                maxScore: 10
+              }
+            },
+            { upsert: true }
+          );
+        }
+        console.log(`Stored ${this.quizz.questions.length} quiz questions in DB`);
+      } else if (this.gameMode === "bug_hunting" && this.bugHuntingQuizz) {
+        for (const q of this.bugHuntingQuizz.questions) {
+          const qId = (q as any).id || uuid();
+          await Question.findOneAndUpdate(
+            { questionId: qId, eventType: "bug_hunting" },
+            {
+              $set: {
+                eventType: "bug_hunting",
+                year: this.players[0]?.year || null,
+                questionId: qId,
+                question: q.title,
+                correctAnswer: q.expectedOutput || null,
+                maxScore: 10
+              }
+            },
+            { upsert: true }
+          );
+        }
+        console.log(`Stored ${this.bugHuntingQuizz.questions.length} bug_hunting questions in DB`);
+      }
+    } catch (dbErr) {
+      console.error("Failed to store questions in DB:", dbErr);
     }
 
     if (this.gameMode === "reverse_programming") {
