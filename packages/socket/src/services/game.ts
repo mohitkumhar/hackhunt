@@ -1192,6 +1192,7 @@ return aTime - bTime
     }
 
     const question = this.bugHuntingQuizz.questions[this.round.currentQuestion]
+    const bugHuntRoundSeconds = question.time ?? 3600
 
     if (!this.started) {
       return
@@ -1243,11 +1244,11 @@ return aTime - bTime
       buggyCode: "",
       expectedOutput: "",
       language: "multi",
-      time: question.time,
+      time: bugHuntRoundSeconds,
       totalPlayer: this.players.length,
     })
 
-    await this.startCooldown(question.time)
+    await this.startCooldown(bugHuntRoundSeconds)
 
     if (!this.started) {
       return
@@ -1270,7 +1271,7 @@ return aTime - bTime
     }
 
     const question = this.bugHuntingQuizz.questions[qIndex]
-    const remainingTime = this.cooldown.count || question.time
+    const remainingTime = this.cooldown.count ?? question.time ?? 3600
 
     this.sendStatus(playerId, STATUS.BUG_HUNTING_WRITE, {
       title: question.title,

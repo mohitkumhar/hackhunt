@@ -84,7 +84,9 @@ const BugHuntingAnswer = ({
   const [timeLeft, setTimeLeft] = useState(time ?? 3600)
 
   useEvent("game:cooldown", (sec) => {
-    setTimeLeft(sec)
+    if (typeof sec === "number" && Number.isFinite(sec) && sec >= 0) {
+      setTimeLeft(sec)
+    }
   })
 
   useEffect(() => {
@@ -163,7 +165,9 @@ const BugHuntingAnswer = ({
   }
 
   const handleSubmitAll = () => {
-    if (!player || timeLeft <= 0) {
+    const blockedByTimer =
+      typeof timeLeft === "number" && Number.isFinite(timeLeft) && timeLeft <= 0
+    if (!player || blockedByTimer) {
       return
     }
 
